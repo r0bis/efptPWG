@@ -19,6 +19,7 @@ library (lattice)
 library(ggplot2)
 library(knitr)
 library(likert)
+library(plyr)
 search()
 
 
