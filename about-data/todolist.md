@@ -1,6 +1,6 @@
 # To do list
 
-* merge all the data : analysis in the whole europe (TG)
+* merge all the data : analysis in the whole europe (TG) http://www.r-bloggers.com/string-concatenation-in-r/
 ** number of trainee in each country (TG)
  principle - list directories read that list into a vector then for each element of the vectior (i.e. country name) and all the syntax files for that reason also start with the country name so if country name is a variable we simply subsititute that variable into the script when we loop over the list (i.e. the vector) containing names of durectories
 
@@ -22,18 +22,18 @@ http://kbroman.org/knitr_knutshell/pages/figs_tables.html
 https://www.qwant.com/?q=ggplot&t=images
 
 ## Add (TG)
-- UEMS recommandation abline
+- UEMS recommandation abline http://stat.ethz.ch/R-manual/R-devel/library/graphics/html/abline.html
 - Mean European abline
 
 q9df <- data[,16:21]
 
 # To use git (after installation)
-git status
-git pull origin master
+* git status
+* git pull origin master
 
-modify stuff
+* modify stuff
 
-git status
-git add .
-git commit -m "my message"
-git push origin master
+* git status
+* git add .
+* git commit -m "my message"
+* git push origin master

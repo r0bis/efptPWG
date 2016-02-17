@@ -1,12 +1,41 @@
 ---
 title: "Psychotherapy Study"
 author: "Roberts Klotins and Thomas Gargot"
-date: "13 février 2016"
+date: "February, 14th 2016"
 output: html_document
 ---
 
-# Example with Czech Republic data
+# Presentation
+The psychotherapy study run from 2013 to 2015 to understand the actual opportunities and wishes for training in psychotherapy in Europe among psychiatrist trainees in 19 countries.
 
+## Presentations of the survey
+### Past
+* "The EFPT Psychotherapy working Group and its Survey on Psychotherapy Training 2013-2015" was presented at the [Royal College of Psychiatrists](http://www.rcpsych.ac.uk/pdf/CALC_MedPsych2015confbooklet.pdf) - faculty of Psychotherapy Annual Meeting 22-24 April 2015 by Alina Petricean (UK, Romania)
+* "The EFPT Psychotherapy working group" was presented at the "Portuguese Psychiatric National Congress by Rita Silva (Portugal)
+
+### Projects
+* Accepted talk : "Should all psychiatrists be skilled to practice psychotherapy ? Thomas GARGOT (France) and Ekin S??nmez (Turkey), [European Psychiatric Association Congress](http://efpt.eu/events/european-psychiatric-association-congress/), March 12th - March 15th 2016 
+* Submission Project : "How psychiatrist trainees are trained in Psychotherapies in Europe ? A European trainee survey", Thomas GARGOT (France), [European Association of Behavioural and Cognitive Therapies conference (EABCT)](http://eabct2016.org/), August 31st - September 3rd 2016
+* Submission Project : How psychiatrist trainees are trained in Psychotherapies in Europe ? A European trainee survey" in Italian, Diego Quattrone (Italy)  [Italian Federation of Psychotherapy Associations (FIAP)](http://www.fiap.info/convegno2016/)
+
+# Actual recommandations
+## EFPT Psychotherapy Working Group statement
+A working knowledge of psychotherapy is an integral part of being a psychiatrist and this must be reflected in training in psychiatry. All trainees must gain the knowledge, skills and attitudes to be competent in psychotherapy. Competence should be gained in at least one recognised form of psychotherapy (of the trainees choice) and basic knowledge should be gained in the other forms of psychotherapy to allow the trainee to evaluate suitability for referral to specialist psychotherapist.
+Training in psychotherapy must include supervision by qualified therapists. A personal psychotherapeutic experience is seen as a valuable component of training. It is crucial that trainees have access to relevant psychotherapy experience to cater to the needs of the appropriate patient group that the trainee is dealing with or is expected to deal with in the future.
+
+Relevant training authorities should ensure that time, resources and funding are available to all trainees to meet the above mentioned psychotherapy training needs.
+
+Discussed and voted by EFPT delegates in Lisbon 1996, Tampere 1999, Napoli 2001, Sinaia 2002, Paris 2003, Istanbul 2005, Gothenburg 2008, Cambridge 2009 and Zurich 2013
+
+[See all EFPT statements](http://efpt.eu/statements/)
+
+## UEMS Psychotherapy Reports
+See all UEMS reports related to [psychiatry training](http://uemspsychiatry.org/board/training-reports/)
+
+# Data storage
+The data is stored on [GitHub](https://github.com/r0bis/efptPWG)
+
+# Example with Czech Republic data
 ## Download the data
 This command tells us which the current directory is:
 ```{r} 
@@ -14,37 +43,33 @@ getwd()
 ```
 
 Here we tell R where we want it to work from:
-```{r setup}
-  library(knitr)
-  opts_knit$set(root.dir=normalizePath('../'))
-  opts_chunk$set(fig.path = "../figures/", dev='pdf')
-#setwd("~/src/efptPWG/data/Czech_Republic")
-#opts_knit$set(root.dir="~/src/efptPWG/data/Czech_Republic/")
+```{r} 
+setwd("~/Documents")
 ```
 
 ## Import the data and change the variables names
 R will execute all commands in the syntax file
 ```{r} 
-getwd()
-#source("data/Czech_Republic/Czech_Republic_R_syntax_file.R")
+source("Czech_Republic_R_syntax_file.R")
 ```
 
 ## Display them
-```{r} 
+```{r, include =FALSE} 
 str(data)
 ```
 
 ```{r include = FALSE}
-# install.packages(c("lattice", "ggplot2", "likert"))
+# install.packages(c("lattice", "ggplot2", "likert", "rmarkdown""))
 library (lattice)
 library(ggplot2)
 library(knitr)
 library(likert)
 library(plyr)
+library(rmarkdown)
 search()
 ```
 
-# Gender
+## Gender
 ```{r}
 table(data$q_0001)
 ```
@@ -53,7 +78,7 @@ table(data$q_0001)
 pie(table(data$q_0001), main ="Gender of participants")
 ```
 
-#Age
+## Age
 ```{r}
 summary(data$q_0002)
 ```
@@ -67,13 +92,12 @@ hist(data$q_0002, col="orange",
 ```
 
 ## Year in Training (now the shorter labels fit in the plot)
-
 ```{r}
 table(data$q_0003)
 barplot(table(data$q_0003), ylim = c(0,15), main="Year of training", xlab="Year", las=1, col="cornflowerblue", border=NA, ylab="Number")
 ```
 
-##Are you receiving personal psychotherapy or have you received it in the past?
+## Are you receiving personal psychotherapy or have you received it in the past?
 ```{r}
 data[, 7] <- as.numeric(data[, 7])
 attributes(data)$variable.labels[7] <- "Are you receiving personal psychotherapy or have you received it in the past?"
@@ -83,7 +107,7 @@ table(data$q_0004)
 pie(table(data$q_0004), xlab="Receiving personal psychotherapy (present or past)")
 ```
 
-# I am undertaking training in Psychotherapy within my training programme in Psychiatry
+## I am undertaking training in Psychotherapy within my training programme in Psychiatry
 ```{r}
 table(data$q_0005_S05A1)
 pie(table(data$q_0005_S05A1), xlab="In a Psychotherapy training within my training programme")
@@ -102,6 +126,7 @@ table(data$q_0005_S05A3)
 pie(table(data$q_0005_S05A3), 
   xlab="I am not undertaking any training in Psychotherapy")
 ```
+> Psychotherapy training taking place within working hours is recommended by UEMS as a mandatory component of curriculum.
 
 ## I have completed full training in a Psychotherapy specialty in the past
 ```{r}
@@ -127,25 +152,27 @@ table(data$q_0008)
 pie(table(data$q_0008), xlab="Plan to practise Psychotherapy after training")
 ```
 
-# Types of therapy I am interested in
-# this might do for now, so canning (sommenting out) the rest for now for q_0009
-# barplot(table(data$q_0009_SQ1), xlab="Interested in Psychoanalytic Psychotherapy")
-# barplot(table(data$q_0009_SQ2), xlab="Interested in Cognitive Behavioural Psychotherapy")
-# barplot(table(data$q_0009_SQ3), xlab="Interested in Family / Systemic Therapy Psychotherapy")
-# barplot(table(data$q_0009_SQ4), xlab="Interested in Group modalities of therapies")
-# barplot(table(data$q_0009_Ax), xlab="I am not interested in Psychotherapy")
-# table (data$q_0009_other)
+> Types of therapy I am interested in
+> this might do for now, so canning (sommenting out) the rest for now for q_0009
+> barplot(table(data$q_0009_SQ1), xlab="Interested in Psychoanalytic Psychotherapy")
+> barplot(table(data$q_0009_SQ2), xlab="Interested in Cognitive Behavioural Psychotherapy")
+> barplot(table(data$q_0009_SQ3), xlab="Interested in Family / Systemic Therapy Psychotherapy")
+> barplot(table(data$q_0009_SQ4), xlab="Interested in Group modalities of therapies")
+> barplot(table(data$q_0009_Ax), xlab="I am not interested in Psychotherapy")
+> table (data$q_0009_other)
 
-barplot(c(sum(q9df[,1]=="Yes"), sum(q9df[,2]=="Yes"), sum(q9df[,3]=="Yes"), sum(q9df[,4]=="Yes"),
-          sum(q9df[,5]=="Yes"), sum(!is.na(q9df[,6]))),
-        names.arg=c("Dynamic","CBT","Systemic","Group","NOT ANY","Other"),xlab="Interested in this therapy")
+>barplot(c(sum(q9df[,1]=="Yes"), sum(q9df[,2]=="Yes"), sum(q9df[,3]=="Yes"), >sum(q9df[,4]=="Yes"),
+>          sum(q9df[,5]=="Yes"), sum(!is.na(q9df[,6]))),
+>        names.arg=c("Dynamic","CBT","Systemic","Group","NOT ANY","Other"),xlab="Interested in this therapy")
 
-#"The following experience in Psychotherapy is a mandatory part of my training in Psychiatry:"
+##"The following experience in Psychotherapy is a mandatory part of my training in Psychiatry:"
 
 ```{r}
 table(data$q_0011_SQ001)
 barplot(table(data$q_0011_SQ001), col="green", xlab="Theoretical lectures or seminars in Psychotherapy")
 ```
+
+> UEMS Charter on Psychiatry states that minimum duration of theoretical psychotherapy training should be 120 hours during 5 years. It also states that as a minimum, psychodynamic, CBT and systemic theory should be taught.
 
 ```{r}
 table(data$q_0011_SQ001)
@@ -167,8 +194,8 @@ table(data$q_0012)
 barplot(table(data$q_0012), col="green", xlab="Are you qualified to practice Psychotherapy after your training ?")
 ```
 
-# What types of psychotherapy modalities are available for treatment of patients at your institution?
-table(data$q_0013)
+## What types of psychotherapy modalities are available for treatment of patients at your institution?
+> table(data$q_0013)
 
 ## Plot: How many hours of supervisions
 ```{r}
@@ -177,6 +204,17 @@ hist(data$q_0014_SQ001, col="pink",
      main = "Individual supervision",
      breaks=6)
 ```
+
+> UEMS Charter on Psychiatry states that minimum duration of psychotherapy supervision should be 100 hours during the whole training of 5 recommended years. It makes 1.7 hours approximatively a month.
+
+temp <- c("data$q_0014_SQ002","data$q_0014_SQ003","data$q_0014_SQ004")
+ ???        ??????
+par(mfrow=c(1,3))
+      ???                        ???       ???             ???
+for(i in temp) barplot(table(mhp.ex[,i]), main=i, ylab="n", space=0.8, 
+    ???
+col="white")
+
 
 ```{r}
 hist(data$q_0014_SQ002, col="red",
@@ -192,7 +230,7 @@ hist(data$q_0014_SQ003,
 ```
 
 ```{r}
-hist(data$q_0014_SQ001, col="green",
+hist(data$q_0014_SQ004, col="green",
      xlab= "Hours of Psychotherapy supervision per month",
      main ="Generic Balint group",
      breaks=10)
@@ -206,7 +244,7 @@ hist(data$q_0014_SQ005, col="navy",
 
 table(data$q_0015)
 
-## Plot: Who pays
+## Plot: Who pays?
 This again should ba a plot group on one page
 ```{r}
 barplot(table(data$q_0016_SQ001), col="light blue",
@@ -249,6 +287,8 @@ barplot(table(data$q_0016_SQ004), col="light blue",
 pie(table(data$q_0017),
     xlab="Motivated to train in Psychotherapy for free?")
 ```
+
+UEMS recommendations states that psychotherapy training of trainees should be funded publicly.??? 
 
 ## Plot: How much would you invest in psychotherapy training ?
 ```{r}
@@ -304,7 +344,7 @@ plot(uems12) +
   theme(plot.title = element_text(lineheight=.8, face="bold"))
 ```
 
-## Plot: UEMS recs awareness
+## Plot: UEMS recommendations awareness
 ```{r}
 # and same with the
 uems2 <- data[,55:63]
@@ -336,8 +376,9 @@ plot(uems22) +
   theme(plot.title = element_text(lineheight=.8, face="bold"))
 ```
 
+## Research
+UEMS recommendations states that research methodology should be included in psychotherapy training.
 
-
-
-
+## Bibliography
+* Please join our [zotero group](https://www.zotero.org/groups/480046)
 

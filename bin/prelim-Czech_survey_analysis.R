@@ -108,6 +108,7 @@ pie(table(data$q_0008), xlab="Do you want to practise Psychotherapy after your t
 
 q9df <- data[,16:21]
 # RK is genial
+
 #RK same logic for presentation as for question q_0005
 # we need to do a bit better
 # I will try to show comparative Yes answers
