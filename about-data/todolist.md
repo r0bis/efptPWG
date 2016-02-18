@@ -22,7 +22,7 @@ http://kbroman.org/knitr_knutshell/pages/figs_tables.html
 https://www.qwant.com/?q=ggplot&t=images
 
 ## Add (TG)
-- UEMS recommandation abline http://stat.ethz.ch/R-manual/R-devel/library/graphics/html/abline.html
+- UEMS recommandation abline http://stat.ethz.ch/R-manual/R-devel/library/graphics/html/abline.html Done
 - Mean European abline
 
 q9df <- data[,16:21]
