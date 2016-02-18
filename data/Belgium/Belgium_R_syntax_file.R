@@ -1,5 +1,5 @@
 #$Rev: 12179 $ .
-data <- read.table("Albania_R_data_file.csv", sep=",", quote = "'", na.strings=c("","\"\""), stringsAsFactors=FALSE)
+data <- read.csv("Belgium_R_data_file.csv", sep=",", quote = "'", na.strings=c("","\"\""), stringsAsFactors=FALSE)
 
 data[, 1] <- as.numeric(data[, 1])
 attributes(data)$variable.labels[1] <- "id"

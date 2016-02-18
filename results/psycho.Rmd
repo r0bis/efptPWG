@@ -1,7 +1,7 @@
 ---
 title: "Psychotherapy Study"
 author: "Roberts Klotins and Thomas Gargot"
-date: "February, 14th 2016"
+date: "February, 18th 2016"
 output: html_document
 ---
 
@@ -44,14 +44,54 @@ getwd()
 
 Here we tell R where we want it to work from:
 ```{r} 
-setwd("~/Documents")
+setwd("/Users/Ofix/src/efptPWG/")
 ```
 
 ## Import the data and change the variables names
 R will execute all commands in the syntax file
-```{r} 
-source("Czech_Republic_R_syntax_file.R")
+
+### List of countries studied
+```{r}
+list <- list.files("data", full.names=FALSE)
+list
 ```
+setwd("Albania")
+getwd()
+setwd("..")
+# replace 2 by length(list)
+```{r}
+## TODO : have the same colums number in each dataset
+# change the number to load the appropriate dataset
+for (i in 1){
+      file <- paste(list[i], "/", list[i], "_R_syntax_file.R", sep="")
+      dir <- (paste("/Users/Ofix/src/efptPWG/data/", list[i], sep=""))
+      setwd(dir)
+      source(paste(list[i], "_R_syntax_file.R", sep=""))
+      setwd("..")
+}  
+
+# Load each data frame data in a specific data, rbind impossible since the columns size is different 
+dataAlbania <- data
+dataBelgium
+dataBosnia-Herzegovina <- data
+dataBulgaria <- data
+dataCzech_Republic <- data
+dataEstonia <- data
+dataFinland <- data
+dataFrance <- data
+dataGermany <- data
+dataGreece <- data
+dataIsrael <- data
+dataItaly <- data
+dataLatvia <- data
+dataLithuania <- data
+dataMalta <- data
+dataRomania <- data
+dataSlovenia <- data
+dataSpain <- data
+```
+paste("data/", list[1], sep="")
+dim(data)
 
 ## Display them
 ```{r, include =FALSE} 
@@ -98,7 +138,9 @@ barplot(table(data$q_0003), ylim = c(0,15), main="Year of training", xlab="Year"
 ```
 
 ## Are you receiving personal psychotherapy or have you received it in the past?
+
 ```{r}
+# TODO : GGPLOT this : http://docs.ggplot2.org/current/geom_bar.html
 data[, 7] <- as.numeric(data[, 7])
 attributes(data)$variable.labels[7] <- "Are you receiving personal psychotherapy or have you received it in the past?"
 data[, 7] <- factor(data[, 7], levels=c(1,2),labels=c("Yes","No"))
@@ -161,15 +203,21 @@ pie(table(data$q_0008), xlab="Plan to practise Psychotherapy after training")
 > barplot(table(data$q_0009_Ax), xlab="I am not interested in Psychotherapy")
 > table (data$q_0009_other)
 
->barplot(c(sum(q9df[,1]=="Yes"), sum(q9df[,2]=="Yes"), sum(q9df[,3]=="Yes"), >sum(q9df[,4]=="Yes"),
->          sum(q9df[,5]=="Yes"), sum(!is.na(q9df[,6]))),
->        names.arg=c("Dynamic","CBT","Systemic","Group","NOT ANY","Other"),xlab="Interested in this therapy")
+```{r}
+q9df <- data[,16:21]
+barplot(c(sum(q9df[,1]=="Yes"), sum(q9df[,2]=="Yes"), sum(q9df[,3]=="Yes"), sum(q9df[,4]=="Yes"),
+         sum(q9df[,5]=="Yes"), sum(!is.na(q9df[,6]))),
+        names.arg=c("Dynamic","CBT","Systemic","Group","NOT ANY","Other"),xlab="Interested in this therapy")
+```
+
 
 ##"The following experience in Psychotherapy is a mandatory part of my training in Psychiatry:"
 
 ```{r}
 table(data$q_0011_SQ001)
 barplot(table(data$q_0011_SQ001), col="green", xlab="Theoretical lectures or seminars in Psychotherapy")
+abline(v=1.3, lwd=3)
+text(0.6,5, "UEMS <", adj = c(0, -.1))
 ```
 
 > UEMS Charter on Psychiatry states that minimum duration of theoretical psychotherapy training should be 120 hours during 5 years. It also states that as a minimum, psychodynamic, CBT and systemic theory should be taught.
@@ -203,6 +251,8 @@ hist(data$q_0014_SQ001, col="pink",
      xlab="Hours of Psychotherapy supervision per month",
      main = "Individual supervision",
      breaks=6)
+abline(v=1.7, lwd=3)
+text(1.75,5, "> UEMS", adj = c(0, -.1))
 ```
 
 > UEMS Charter on Psychiatry states that minimum duration of psychotherapy supervision should be 100 hours during the whole training of 5 recommended years. It makes 1.7 hours approximatively a month.
@@ -288,7 +338,7 @@ pie(table(data$q_0017),
     xlab="Motivated to train in Psychotherapy for free?")
 ```
 
-UEMS recommendations states that psychotherapy training of trainees should be funded publicly.??? 
+UEMS recommendations states that psychotherapy training of trainees should be funded publicly and free for trainees.
 
 ## Plot: How much would you invest in psychotherapy training ?
 ```{r}

@@ -8,7 +8,7 @@
 
 * Europe map
 
-* Ask help for statistical inference ? MOOC
+* Ask help for statistical inference ? MOOC : https://www.coursera.org/learn/statistical-inference/home/welcome
 
 * NB : change labels in the analysis file not in syntax file
 

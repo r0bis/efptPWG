@@ -1,5 +1,5 @@
 #$Rev: 12179 $ .
-data <- read.csv("Bosnia-Herzegovina_R_data_file.csv", sep=",", quote = "'", na.strings=c("","\"\""), stringsAsFactors=FALSE)
+data <- read.table("Sweden_R_data_file.csv", sep=",", quote = "'", na.strings=c("","\"\""), stringsAsFactors=FALSE)
 
 data[, 1] <- as.numeric(data[, 1])
 attributes(data)$variable.labels[1] <- "id"
@@ -63,7 +63,7 @@ attributes(data)$variable.labels[13] <- "[I have completed full training in a ps
 data[, 13] <- factor(data[, 13], levels=c(1,0),labels=c("Yes","Not selected"))
 names(data)[13] <- "q_0005_S05A4"
 
-data[, 14] <- as.numeric(data[, 14])
+data[, 14] <- as.character(data[, 14])
 attributes(data)$variable.labels[14] <- "[Other] Are you training in psychotherapy?"
 names(data)[14] <- "q_0005_other"
 
@@ -106,7 +106,7 @@ attributes(data)$variable.labels[22] <- "[I am not interested in psychotherapy] 
 data[, 22] <- factor(data[, 22], levels=c(1,0),labels=c("Yes","Not selected"))
 names(data)[22] <- "q_0009_Ax"
 
-data[, 23] <- as.character(data[, 23])
+data[, 23] <- as.numeric(data[, 23])
 attributes(data)$variable.labels[23] <- "[Other] What types of psychotherapy are you interested in?"
 names(data)[23] <- "q_0009_other"
 
