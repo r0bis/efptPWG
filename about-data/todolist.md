@@ -28,6 +28,8 @@ https://www.qwant.com/?q=ggplot&t=images
 q9df <- data[,16:21]
 
 # To use git (after installation)
+* cd to the appropriate repo !!!
+
 * git status
 * git pull origin master
 
