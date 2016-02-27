@@ -81,3 +81,10 @@ Slovenia_data <- Slovenia_data[colnames(Bulgaria_data)]
 
 # to delete everything from the environment to finally check if our code works
 rm(list=ls(all=TRUE))
+
+# bind all existing data frames together. First put all data frames in a list.
+# Then bind them into one data frame
+# I got this from stackexchange
+listof.df <- lapply(ls(), function(x) if (class(get(x)) == "data.frame") get(x))
+data_Europe <- do.call("rbind", listof.df)
+

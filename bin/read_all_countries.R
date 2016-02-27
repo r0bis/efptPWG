@@ -27,12 +27,14 @@ sapply(dat.dirs, readEFPTfiles)
 
 # special case with Czech Republic and Slovenia
 # it was the first survey and it did not have two fields that others had
-# Q_0000 - Country Name
+# Q_0000 - Country Name (we also create same number of levels that others have; from "syntax" files)
 # q_0012_other
-Czech_Republic_data["q_0000"] <- as.factor("Czech Republic")
+Czech_Republic_data["q_0000"] <- 12
+Czech_Republic_data["q_0000"] <- factor(Czech_Republic_data$q_0000, levels=c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50),labels=c("Albania","Andorra","Armenia","Austria","Azerbaijan","Belarus","Belgium","Bosnia and Herzegovina","Bulgaria","Croatia","Cyprus","Czech Republic","Denmark","Estonia","Finland","France ","Georgia","Germany","Greece","Hungary","Iceland","Ireland","Israel","Italy","Kazakhstan","Latvia","Liechtenstein","Lithuania","Luxembourg","Macedonia","Malta","Moldova","Monaco","Montenegro","Netherlands","Norway","Poland","Portugal","Romania","Russia","San Marino","Serbia","Slovakia","Slovenia","Spain","Sweden","Switzerland","Turkey","Ukraine","United Kingdom"))
 Czech_Republic_data["q_0012_other"] <- as.numeric(NA)
 Czech_Republic_data <- Czech_Republic_data[colnames(Bulgaria_data)]
-Slovenia_data["q_0000"] <- as.factor("Slovenia")
+Slovenia_data["q_0000"] <- 44
+Slovenia_data["q_0000"] <- factor(Slovenia_data$q_0000, levels=c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50),labels=c("Albania","Andorra","Armenia","Austria","Azerbaijan","Belarus","Belgium","Bosnia and Herzegovina","Bulgaria","Croatia","Cyprus","Czech Republic","Denmark","Estonia","Finland","France ","Georgia","Germany","Greece","Hungary","Iceland","Ireland","Israel","Italy","Kazakhstan","Latvia","Liechtenstein","Lithuania","Luxembourg","Macedonia","Malta","Moldova","Monaco","Montenegro","Netherlands","Norway","Poland","Portugal","Romania","Russia","San Marino","Serbia","Slovakia","Slovenia","Spain","Sweden","Switzerland","Turkey","Ukraine","United Kingdom"))
 Slovenia_data["q_0012_other"] <- as.numeric(NA)
 Slovenia_data <- Slovenia_data[colnames(Bulgaria_data)]
 
