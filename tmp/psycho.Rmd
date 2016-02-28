@@ -1,7 +1,7 @@
 ---
 title: "Psychotherapy Study"
 author: "Roberts Klotins and Thomas Gargot"
-date: "February, 18th 2016"
+date: "February, 28th 2016"
 output: html_document
 ---
 
@@ -17,6 +17,9 @@ The psychotherapy study run from 2013 to 2015 to understand the actual opportuni
 * Accepted talk : "Should all psychiatrists be skilled to practice psychotherapy ? Thomas GARGOT (France) and Ekin S??nmez (Turkey), [European Psychiatric Association Congress](http://efpt.eu/events/european-psychiatric-association-congress/), March 12th - March 15th 2016 
 * Submission Project : "How psychiatrist trainees are trained in Psychotherapies in Europe ? A European trainee survey", Thomas GARGOT (France), [European Association of Behavioural and Cognitive Therapies conference (EABCT)](http://eabct2016.org/), August 31st - September 3rd 2016
 * Submission Project : How psychiatrist trainees are trained in Psychotherapies in Europe ? A European trainee survey" in Italian, Diego Quattrone (Italy)  [Italian Federation of Psychotherapy Associations (FIAP)](http://www.fiap.info/convegno2016/)
+
+# To do list
+It can be found [here](https://github.com/r0bis/efptPWG/blob/master/about-data/todolist.md)
 
 # Actual recommandations
 ## EFPT Psychotherapy Working Group statement
@@ -35,6 +38,19 @@ See all UEMS reports related to [psychiatry training](http://uemspsychiatry.org/
 # Data storage
 The data is stored on [GitHub](https://github.com/r0bis/efptPWG)
 
+```{r include = FALSE}
+# Import libraries
+# install.packages(c("lattice", "ggplot2", "likert", "rmarkdown""))
+library (lattice)
+library(ggplot2)
+library(knitr)
+library(likert)
+library(plyr)
+library(rmarkdown)
+library(stringr)
+search()
+```
+
 # Example with Czech Republic data
 ## Download the data
 This command tells us which the current directory is:
@@ -44,86 +60,75 @@ getwd()
 
 Here we tell R where we want it to work from:
 ```{r} 
-setwd("/Users/Ofix/src/efptPWG/")
+#setwd("/Users/Ofix/src/efptPWG/")
+setwd("~/src/efptPWG/bin")
 ```
 
 ## Import the data and change the variables names
 R will execute all commands in the syntax file
+```{r}
+readEFPTfiles <- function(f) {
+  if (as.character(f)!="") {
+    oldwd <- getwd()
+    setwd(file.path("..","data",f))
+    source(paste(f,"_R_syntax_file.R",sep = ""),local = T)
+    toGlEnvFrame <- data[str_detect(colnames(data),"^id$|^q_.*")]
+    parentFrame <- paste(f,"_data",sep = "")
+    assign(parentFrame,toGlEnvFrame,envir=.GlobalEnv)
+    setwd(oldwd)
+    }
+  else {print("")}
+}
+
+dat.files  <- list.files(path="..", recursive=F, pattern=".*syntax_file.R$",full.names=F)
+dat.dirs  <- list.dirs(path="../data/", recursive=T,full.names=F)
+
+sapply(dat.dirs, readEFPTfiles)
+
+correctColumns <- colnames(Bulgaria_data)
+incorrectColumns <- colnames(Czech_Republic_data)
+setdiff(correctColumns,incorrectColumns)
+
+Czech_Republic_data["q_0000"] <- as.factor("Czech Republic")
+Czech_Republic_data["q_0012_other"] <- as.numeric(NA)
+Czech_Republic_data <- Czech_Republic_data[colnames(Bulgaria_data)]
+Slovenia_data["q_0000"] <- as.factor("Slovenia")
+Slovenia_data["q_0012_other"] <- as.numeric(NA)
+Slovenia_data <- Slovenia_data[colnames(Bulgaria_data)]
+```
+
 
 ### List of countries studied
 ```{r}
 list <- list.files("data", full.names=FALSE)
 list
 ```
-setwd("Albania")
-getwd()
-setwd("..")
-# replace 2 by length(list)
-```{r}
-## TODO : have the same colums number in each dataset
-# change the number to load the appropriate dataset
-for (i in 1){
-      file <- paste(list[i], "/", list[i], "_R_syntax_file.R", sep="")
-      dir <- (paste("/Users/Ofix/src/efptPWG/data/", list[i], sep=""))
-      setwd(dir)
-      source(paste(list[i], "_R_syntax_file.R", sep=""))
-      setwd("..")
-}  
 
-# Load each data frame data in a specific data, rbind impossible since the columns size is different 
-dataAlbania <- data
-dataBelgium
-dataBosnia-Herzegovina <- data
-dataBulgaria <- data
-dataCzech_Republic <- data
-dataEstonia <- data
-dataFinland <- data
-dataFrance <- data
-dataGermany <- data
-dataGreece <- data
-dataIsrael <- data
-dataItaly <- data
-dataLatvia <- data
-dataLithuania <- data
-dataMalta <- data
-dataRomania <- data
-dataSlovenia <- data
-dataSpain <- data
+### Binding datasets
+```{r}
+listof.df <- lapply(ls(), function(x) if (class(get(x)) == "data.frame") get(x))
+data_Europe <- do.call("rbind", listof.df)
 ```
-paste("data/", list[1], sep="")
-dim(data)
 
 ## Display them
 ```{r, include =FALSE} 
-str(data)
-```
-
-```{r include = FALSE}
-# install.packages(c("lattice", "ggplot2", "likert", "rmarkdown""))
-library (lattice)
-library(ggplot2)
-library(knitr)
-library(likert)
-library(plyr)
-library(rmarkdown)
-search()
+str(Czech_Republic_data)
 ```
 
 ## Gender
 ```{r}
-table(data$q_0001)
+table(Czech_Republic_data$q_0001)
 ```
 
 ```{r}
-pie(table(data$q_0001), main ="Gender of participants")
+pie(table(Czech_Republic_data$q_0001), main ="Gender of participants")
 ```
 
 ## Age
 ```{r}
-summary(data$q_0002)
-```
-```{r}
-hist(data$q_0002, col="orange",
+summary(Czech_Republic_data$q_0002)
+
+hist(Czech_Republic_data$q_0002, col="orange",
      xlab="Age",
      ylab="Number",
      main="Age distribution",
@@ -133,78 +138,71 @@ hist(data$q_0002, col="orange",
 
 ## Year in Training (now the shorter labels fit in the plot)
 ```{r}
-table(data$q_0003)
-barplot(table(data$q_0003), ylim = c(0,15), main="Year of training", xlab="Year", las=1, col="cornflowerblue", border=NA, ylab="Number")
+table(Czech_Republic_data$q_0003)
+barplot(table(Czech_Republic_data$q_0003), ylim = c(0,15), main="Year of training", xlab="Year", las=1, col="cornflowerblue", border=NA, ylab="Number")
 ```
 
 ## Are you receiving personal psychotherapy or have you received it in the past?
 
 ```{r}
 # TODO : GGPLOT this : http://docs.ggplot2.org/current/geom_bar.html
-data[, 7] <- as.numeric(data[, 7])
-attributes(data)$variable.labels[7] <- "Are you receiving personal psychotherapy or have you received it in the past?"
-data[, 7] <- factor(data[, 7], levels=c(1,2),labels=c("Yes","No"))
-names(data)[7] <- "q_0004"
-table(data$q_0004)
-pie(table(data$q_0004), xlab="Receiving personal psychotherapy (present or past)")
+Czech_Republic_data[, 7] <- as.numeric(Czech_Republic_data[, 7])
+attributes(Czech_Republic_data)$variable.labels[7] <- "Are you receiving personal psychotherapy or have you received it in the past?"
+Czech_Republic_data[, 7] <- factor(Czech_Republic_data[, 7], levels=c(1,2),labels=c("Yes","No"))
+names(Czech_Republic_data)[7] <- "q_0004"
+table(Czech_Republic_data$q_0004)
+pie(table(Czech_Republic_data$q_0004), xlab="Receiving personal psychotherapy (present or past)")
 ```
 
 ## I am undertaking training in Psychotherapy within my training programme in Psychiatry
 ```{r}
-table(data$q_0005_S05A1)
-pie(table(data$q_0005_S05A1), xlab="In a Psychotherapy training within my training programme")
+#tab <- table(Czech_Republic_data$q_0005_S05A1)
+#pie(tab)
+#pie(table(Czech_Republic_data$q_0005_S05A1))
+ #   , xlab="In a Psychotherapy training within my training programme")
 ```
 
 ## I am undertaking training in Psychotherapy on my own initiative
 ```{r}
-table(data$q_0005_S05A2)
-pie(table(data$q_0005_S05A2), 
+table(Czech_Republic_data$q_0005_S05A2)
+pie(table(Czech_Republic_data$q_0005_S05A2), 
   xlab="Training in Psychotherapy outside my training programme")
 ```
 
 ## I am not undertaking any training in Psychotherapy
 ```{r}
-table(data$q_0005_S05A3)
-pie(table(data$q_0005_S05A3), 
+table(Czech_Republic_data$q_0005_S05A3)
+pie(table(Czech_Republic_data$q_0005_S05A3), 
   xlab="I am not undertaking any training in Psychotherapy")
 ```
 > Psychotherapy training taking place within working hours is recommended by UEMS as a mandatory component of curriculum.
 
 ## I have completed full training in a Psychotherapy specialty in the past
 ```{r}
-table(data$q_0005_S05A4)
-pie(table(data$q_0005_S05A4), xlab="Completed a full training in a Psychotherapy (past)")
+table(Czech_Republic_data$q_0005_S05A4)
+pie(table(Czech_Republic_data$q_0005_S05A4), xlab="Completed a full training in a Psychotherapy (past)")
 ```
 
 ## I am training in some modality
 ```{r}
-table(is.na(data$q_0006))
-pie(table(is.na(data$q_0006)),xlab="I am training in some modality of psychotherapy")
+table(is.na(Czech_Republic_data$q_0006))
+pie(table(is.na(Czech_Republic_data$q_0006)),xlab="I am training in some modality of psychotherapy")
 ```
 
 ## Is psychotherapy important for your identity as a psychiatrist ?
 ```{r}
-table(data$q_0007)
-pie(table(data$q_0007), xlab="Psychotherapy important for the professional identity")
+table(Czech_Republic_data$q_0007)
+pie(table(Czech_Republic_data$q_0007), xlab="Psychotherapy important for the professional identity")
 ```
 
 ## Do you want to practise Psychotherapy ?
 ```{r}
-table(data$q_0008)
-pie(table(data$q_0008), xlab="Plan to practise Psychotherapy after training")
+table(Czech_Republic_data$q_0008)
+pie(table(Czech_Republic_data$q_0008), xlab="Plan to practise Psychotherapy after training")
 ```
 
-> Types of therapy I am interested in
-> this might do for now, so canning (sommenting out) the rest for now for q_0009
-> barplot(table(data$q_0009_SQ1), xlab="Interested in Psychoanalytic Psychotherapy")
-> barplot(table(data$q_0009_SQ2), xlab="Interested in Cognitive Behavioural Psychotherapy")
-> barplot(table(data$q_0009_SQ3), xlab="Interested in Family / Systemic Therapy Psychotherapy")
-> barplot(table(data$q_0009_SQ4), xlab="Interested in Group modalities of therapies")
-> barplot(table(data$q_0009_Ax), xlab="I am not interested in Psychotherapy")
-> table (data$q_0009_other)
-
 ```{r}
-q9df <- data[,16:21]
+q9df <- Czech_Republic_data[,16:21]
 barplot(c(sum(q9df[,1]=="Yes"), sum(q9df[,2]=="Yes"), sum(q9df[,3]=="Yes"), sum(q9df[,4]=="Yes"),
          sum(q9df[,5]=="Yes"), sum(!is.na(q9df[,6]))),
         names.arg=c("Dynamic","CBT","Systemic","Group","NOT ANY","Other"),xlab="Interested in this therapy")
@@ -214,8 +212,8 @@ barplot(c(sum(q9df[,1]=="Yes"), sum(q9df[,2]=="Yes"), sum(q9df[,3]=="Yes"), sum(
 ##"The following experience in Psychotherapy is a mandatory part of my training in Psychiatry:"
 
 ```{r}
-table(data$q_0011_SQ001)
-barplot(table(data$q_0011_SQ001), col="green", xlab="Theoretical lectures or seminars in Psychotherapy")
+table(Czech_Republic_data$q_0011_SQ001)
+barplot(table(Czech_Republic_data$q_0011_SQ001), col="green", xlab="Theoretical lectures or seminars in Psychotherapy")
 abline(v=1.3, lwd=3)
 text(0.6,5, "UEMS <", adj = c(0, -.1))
 ```
@@ -223,31 +221,31 @@ text(0.6,5, "UEMS <", adj = c(0, -.1))
 > UEMS Charter on Psychiatry states that minimum duration of theoretical psychotherapy training should be 120 hours during 5 years. It also states that as a minimum, psychodynamic, CBT and systemic theory should be taught.
 
 ```{r}
-table(data$q_0011_SQ001)
-barplot(table(data$q_0011_SQ001), col="blue", xlab="Conducting Psychotherapy without supervision")
+table(Czech_Republic_data$q_0011_SQ001)
+barplot(table(Czech_Republic_data$q_0011_SQ001), col="blue", xlab="Conducting Psychotherapy without supervision")
 ```
 
 ```{r}
-table(data$q_0011_SQ003)
-barplot(table(data$q_0011_SQ003), col="yellow", xlab="Conducting Psychotherapy under supervision")
+table(Czech_Republic_data$q_0011_SQ003)
+barplot(table(Czech_Republic_data$q_0011_SQ003), col="yellow", xlab="Conducting Psychotherapy under supervision")
 ```
 
 ```{r}
-table(data$q_0011_SQ004)
-barplot(table(data$q_0011_SQ004), col="orange", xlab="Personal Psychotherapy")
+table(Czech_Republic_data$q_0011_SQ004)
+barplot(table(Czech_Republic_data$q_0011_SQ004), col="orange", xlab="Personal Psychotherapy")
 ```
 
 ```{r}
-table(data$q_0012)
-barplot(table(data$q_0012), col="green", xlab="Are you qualified to practice Psychotherapy after your training ?")
+table(Czech_Republic_data$q_0012)
+barplot(table(Czech_Republic_data$q_0012), col="green", xlab="Are you qualified to practice Psychotherapy after your training ?")
 ```
 
 ## What types of psychotherapy modalities are available for treatment of patients at your institution?
-> table(data$q_0013)
+> table(Czech_Republic_data$q_0013)
 
 ## Plot: How many hours of supervisions
 ```{r}
-hist(data$q_0014_SQ001, col="pink",
+hist(Czech_Republic_data$q_0014_SQ001, col="pink",
      xlab="Hours of Psychotherapy supervision per month",
      main = "Individual supervision",
      breaks=6)
@@ -257,7 +255,7 @@ text(1.75,5, "> UEMS", adj = c(0, -.1))
 
 > UEMS Charter on Psychiatry states that minimum duration of psychotherapy supervision should be 100 hours during the whole training of 5 recommended years. It makes 1.7 hours approximatively a month.
 
-temp <- c("data$q_0014_SQ002","data$q_0014_SQ003","data$q_0014_SQ004")
+temp <- c("Czech_Republic_data$q_0014_SQ002","Czech_Republic_data$q_0014_SQ003","Czech_Republic_data$q_0014_SQ004")
  ???        ??????
 par(mfrow=c(1,3))
       ???                        ???       ???             ???
@@ -267,74 +265,74 @@ col="white")
 
 
 ```{r}
-hist(data$q_0014_SQ002, col="red",
+hist(Czech_Republic_data$q_0014_SQ002, col="red",
      main="Small group supervision (3 - 5 people)",
      xlab="Hours of Psychotherapy supervision per month")
 ```
 
 ```{r}
-hist(data$q_0014_SQ003,
+hist(Czech_Republic_data$q_0014_SQ003,
      main="Large group supervision (more than 5 people)",
      xlab="Hours of Psychotherapy supervision per month",
      col= "orange")
 ```
 
 ```{r}
-hist(data$q_0014_SQ004, col="green",
+hist(Czech_Republic_data$q_0014_SQ004, col="green",
      xlab= "Hours of Psychotherapy supervision per month",
      main ="Generic Balint group",
      breaks=10)
 ```
 
 ```{r}
-hist(data$q_0014_SQ005, col="navy",
+hist(Czech_Republic_data$q_0014_SQ005, col="navy",
      xlab= "Hours of Psychotherapy supervision per month",
      main ="Other form of supervision")
 ```
 
-table(data$q_0015)
+table(Czech_Republic_data$q_0015)
 
 ## Plot: Who pays?
 This again should ba a plot group on one page
 ```{r}
-barplot(table(data$q_0016_SQ001), col="light blue",
+barplot(table(Czech_Republic_data$q_0016_SQ001), col="light blue",
         main="Theorectical lectures / seminars",
         xlab="Who pays for this component of Psychotherapy experience?")
 ```
 
 ```{r}
-barplot(table(data$q_0016_SQ002), col="light blue",
+barplot(table(Czech_Republic_data$q_0016_SQ002), col="light blue",
         xlab="Who pays for this component of Psychotherapy experience?",
         main="Supervision - individual")
 ```
 
 ```{r}
-barplot(table(data$q_0016_SQ003), col="light blue",
+barplot(table(Czech_Republic_data$q_0016_SQ003), col="light blue",
         main="Supervision - group",
         xlab="Who pays ?")
 ```
 
 ```{r}
-barplot(table(data$q_0016_SQ004), col="light blue",
+barplot(table(Czech_Republic_data$q_0016_SQ004), col="light blue",
         main="Balint groups ",
         xlab="Who pays ?")
 ```
 
 ```{r}
-barplot(table(data$q_0016_SQ004), col="light blue",
+barplot(table(Czech_Republic_data$q_0016_SQ004), col="light blue",
         main="Sessions with patient(s)",
         xlab="Who pays ?")
 ```
 
 ```{r}
-barplot(table(data$q_0016_SQ004), col="light blue",
+barplot(table(Czech_Republic_data$q_0016_SQ004), col="light blue",
         main="Self-experience",
         xlab="Who pays")
 ```
 
 ## Plot: Would you train for Free ?
 ```{r}
-pie(table(data$q_0017),
+pie(table(Czech_Republic_data$q_0017),
     xlab="Motivated to train in Psychotherapy for free?")
 ```
 
@@ -342,7 +340,7 @@ UEMS recommendations states that psychotherapy training of trainees should be fu
 
 ## Plot: How much would you invest in psychotherapy training ?
 ```{r}
-hist(data$q_0018, col="light green",
+hist(Czech_Republic_data$q_0018, col="light green",
      main="% of annual salary for psychiatry training",
      xlab="Percentage of your annual salary do you intend to spend \n on funding your psychotherapy training In the next 12 months?",
      breaks=c(seq(0,100,2)))
@@ -352,8 +350,8 @@ hist(data$q_0018, col="light green",
 perhaps we should use likert package to plot likert type items
 
 ```{r}
-# make auxiliary table to hold our likert data
-sat1<-data[,43:45]
+# make auxiliary table to hold our likert Czech_Republic_data
+sat1<-Czech_Republic_data[,43:45]
 # put in correct row names
 sat1 <- rename(sat1,c("q_0019_SQ001"="I am satisfied with psychotherapy component in my training programme",
   "q_0019_SQ002"="I am satisfied with psychotherapy training options in my country",
@@ -362,10 +360,10 @@ sat1 <- rename(sat1,c("q_0019_SQ001"="I am satisfied with psychotherapy componen
 sat12<-likert(sat1)
 plot(sat12)
 # comment out barplots for now
-# barplot(table(data$q_0019_SQ001), main ="I am satisfied with Psychotherapy component in my training programme")
+# barplot(table(Czech_Republic_data$q_0019_SQ001), main ="I am satisfied with Psychotherapy component in my training programme")
 
 # well, let's deal with UEMS bits as with likert scales
-uems1 <- data[,46:54]
+uems1 <- Czech_Republic_data[,46:54]
 uems1[,1] <- factor(uems1[,1],c("No","Uncertain","Yes"))
 uems1[,2] <- factor(uems1[,2],c("No","Uncertain","Yes"))
 uems1[,3] <- factor(uems1[,3],c("No","Uncertain","Yes"))
@@ -397,7 +395,7 @@ plot(uems12) +
 ## Plot: UEMS recommendations awareness
 ```{r}
 # and same with the
-uems2 <- data[,55:63]
+uems2 <- Czech_Republic_data[,55:63]
 uems2[,1] <- factor(uems2[,1],c("No","Uncertain","Yes"))
 uems2[,2] <- factor(uems2[,2],c("No","Uncertain","Yes"))
 uems2[,3] <- factor(uems2[,3],c("No","Uncertain","Yes"))
