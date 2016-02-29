@@ -88,3 +88,33 @@ rm(list=ls(all=TRUE))
 listof.df <- lapply(ls(), function(x) if (class(get(x)) == "data.frame") get(x))
 data_Europe <- do.call("rbind", listof.df)
 
+
+# PIE charts in ggplot
+# http://mathematicalcoffee.blogspot.co.uk/2014/06/ggpie-pie-graphs-in-ggplot2.html
+library(ggplot2)
+install.packages("RColorBrewer")
+library(RColorBrewer)
+# ggpie: draws a pie chart.
+# give it:
+# * `dat`: your dataframe
+# * `by` {character}: the name of the fill column (factor)
+# * `totals` {character}: the name of the column that tracks
+#    the time spent per level of `by` (percentages work too).
+# returns: a plot object.
+ggpie <- function (dat, by, totals, plotTitle) {
+  ggplot(dat, aes_string(x=factor(1), y=totals, fill=by)) +
+    geom_bar(stat='identity', color='black', width=1) +
+    guides(fill=guide_legend(override.aes=list(colour=NA))) + # removes black borders from legend
+    coord_polar(theta='y') +
+    ggtitle(plotTitle) +
+    theme(axis.ticks=element_blank(),
+          axis.text.y=element_blank(),
+          axis.text.x=element_text(colour='black'),
+          axis.title=element_blank()) +
+    scale_y_continuous(breaks=cumsum(dat[[totals]]) - dat[[totals]] / 2, labels=dat[[by]])    
+}
+
+# use the function such as:
+gp <- ggpie(df,'Sex','Number',"Distribution by Sex")
+gp +  scale_fill_brewer(palette="YlGn")
+gp
