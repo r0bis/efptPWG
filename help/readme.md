@@ -4,7 +4,7 @@ Well, mostly here. In fact they are also in tmp/ directory. For example when exp
 
 ## What is the *.ncd file
 
-Some years ago I bought a licence for structured/hierarchical notes program Notecase Pro by Miloslav Rajcic (http://notecasepro.com). I find it quite useful sometimes. It also allows to create strongly encrypted notes (e.g. for patients) and it is portable and it works on all the platforms - Mac and Windows too. It can be used as freeware; the limitations are not particularly strict. 
+Some years ago I bought a licence for structured/hierarchical notes program Notecase Pro by Miloslav Rajcic (http://notecasepro.com). I find it quite useful sometimes. It also allows to create strongly encrypted notes (e.g. for patients) and it is portable and it works on all the platforms - Mac and Windows too. It can be used as freeware; the limitations are not particularly strict. You can read a Mac user's experience with this [here at friendlyskies](http://www.friendlyskies.net/notebook/notecase-pro-review-cross-platform-hierarchical-note-taking) 
 
 ## What goes into the *.Rmd report
 
