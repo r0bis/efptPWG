@@ -113,21 +113,29 @@ str(data_Europe)
 summary(data_Europe)
 ```
 
-## Gender
+#Number of participants
 ```{r}
-table(data_Europe$q_0001)
+table(data_Europe[which(complete.cases(data_Europe$q_0000)==TRUE),]$q_0000)
+
+par(mar=c(6,3,2,3))
+barplot((sort(table(data_Europe$q_0000), decreasing = TRUE))[0:23], cex.names=0.5, las=2, main="Number of answers by country", col=rainbow(23))
 ```
 
+## Gender and age
 ```{r}
-pie(table(data_Europe$q_0001), main ="Gender of participants")
+table(data_Europe$q_0001)
 ```
 
 ## Age
 ```{r}
 #error max = 1969 !!!
+
 summary(data_Europe$q_0002)
 hist(data_Europe$q_0002, col="orange",
      xlab="Age", ylab="Number", main="Age distribution", border=NA)
+
+pie(table(data_Europe$q_0001), main ="Gender of participants")
+
 ```
 
 ## Year in Training (now the shorter labels fit in the plot)
