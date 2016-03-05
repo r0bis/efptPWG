@@ -29,12 +29,11 @@ search()
 # setwd("~/src/efptPWG/data/Czech_Republic")
 # opts_knit$set(root.dir="~/src/efptPWG/data/Czech_Republic/")
 
-
 ## Import the data and change the variables names
 ```{r} 
 #getwd()
 # R will execute all commands in the syntax file
-source("Czech_Republic_R_syntax_file.R")
+source("../Czech_Republic/Czech_Republic_R_syntax_file.R")
 ```
 
 ## Display them
