@@ -1,0 +1,72 @@
+---
+title: "Demographics plots"
+author: "RK"
+date: "6th March 2016"
+output: pdf_document
+css: simple.css
+---
+
+```{r setupRK, echo=FALSE, message=FALSE}
+# set variables that in main analysis may be auto-generated
+country <- "Czech Republic"
+# prepare for plots - get libraries and paths right
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(knitr)
+library(RColorBrewer)
+library(gridExtra)
+# paths - get data and change back
+curDir <- getwd()
+setwd("~/src/efptPWG/data/Belgium")
+source("./Belgium_R_syntax_file.R")
+setwd <- curDir
+```
+```{r ggFunctions, echo = FALSE}
+# functions
+# PIE charts in ggplot
+ggpie <- function (dat, by, totals, plotTitle) {
+  ggplot(dat, aes_string(x=factor(1), y=totals, fill=by)) +
+    geom_bar(stat='identity', color='black', width=1) +
+    guides(fill=guide_legend(override.aes=list(colour=NA))) + 
+    coord_polar(theta='y') +
+    ggtitle(plotTitle) +
+    theme(axis.ticks=element_blank(),
+          axis.text.y=element_blank(),
+          axis.text.x=element_text(colour='black'),
+          axis.title=element_blank()) +
+    scale_y_continuous(breaks=cumsum(dat[[totals]]) - dat[[totals]] / 2, labels=dat[[by]])
+}
+
+# print('This WAS chunk 2')
+```
+
+### Demographics of our study population in `r country`
+
+We had `r nrow(data)` of responses from `r country`
+
+
+```{r demographics, results='markup', echo=FALSE ,warning= FALSE, message=FALSE}
+
+# small intermediate data frame to pass to ggpie function
+
+df.sex <- as.data.frame(table(data$q_0001))
+colnames(df.sex) <- c("Sex","Number")
+ggp.sex <- ggpie(df.sex,'Sex','Number',"Population by Gender")
+#ggp.sex
+ggp.sex <- ggp.sex +  scale_fill_brewer(palette="YlGn")
+# print('I am in chunk 3')
+# print(df.sex)
+kable(df.sex,'markdown')
+# first plot object has been set up
+
+# plot histogram of age distribution with binwidth 1
+gb.age <- ggplot(data, aes(q_0002, fill=..count..)) +geom_histogram(color="white")
+gb.age <- gb.age +ggtitle("Age distribution")  +
+  scale_fill_continuous(trans = 'reverse', guide = guide_legend(title = "Nr."))
+# gb.age histogram ready
+
+# print plots side by side
+grid.arrange(ggp.sex,gb.age,nrow=1)
+```
+
+This is the inital section and now we need to see if it looks good in PDF
