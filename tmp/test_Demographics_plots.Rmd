@@ -1,13 +1,16 @@
 ---
 title: "Demographics plots"
-author: "RK"
+author: "Roberts Klotins and Thomas Gargot"
 date: "6th March 2016"
-output: pdf_document
+output: html_document
 css: simple.css
 ---
 
-```{r setupRK, echo=FALSE, message=FALSE}
+This piece of markdown explores how to do markdown reports using `ggplot` graphs, displaying textual data in tables using `kable`, and naming rmarkdown chunks so that they can be referred to from other chunks.
+
+```{r setup, echo=FALSE, message=FALSE}
 # set variables that in main analysis may be auto-generated
+# i.e. on every iteration replaced from list
 country <- "Czech Republic"
 # prepare for plots - get libraries and paths right
 knitr::opts_chunk$set(echo = TRUE)
@@ -20,7 +23,10 @@ curDir <- getwd()
 setwd("~/src/efptPWG/data/Belgium")
 source("./Belgium_R_syntax_file.R")
 setwd <- curDir
+# print("This was chunk 1")
 ```
+
+
 ```{r ggFunctions, echo = FALSE}
 # functions
 # PIE charts in ggplot
@@ -54,19 +60,22 @@ colnames(df.sex) <- c("Sex","Number")
 ggp.sex <- ggpie(df.sex,'Sex','Number',"Population by Gender")
 #ggp.sex
 ggp.sex <- ggp.sex +  scale_fill_brewer(palette="YlGn")
-# print('I am in chunk 3')
-# print(df.sex)
-kable(df.sex,'markdown')
 # first plot object has been set up
+# print('I am in chunk 3')
+
+kable(df.sex,'markdown')
+# table width 40% is set via css referred to in YAML header
+
 
 # plot histogram of age distribution with binwidth 1
 gb.age <- ggplot(data, aes(q_0002, fill=..count..)) +geom_histogram(color="white")
 gb.age <- gb.age +ggtitle("Age distribution")  +
-  scale_fill_continuous(trans = 'reverse', guide = guide_legend(title = "Nr."))
+  scale_fill_continuous(trans = 'reverse', guide = guide_legend(title = "Nr.")) +
+  xlab("Age distribution") + ylab("Count of respondents")
 # gb.age histogram ready
 
 # print plots side by side
 grid.arrange(ggp.sex,gb.age,nrow=1)
 ```
 
-This is the inital section and now we need to see if it looks good in PDF
+This is the first go at ggplot graphics and we can see it work in HTML and PDF. 
