@@ -65,3 +65,4 @@ gb3 <- ggplot(data)
 gb1 <- gb1 +ggtitle("Age distribution")
  # put them in one 
 grid.arrange(gp,gb1,nrow=1)
+
