@@ -9,7 +9,7 @@ output:
 
 # EFPT
 ![http://efpt.eu/wp-content/uploads/2015/11/cropped-banner_efpt.jpg](http://efpt.eu/wp-content/uploads/2015/11/cropped-banner_efpt.jpg)
-The European Federation of psychiatric trainees (EFPT) is an independent federation of psychiatric trainees associations. It represents the consensus of psychiatric trainee’s organizations across European countries and advocates for what training should look like, regardless of the country. 
+The European Federation of psychiatric trainees (EFPT) is an independent federation of psychiatric trainees associations. It represents the consensus of psychiatric trainee???s organizations across European countries and advocates for what training should look like, regardless of the country. 
 
 # Presentation
 The psychotherapy study run from 2013 to 2015 to understand the actual opportunities and wishes for training in psychotherapy in Europe among psychiatrist trainees in 19 countries.
@@ -137,10 +137,7 @@ abline(v=mean(answering_countries), lty=2)
 ```{r, echo=FALSE}
 par(mfrow=c(1,1), mar=c(3,3,2,2))
 gender <-table(data_Europe$q_0001)
-subset(table(data_Europe$q_0001))
-data_Europe[which()]$q_0000
 pie(gender, main="Gender of participants in Europe reponses")
-gender
 ```
 
 ##Age
@@ -177,10 +174,8 @@ pie(table(data_Europe$q_0004), main = "Receiving personal psychotherapy (present
 ## I am undertaking training in Psychotherapy within my training programme in Psychiatry
 ```{r, echo=FALSE}
 #tab <- table(data_Europe$q_0005_S05A1)
-#tab
-#data_Europe$q_0005_S05A1
-#tab
-#pie(tab, main="In a Psychotherapy training within my training programme")
+#length(tab)
+#pie(table(data_Europe$q_0005_S05A1), main="In a Psychotherapy training within my training programme")
 ```
 
 ## I am undertaking training in Psychotherapy on my own initiative
