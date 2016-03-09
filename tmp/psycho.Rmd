@@ -54,6 +54,9 @@ library(rmarkdown)
 library(stringr)
 library(maps)
 library(sm)
+library(Hmisc)
+library(choroplethr)
+library(choroplethrMaps)
 search()
 ```
 
@@ -127,7 +130,36 @@ text(50,6, paste("Total of answers :", sum(answering_countries),
     Slovenia, Czech Republic"))
 abline(v=mean(answering_countries), lty=2)
 ## Make a map : https://github.com/ramnathv/rMaps/blob/master/README.md
+
+data(df_pop_state)
+state_choropleth(df_pop_state)
 ```
+
+```{r}
+names <- names(answering_countries)
+namesLower <- upFirst(names, alllower=TRUE)
+
+#Replace the upper cases by lower cases
+DF <- data.frame(namesLower, answering_countries, stringsAsFactors=FALSE)
+names(DF) <- c("region", "value")
+names(DF)
+DF
+str(DF)
+# change serbia by republic of serbia
+DF[which(DF$region=="serbia"),1] <- "republic of serbia"
+DF
+# deleting malta which is not in your regions
+DF <-DF[-which(DF$region=="malta"),]
+
+## Problem with France data
+## Discussion here 
+
+country_choropleth(DF,
+                 title      = "Participants of the study",
+                 legend     = "Number",
+                 zoom       = c("belarus", "croatia", "france", "republic of serbia","united kingdom", "switzerland", "albania", "estonia", "lithuania", "bosnia and herzegovina", "latvia", "bulgaria", "finland", "germany", "spain", "belgium", "israel", "greece", "italy", "czech republic", "slovenia", "france", "romania", "portugal", "ireland", "poland", "ukraine", "austria"))
+```
+
 
 ## Gender
 ```{r, echo=FALSE, fig.height=4}
@@ -260,7 +292,7 @@ legend("topright", inset=c(-0.19,0), legend = c("Yes", "No", "Uncertain"), fill=
 
 ```{r, echo=FALSE}
 #table(data_Europe$q_0012)
-barplot(table(data_Europe$q_0012), col="green", main="Are you qualified to practice Psychotherapy after your training ?")
+barplot(table(data_Europe$q_0012), col=terrain.colors(3) , main="Are you qualified to practice Psychotherapy after your training ?")
 ```
 
 ## What types of psychotherapy modalities are available for treatment of patients at your institution?
@@ -330,15 +362,10 @@ hist(data_Europe$q_0014_SQ005, col="navy",
 table(data_Europe$q_0015)
 
 ##Who pays?
-
-```{r, echo=FALSE, eval=FALSE}
-barplot(pay, col="light blue", main="Theorectical lectures / seminars", names=c("I pay", "State", "I don't have", "Free"), xlab="Who pays for this component of Psychotherapy experience?")
-```
-
 ```{r, echo=FALSE, eval=FALSE}
 barplot(table(data_Europe$q_0016_SQ002), col="light blue",
         xlab="Who pays for this component of Psychotherapy experience?",
-        names=c("I pay", "State", "I don't have", "Free"),
+        names=c("I pay", "State pays", "I don't have", "Free"),
         main="Supervision - individual")
 ```
 
@@ -380,7 +407,7 @@ paySP <- table(data_Europe$q_0016_SQ005)
 paySE <- table(data_Europe$q_0016_SQ006)
 pay <- cbind(prop.table(payTL), prop.table(paySI), prop.table(paySG), prop.table(payBG), prop.table(paySP), prop.table(paySE))
 barplot(pay, col=terrain.colors(4),
-        main="Who pays",
+        main="Who pays?",
         names=c("Theorectical 
 lectures", "Supervision 
 indiv.", "Supervision 
@@ -388,7 +415,7 @@ group", "Balint
 groups ", "Sessions
 with patient(s)", "Self
 experience"), cex.name=0.7)
-legend("topright", inset=c(-0.18,0), legend = c("I pay", "State", "I don't have", "Free"), fill=(terrain.colors(4)), cex=0.6)
+legend("topright", inset=c(-0.18,0), legend = c("I pay", "The state pays", "I don't have", "Free"), fill=(terrain.colors(4)), cex=0.6)
 ```
 
 ## Would you train for free?
@@ -512,7 +539,7 @@ hist(Czech_Republic_data$q_0002, col="orange",
      breaks=c(seq(20,60,2)))
 ```
 
-## Year in Training (now the shorter labels fit in the plot)
+## Year of Training (now the shorter labels fit in the plot)
 ```{r}
 table(Czech_Republic_data$q_0003)
 barplot(table(Czech_Republic_data$q_0003), ylim = c(0,15), main="Year of training", xlab="Year", las=1, col="cornflowerblue", border=NA, ylab="Number")
