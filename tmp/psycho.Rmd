@@ -1,7 +1,7 @@
 ---
 title: "Psychotherapy Study"
 author: "Roberts Klotins and Thomas Gargot"
-date: "March, 8th 2016"
+date: "March, 11th 2016"
 output: 
   pdf_document: 
     toc: yes
@@ -10,6 +10,8 @@ output:
 # EFPT
 ![http://efpt.eu/wp-content/uploads/2015/11/cropped-banner_efpt.jpg](http://efpt.eu/wp-content/uploads/2015/11/cropped-banner_efpt.jpg)
 The European Federation of psychiatric trainees (EFPT) is an independent federation of psychiatric trainees associations. It represents the consensus of psychiatric trainees organizations across European countries and advocates for what training should look like, regardless of the country. 
+
+[EFPT website](http://efpt.eu/) 
 
 # Presentation
 The psychotherapy study run from 2013 to 2015 to understand the actual opportunities and wishes for training in psychotherapy in Europe among psychiatrist trainees in 19 countries.
@@ -106,7 +108,6 @@ print(list)
 ### Binding datasets
 listof.df <- lapply(ls(), function(x) if (class(get(x)) == "data.frame") get(x))
 data_Europe <- do.call("rbind", listof.df)
-
 ```
 
 # European results
@@ -120,6 +121,7 @@ summary(data_Europe)
 ```{r, echo = FALSE}
 # table(data_Europe[which(complete.cases(data_Europe$q_0000)==TRUE),]$q_0000)
 countryanswers <- sort(table(data_Europe$q_0000), decreasing = FALSE)
+
 answering_countries <- countryanswers[which (countryanswers > 0)]
 par(mar=c(4,6,2,3))
 barplot(answering_countries, cex.names=0.5, las=1, main="Number of answers by country", col="cornflowerblue", horiz=TRUE, border=NA)
@@ -130,36 +132,30 @@ text(50,6, paste("Total of answers :", sum(answering_countries),
     Slovenia, Czech Republic"))
 abline(v=mean(answering_countries), lty=2)
 ## Make a map : https://github.com/ramnathv/rMaps/blob/master/README.md
-
-data(df_pop_state)
-state_choropleth(df_pop_state)
 ```
 
-```{r}
-names <- names(answering_countries)
+```{r, echo=FALSE, warning=FALSE}
+names <- names(countryanswers)
 namesLower <- upFirst(names, alllower=TRUE)
 
 #Replace the upper cases by lower cases
-DF <- data.frame(namesLower, answering_countries, stringsAsFactors=FALSE)
+DF <- data.frame(namesLower, countryanswers, stringsAsFactors=FALSE)
 names(DF) <- c("region", "value")
-names(DF)
-DF
-str(DF)
+
 # change serbia by republic of serbia
 DF[which(DF$region=="serbia"),1] <- "republic of serbia"
-DF
+
 # deleting malta which is not in your regions
-DF <-DF[-which(DF$region=="malta"),]
+DF <-DF[-which(DF$region=="malta" | DF$region=="andorra" | DF$region=="liechtenstein" | DF$region=="monaco" | DF$region=="san marino"),]
 
 ## Problem with France data
-## Discussion here 
+DF <- DF[-26,]
+## Discussion here
 
 country_choropleth(DF,
-                 title      = "Participants of the study",
-                 legend     = "Number",
-                 zoom       = c("belarus", "croatia", "france", "republic of serbia","united kingdom", "switzerland", "albania", "estonia", "lithuania", "bosnia and herzegovina", "latvia", "bulgaria", "finland", "germany", "spain", "belgium", "israel", "greece", "italy", "czech republic", "slovenia", "france", "romania", "portugal", "ireland", "poland", "ukraine", "austria"))
+                 legend = "Number",
+                 zoom = c("albania", "armenia", "austria", "azerbaijan", "belgium", "bosnia and herzegovina", "belarus", "bulgaria", "croatia",   "cyprus"  , "czech republic", "denmark", "greece", "estonia", "finland", "france",  "georgia", "germany", "hungary", "iceland", "kazakhstan", "luxembourg", "netherlands", "norway", "ireland", "israel", "italy", "ireland", "latvia", "lithuania", "macedonia", "moldova", "montenegro", "poland", "portugal", "romania", "russia", "slovakia", "slovenia", "spain", "sweden", "switzerland", "united kingdom", "republic of serbia", "turkey", "ukraine")) + xlim(-20,30) + ylim(30,75) + ggtitle("Participants of the study") + theme(plot.title = element_text(lineheight=15, face="bold"))
 ```
-
 
 ## Gender
 ```{r, echo=FALSE, fig.height=4}
@@ -199,8 +195,9 @@ par(mar=c(3,3,2,2))
 pie(table(data_Europe$q_0004), main = "Receiving personal psychotherapy (present or past)")
 ```
 
-## I am undertaking training in Psychotherapy within my training programme in Psychiatry
 ```{r, echo=FALSE}
+## I am undertaking training in Psychotherapy within my training programme in Psychiatry
+## NO DATA ????
 #tab <- table(data_Europe$q_0005_S05A1)
 #length(tab)
 #pie(table(data_Europe$q_0005_S05A1), main="In a Psychotherapy training within my training programme")
@@ -249,7 +246,7 @@ pie(table(data_Europe$q_0008), main="Plan to practise Psychotherapy after traini
 q9df <- data_Europe[,16:21]
 barplot(c(sum(q9df[,1]=="Yes"), sum(q9df[,2]=="Yes"), sum(q9df[,3]=="Yes"), sum(q9df[,4]=="Yes"),
          sum(q9df[,5]=="Yes"), sum(!is.na(q9df[,6]))),
-        names.arg=c("Dynamic","CBT","Systemic","Group","Not Any","Other"),main="Interested in this therapy", las=1, col="cornflowerblue", border=NA)
+        names.arg=c("Dynamic","CBT","Systemic","Group","Not Any","Other"),main="Interested in this therapy", las=1, col=rainbow(6))
 ```
 
 ##"The following experience in Psychotherapy is a mandatory part of my training in Psychiatry:"
@@ -511,6 +508,7 @@ plot(uems22) +
   ggtitle("Actual implementation in the country") +
   theme(plot.title = element_text(lineheight=.8, face="bold"))
 ```
+
 
 # Czech_Republic
 ## Display them
