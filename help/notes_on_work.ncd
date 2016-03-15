@@ -11,10 +11,12 @@
 <!--property:prop_modified=0-->
 <!--property:note_deleted=LXSg8pfnAvrLyMKtrnxB0Q-->
 <!--property:note_deleted=RdjhI8ygEmkbHf6KdKZ33g-->
+<!--property:note_deleted=S9ZnyHqRN4HCmJ7RxIC5XQ-->
 <!--property:note_deleted=TenmKx235DdYqaHv9Nn20Q-->
 <!--property:note_deleted=UbzDkXQdszqvh8glhKZuOg-->
 <!--property:note_deleted=mR3cPCIMMtMtgaOEAAZnbQ-->
 <!--property:note_deleted=r60odYFHie2wkXd1pDGTyQ-->
+<!--property:note_deleted=yts3BgcSVf6m1yXPCkkNFA-->
 <DL>
 <DT><A name="pkmePvxzUGziMPNMh8mvXw"></A>Git</DT>
 <!--property:date_created=1456502867-->
@@ -823,6 +825,522 @@ The `ggvis` plot gives us a nice visualization of the `mtcars` data set:<BR>
 <BR>
 ```
 </DD>
+<DT><A name="3Ucvy9FRiBCLxHmrQqoXtQ"></A>GGPLOT</DT>
+<!--property:syntax_highlight=r-->
+<!--property:date_created=1457290792-->
+<!--property:date_modified=1457340907-->
+<!--property:expanded-->
+<!--property:hash=feac7037ce97a55fd880d1212c91da82d91ac6dc-->
+<!--property:hash_html=0b2978fb826b20cd13afadbf4482cde7d2f99b2e-->
+<DD>
+<span style="font: Roboto Mono Thin 10">ggplot(mtcars, aes(x = factor(cyl), y = mpg)) +<BR>
+  geom_point()</span><BR>
+<BR>
+aes sets how data is mapped. Reference only by column names, because dataframe is already given.<BR>
+ggplot2<span style="color:#fefefe"><span style="font: karmina-sans"> </span></span>treats cyl<span style="color:#fefefe"><span style="font: karmina-sans"> </span></span>as a factor. This time the x-axis does not contain variables like 5 or 7, only the values that are present in the dataset.<BR>
+<BR>
+Grammar of graphics elements:<BR>
+	- Data<BR>
+	- aes() :: 'aes function describes relationship, does not supply data'<BR>
+	- geom() :: 'the basic &quot;shape&quot; ', point, line, polygon, bar, text, <BR>
+	- SCALE<BR>
+	- stat()<BR>
+	- facet()<BR>
+	<BR>
+	<BR>
+STATISTICS<BR>
+	• We have not used explicitly, but they underlie many of the layers we have been creating - some geoms are really statistics in disguise: <BR>
+		• geom_histogram = stat_bin + geom_bar <BR>
+		• geom_smooth = stat_smooth + geom_ribbon <BR>
+		• geom_density = stat_density + geom_ribbon <BR>
+	• Separate transformation of data from its graphical representation<BR>
+	<BR>
+	• Some statistics produce new variables in the data (see docs for details) <BR>
+	• stat_bin produces count and density <BR>
+	• If you want to map an aesthetic to one of these new variables, surround it with .. <BR>
+	• ggplot(diamonds, aes(x=price)) + geom_histogram(aes(y = ..density..)) <BR>
+	• + geom_histogram(aes(colour = ..count..))<BR>
+	<BR>
+	• Parameters modify appearance of geoms and operation of statistics <BR>
+		• + geom_smooth(method=lm) • + stat_bin(binwidth = 100) <BR>
+		• + stat_summary(fun=&quot;mean_cl_boot&quot;) <BR>
+		• + geom_boxplot(outlier.colour = &quot;red&quot;) <BR>
+	• Any aesthetic can also be used as a parameter <BR>
+		• + geom_point(colour = &quot;red&quot;, size = 5) <BR>
+		• + geom_line(linetype = 3)<BR>
+<BR>
+SCALES<BR>
+<BR>
+	• Scales control the mapping between data and aesthetics, and control the display of the matching guide (axis or legend) <BR>
+	• ggplot automatically adds default scales as we need them, but we will often need to customise	<BR>
+<BR>
+		<DL>
+<DT><A name="8xF55UqdxUkayxMkaEIFug"></A>errors</DT>
+<!--property:date_created=1457340907-->
+<!--property:date_modified=1457346579-->
+<!--property:hash=b3547f2d3de5e83c5921f667efd58521af26f31d-->
+<!--property:hash_html=8a0dcada6a0e66c42ca321c11db069bf9f27ffbd-->
+<DD>
+# The plot you created in the previous exercise<BR>
+ggplot(diamonds, aes(x = carat, y = price)) +<BR>
+  geom_point() +<BR>
+  geom_smooth()<BR>
+<BR>
+# Copy the above command but show only the smooth line<BR>
+ggplot(diamonds, aes(x = carat, y = price)) +<BR>
+  geom_smooth()<BR>
+<BR>
+# Copy the above command and assign the correct value to col in aes()<BR>
+ggplot(diamonds, aes(x = carat, y = price, col = clarity)) +<BR>
+  geom_smooth()<BR>
+<BR>
+# Keep the color settings from previous command. Plot only the points with argument alpha.<BR>
+ggplot(diamonds, aes(x = carat, y = price, col = clarity)) +<BR>
+  geom_point(alpha = 0.4)<BR>
+<BR>
+set.seed(1)<BR>
+<BR>
+# The dia_plot object has been created for you<BR>
+dia_plot &lt;- ggplot(diamonds, aes(x = carat, y = price))<BR>
+<BR>
+# Expand dia_plot by adding geom_point() with alpha set to 0.2<BR>
+dia_plot &lt;- dia_plot + geom_point(alpha=0.2)<BR>
+<BR>
+<BR>
+# Plot dia_plot with additional geom_smooth() with se set to FALSE<BR>
+dia_plot + geom_smooth(se=FALSE)<BR>
+<BR>
+# Copy the command from above and add aes() with the correct mapping to geom_smooth()<BR>
+dia_plot + geom_smooth(se=FALSE,aes(col=clarity))<BR>
+<BR>
+se - means STANDARD ERROR apparently<BR>
+<BR>
+<BR>
+<A href="https://campus.datacamp.com/">DataCamp</A>p<BR>
+<BR>
+<A href="https://campus.datacamp.com/">C</A>ourse Outline<A href="https://campus.datacamp.com/"><BR>
+</A><BR>
+<A href="https://campus.datacamp.com/"><BR>
+</A><BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+base package and ggplot2, part 3<BR>
+<BR>
+100xp<BR>
+<BR>
+In this exercise we'll continue with our comparison of ggplot and base package by recreating the base package plot in ggplot2. Specifically, you will recreate the plot you created with base R in ggplot2.<BR>
+<BR>
+The code for base R plotting is given at the top. The first line of code already converts the cyl variable of mtcars to a factor.<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+Instructions<A href="https://campus.datacamp.com/"><BR>
+</A><BR>
+<UL>
+<LI>Add <A href="http://www.rdocumentation.org/packages/ggplot2/functions/geom_point">geom_point()</A> to the first <A href="http://www.rdocumentation.org/packages/ggplot2/functions/ggplot">ggplot()</A> command in order to make a scatter plot.</LI>
+<LI>Copy, paste and expand the previous command; add a linear model for each subset according to cyl by adding a <A href="http://www.rdocumentation.org/packages/ggplot2/functions/geom_smooth">geom_smooth()</A> layer. Inside <A href="http://www.rdocumentation.org/packages/ggplot2/functions/geom_smooth">geom_smooth()</A>, set methodto &quot;lm&quot; and se to FALSE. Note here that ggplot2 will automatically draw a line per cyl subset, it recognizes the groups you want to make per color in the <A href="http://www.rdocumentation.org/packages/ggplot2/functions/aes">aes()</A> call within the <A href="http://www.rdocumentation.org/packages/ggplot2/functions/ggplot">ggplot()</A> command.</LI>
+<LI>Copy, paste and expand the previous command. Plot a linear model for the entire dataset. Do this by adding another <A href="http://www.rdocumentation.org/packages/ggplot2/functions/geom_smooth">geom_smooth()</A> layer. Set the group aesthetic in this geom to 1 and the linetype to 2. This means group has to be set within <A href="http://www.rdocumentation.org/packages/ggplot2/functions/aes">aes()</A> of <A href="http://www.rdocumentation.org/packages/ggplot2/functions/geom_smooth">geom_smooth()</A>, but linetype has to be set <b>outside</b> <A href="http://www.rdocumentation.org/packages/ggplot2/functions/aes">aes()</A> of <A href="http://www.rdocumentation.org/packages/ggplot2/functions/geom_smooth">geom_smooth()</A>. The groupaesthetic will tell <A href="http://www.rdocumentation.org/packages/ggplot2/functions/ggplot">ggplot()</A> to draw a single linear model through all the points. Don't forget to set method to &quot;lm&quot;and se to FALSE like you did in the previous command.<BR>
+<BR>
+# Convert cyl to factor<BR>
+mtcars$cyl &lt;- as.factor(mtcars$cyl)<BR>
+<BR>
+# Example from base R<BR>
+plot(mtcars$wt, mtcars$mpg, col = mtcars$cyl)<BR>
+abline(lm(mpg ~ wt, data = mtcars), lty = 2)<BR>
+lapply(mtcars$cyl, function(x) {<BR>
+  abline(lm(mpg ~ wt, mtcars, subset = (cyl == x)), col = x)<BR>
+  })<BR>
+legend(x = 5, y = 33, legend = levels(mtcars$cyl), <BR>
+       col = 1:3, pch = 1, bty = &quot;n&quot;)<BR>
+<BR>
+# Add geom_point() to this command to create a scatter plot<BR>
+ggplot(mtcars, aes(x = wt, y = mpg, col = cyl)) +<BR>
+    geom_point()<BR>
+<BR>
+  <BR>
+# Copy, paste and expand previous command to include the lines of the linear models, per cyl<BR>
+ggplot(mtcars, aes(x = wt, y = mpg, col = cyl)) +<BR>
+    geom_point() + geom_smooth(method=&quot;lm&quot;, se=FALSE)<BR>
+<BR>
+# Copy, paste and expand previous command to include a lm for the entire dataset in its whole<BR>
+ggplot(mtcars, aes(x = wt, y = mpg, col = cyl)) +<BR>
+    geom_point() + geom_smooth(method=&quot;lm&quot;, se=FALSE) +<BR>
+    geom_smooth(method=&quot;lm&quot;, se=FALSE, aes(group=1), linetype=2)<BR>
+<A href="https://campus.datacamp.com/"><BR>
+</A></LI>
+</UL>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+
+</DD>
+<DT><A name="1IYpEIM8FgzAiWA6AJ0Usg"></A>ggplot aesthetics</DT>
+<!--property:date_created=1457346579-->
+<!--property:date_modified=1457438076-->
+<!--property:hash=f2a70c9dd5962a53639bac972706f4c26db8c7bb-->
+<!--property:hash_html=fe72b7859941fa2de3c6fc076b979d96dc1f95af-->
+<DD>
+wide format data - single variable split among more than one column<BR>
+	- so if you have variables sepal.width and sepal.length<BR>
+	- you split it into factor sepal with width and length<BR>
+<BR>
+SCALE is a way to show data on plot<BR>
+	- x is horizontal axis, y is vertical<BR>
+	- col is to colour these points according to a factor belonging to the (data) points<BR>
+	- this third scale is explained in the legend<BR>
+	- equally if we mapped another factor to say line type this could go into legend too? RK<BR>
+	<BR>
+	<BR>
+tidy data - each row contains a single observation and each column - a single variable<BR>
+	- e.g. in IRIS that would be species - part - measure - value | 3 factors and ONE measurement | nrow = 600<BR>
+	- from sepal.length, sepal.width, petal.length, petal.width, species | 1 factor and 4 measures | nrow = 150<BR>
+	- then we can use facets and compare data not only within the plot, but also between plots - they have common y axis<BR>
+	ggplot(iris.tidy, aes(x=Measure, y=Value, col=Part)) + geom_jitter() + facet_grid(. ~ Species)<BR>
+	- are length and width two levels of a categorical variable or are they two measurements (continuous variables)	<BR>
+	<BR>
+Notice that <b>mapping a categorical variable onto fill</b> doesn't change the colors, although a legend is generated! This is because the <i>default shape for points only has a color attribute and not a fill attribute.</i> Use fill when you have another shape (such as a bar), or when using a point that does have a fill and a color attribute, such as shape = 21, which is a circle with an outline. <b>Any time you use a solid color, make sure to use alpha blending to account for over plotting.<BR>
+</b><BR>
+mtcars$cyl &lt;- as.factor(mtcars$cyl)<BR>
+# Map cyl to size:: cyl is a factor variable in this dataset (it was converted from num to factor)<BR>
+ggplot(mtcars, aes(x=wt, y=mpg, <b>size</b>=cyl)) + geom_point()<BR>
+# Map cyl to alpha<BR>
+ggplot(mtcars, aes(x=wt, y=mpg, <b>alpha</b>=cyl)) + geom_point()<BR>
+# Map cyl to shape <BR>
+ggplot(mtcars, aes(x=wt, y=mpg, <b>shape</b>=cyl)) + geom_point()<BR>
+# Map cyl to labels<BR>
+ggplot(mtcars, aes(x=wt, y=mpg, <b>label</b>=cyl)) + geom_text()<BR>
+# can do even that:<BR>
+ggplot(mtcars, aes(x=wt, y=mpg, <b>label</b>=cyl)) + geom_text(aes(<b>col</b>=cyl))<BR>
+# these all can be used as aesthetics:<BR>
+x<span style="color:#393939"><span style="background-color:#fefefe"><span style="font: karmina-sans">, </span></span></span>y<span style="color:#393939"><span style="background-color:#fefefe"><span style="font: karmina-sans">, </span></span></span>color<span style="color:#393939"><span style="background-color:#fefefe"><span style="font: karmina-sans">, </span></span></span>fill<span style="color:#393939"><span style="background-color:#fefefe"><span style="font: karmina-sans">, </span></span></span>size<span style="color:#393939"><span style="background-color:#fefefe"><span style="font: karmina-sans">, </span></span></span>alpha<span style="color:#393939"><span style="background-color:#fefefe"><span style="font: karmina-sans">, </span></span></span>labels<span style="color:#393939"><span style="background-color:#fefefe"><span style="font: karmina-sans"> </span></span></span>and shape<span style="color:#393939"><span style="background-color:#fefefe"><span style="font: karmina-sans">.<BR>
+<BR>
+Notice that if an aesthetic and an attribute are set with the same argument, the attribute takes precedence. Once again, we see that the attribute needs to match the shape and geom, the fill aesthetic (or attribute) will only work with certain shapes. </span></span></span><span style="color:#393939"><span style="background-color:#fefefe"><span style="font: karmina-sans">we can use all the aesthetics as attributes.</span></span></span><span style="color:#393939"><span style="background-color:#fefefe"><span style="font: karmina-sans"><BR>
+<BR>
+ggplot(mtcars, aes(y=mpg, x=wt, fill=cyl)) + <BR>
+    geom_point(size=10, shape=23, col=my_color)<BR>
+<BR>
+<BR>
+ggplot(mtcars, aes(x = wt, y = mpg, fill = cyl)) +<BR>
+    geom_text(label=&quot;x&quot;, col='red', size=10)<BR>
+<BR>
+</span></span></span><span style="color:#212325"><span style="background-color:#fefefe"><span style="font: karmina-sans">Set </span></span></span><span style="color:#393939"><span style="background-color:#fefefe"><span style="font: karmina-sans">show.legend = FALSE </span></span></span><span style="color:#393939"><span style="background-color:#fefefe"><span style="font: karmina-sans">in geom_text:<BR>
+<BR>
+</span></span></span><span style="background-color:#fefefe"><span style="font: karmina-sans">ggplot</span></span><span style="background-color:#fefefe"><span style="font: karmina-sans">(</span></span><span style="background-color:#fefefe"><span style="font: karmina-sans">data </span></span><span style="background-color:#fefefe"><span style="font: karmina-sans">=</span></span><span style="background-color:#fefefe"><span style="font: karmina-sans"> iris</span></span><span style="background-color:#fefefe"><span style="font: karmina-sans">,</span></span><span style="background-color:#fefefe"><span style="font: karmina-sans"><BR>
+       aes</span></span><span style="background-color:#fefefe"><span style="font: karmina-sans">(</span></span><span style="background-color:#fefefe"><span style="font: karmina-sans">x </span></span><span style="background-color:#fefefe"><span style="font: karmina-sans">=</span></span><span style="background-color:#fefefe"><span style="font: karmina-sans"> Sepal.Length</span></span><span style="background-color:#fefefe"><span style="font: karmina-sans">,</span></span><span style="background-color:#fefefe"><span style="font: karmina-sans"> y </span></span><span style="background-color:#fefefe"><span style="font: karmina-sans">=</span></span><span style="background-color:#fefefe"><span style="font: karmina-sans"> Sepal.Width</span></span><span style="background-color:#fefefe"><span style="font: karmina-sans">,</span></span><span style="background-color:#fefefe"><span style="font: karmina-sans"> colour </span></span><span style="background-color:#fefefe"><span style="font: karmina-sans">=</span></span><span style="background-color:#fefefe"><span style="font: karmina-sans"> Species</span></span><span style="background-color:#fefefe"><span style="font: karmina-sans">,</span></span><span style="background-color:#fefefe"><span style="font: karmina-sans"> shape </span></span><span style="background-color:#fefefe"><span style="font: karmina-sans">=</span></span><span style="background-color:#fefefe"><span style="font: karmina-sans"> Species</span></span><span style="background-color:#fefefe"><span style="font: karmina-sans">,</span></span><span style="background-color:#fefefe"><span style="font: karmina-sans"> label </span></span><span style="background-color:#fefefe"><span style="font: karmina-sans">=</span></span><span style="background-color:#fefefe"><span style="font: karmina-sans"> Species</span></span><span style="background-color:#fefefe"><span style="font: karmina-sans">))</span></span> <span style="background-color:#fefefe"><span style="font: karmina-sans">+</span></span><span style="background-color:#fefefe"><span style="font: karmina-sans"> <BR>
+    geom_point</span></span><span style="background-color:#fefefe"><span style="font: karmina-sans">()</span></span> <span style="background-color:#fefefe"><span style="font: karmina-sans">+</span></span><span style="background-color:#fefefe"><span style="font: karmina-sans"><BR>
+    geom_text</span></span><span style="background-color:#fefefe"><span style="font: karmina-sans">(</span></span><span style="background-color:#fefefe"><span style="font: karmina-sans">show.legend </span></span><span style="background-color:#fefefe"><span style="font: karmina-sans">=</span></span> <span style="color:#800000"><span style="background-color:#fefefe"><span style="font: karmina-sans">FALSE</span></span></span><span style="background-color:#fefefe"><span style="font: karmina-sans">)</span></span><span style="color:#212325"><span style="background-color:#fefefe"><span style="font: karmina-sans">The argument </span></span></span><span style="color:#393939"><span style="background-color:#fefefe"><span style="font: karmina-sans">show_guide </span></span></span><span style="color:#393939"><span style="background-color:#fefefe"><span style="font: karmina-sans">changed name to show.legend in ggplot2 2.0.0<BR>
+<BR>
+ALL OUT example<BR>
+</span></span></span><span style="color:#0000ff"><span style="background-color:#fefefe"><span style="font: karmina-sans">ggplot(mtcars,aes(x=wt,y=mpg,col=factor(cyl), shape=factor(am), size=hp/wt)) +<BR>
+</span></span></span><span style="color:#0000ff"><span style="background-color:#fefefe"><span style="font: karmina-sans">+ </span></span></span><span style="color:#0000ff"><span style="background-color:#fefefe"><span style="font: karmina-sans">    geom_point() + geom_text(aes(label=rownames(mtcars)),show.legend = FALSE, check_overlap = TRUE)<BR>
+<BR>
+</span></span></span><span style="color:#393939"><span style="background-color:#fefefe"><span style="font: karmina-sans">Many of the aesthetics can be mapped onto continuous or categorical variables, but some are restricted to categorical data. <BR>
+</span></span></span><span style="color:#393939"><span style="background-color:#fefefe"><span style="font: karmina-sans">LABEL</span></span></span><span style="color:#fefefe"><span style="background-color:#fefefe"><span style="font: karmina-sans"> </span></span></span><span style="color:#393939"><span style="background-color:#fefefe"><span style="font: karmina-sans">and SHAPE</span></span></span><span style="color:#fefefe"><span style="background-color:#fefefe"><span style="font: karmina-sans"> </span></span></span><span style="color:#393939"><span style="background-color:#fefefe"><span style="font: karmina-sans">are only applicable to categorical data.<BR>
+<BR>
+</span></span></span>
+</DD>
+<DT><A name="yScsGglIJrKysD8VOWUY5g"></A>ggplot aesthetics 2</DT>
+<!--property:date_created=1457438076-->
+<!--property:date_modified=1457440174-->
+<!--property:hash=72f566a28fd668d8c93afb6d82a962d5d952c601-->
+<!--property:hash_html=d1f3d4675ffcd40c4a5d5e3fcfd4063386af887a-->
+<DD>
+EXERCISE on SCALES<BR>
+<BR>
+<span style="color:#0000ff">&gt; cyl.am + geom_bar(position=&quot;dodge&quot;) + scale_x_discrete(label_value(&quot;Cylinders&quot;)) +<BR>
++ scale_y_continuous(label_value(&quot;Number&quot;)) +<BR>
++ scale_fill_manual(&quot;Transmission&quot;,values = val, labels = lab)<BR>
+</span><span style="color:#0000ff"><span style="font: Roboto Mono Thin 10"><BR>
+# Base layers<BR>
+cyl.am &lt;- ggplot(mtcars, aes(x = factor(cyl), fill = factor(am)))<BR>
+<BR>
+# Add geom (position = &quot;stack&quot;&quot; by default)<BR>
+cyl.am + geom_bar(position=&quot;stack&quot;)<BR>
+<BR>
+# Fill - show proportion<BR>
+cyl.am + geom_bar(position=&quot;fill&quot;)<BR>
+<BR>
+# Dodging - principles of similarity and proximity<BR>
+cyl.am + geom_bar(position=&quot;dodge&quot;)<BR>
+<BR>
+# Clean up the axes with scale_ functions<BR>
+val = c(&quot;#E41A1C&quot;, &quot;#377EB8&quot;)<BR>
+lab = c(&quot;Manual&quot;, &quot;Automatic&quot;)<BR>
+<BR>
+cyl.am + geom_bar(position=&quot;dodge&quot;) + scale_x_discrete(label_value(&quot;Cylinders&quot;)) +<BR>
+ scale_y_continuous(label_value(&quot;Number&quot;)) +<BR>
+ scale_fill_manual(&quot;Transmission&quot;,values = val, labels = lab)<BR>
+</span></span><span style="font: Roboto Mono Thin 10"><BR>
+OR <BR>
+</span><span style="color:#1a1a1a"><span style="font: Roboto Mono Thin, Bold 10"><b>cyl.am + geom_bar(position=&quot;dodge&quot;) + scale_x_discrete(&quot;Cylinders&quot;) +<BR>
+ scale_y_continuous(&quot;Number&quot;) +<BR>
+ scale_fill_manual(&quot;Transmission&quot;,values = val, labels = lab)<BR>
+<BR>
+===</b></span></span></b><BR>
+<span style="font: Ubuntu Light Bold 12">Setting a dummy aesthetic</span><span style="color:#1a1a1a"><span style="font: Roboto Mono Thin, Bold 10"><b><BR>
+<BR>
+In the last chapter you saw that all the visible aesthetics can serve as attributes and aesthetics, but I very conveniently left out x and y. That's because although we can make univariate plots (such as histograms, which we'll get to in the next chapter), a y-axis will always be provided, even if we didn't ask for it.<BR>
+<BR>
+In base package we can make univariate plots with <A href="http://www.rdocumentation.org/packages/graphics/functions/stripchart">stripchart()</A> (shown in the viewer) directly and it will take care of a fake y axis for us. Since this is univariate data, there is no real y axis.<BR>
+<BR>
+We can get the same thing in ggplot2, but it's a bit more cumbersome. The only reasons you'd really want to do this is if you were making many plots and you wanted them to be in the same style, or you wanted to take advantage of aesthetic mapping, for example for color.<BR>
+<BR>
+<BR>
+# Add a new column called group<BR>
+mtcars$group &lt;- 0<BR>
+<BR>
+# Create jittered plot of mtcars: mpg onto x, group onto y<BR>
+ggplot(mtcars,aes(x=mpg,y=group)) + geom_jitter()<BR>
+<BR>
+# Change the y aesthetic limits<BR>
+ggplot(mtcars,aes(x=mpg,y=group)) + geom_jitter() + scale_y_continuous(limits = c(-2,2))<BR>
+<BR>
+</b></span></span>
+</DD>
+<DT><A name="xvN5Gp0RSym65LmjeE0EfA"></A>ggplot Overplotting</DT>
+<!--property:date_created=1457440174-->
+<!--property:date_modified=1457440839-->
+<!--property:hash=6594f1905eef362206b829f54de0be9a3b819e2c-->
+<!--property:hash_html=f1f4b0c0e1ded68cc82b780ababd970b1dc82b9b-->
+<DD>
+Overplotting 1 - Point shape and transparency<BR>
+<BR>
+100xp<BR>
+<BR>
+In the previous section we saw that there are lots of ways to use aesthetics. Perhaps too many, because although they are possible, they are not all recommended. Let's take a look at what works and what doesn't.<BR>
+<BR>
+So far we've focused on scatter plots since they are intuitive, easily understood and very common. A major consideration in any scatter plot is dealing with <b>overplotting</b>. We'll encounter this topic again in the geometries layer, but we can already make some adjustments here.<BR>
+<BR>
+You'll have to deal with overplotting when you have:<BR>
+<BR>
+<UL>
+<LI>Large datasets,</LI>
+<LI>Imprecise data and so points are not clearly separated on your plot (we saw this in the video with the iris dataset),</LI>
+<LI>Interval data (i.e. data appears at fixed values), or</LI>
+<LI>Aligned data values on a single axis.</LI>
+</UL>
+One very common technique that I'd recommend to always use when you have solid shapes it to use alpha blending (i.e. adding transparency). An alternative is to use hollow shapes. These are adjustments to make before even worrying about positioning. This addresses the first point as above, which we'll see again in the next exercise.<BR>
+<BR>
+<BR>
+# Basic scatter plot: wt on x-axis and mpg on y-axis; map cyl to col<BR>
+ggplot(mtcars, aes(y=mpg, x=wt, col=cyl)) + <BR>
+   geom_point(size=4)<BR>
+<BR>
+<BR>
+# Hollow circles - an improvement<BR>
+ggplot(mtcars, aes(y=mpg, x=wt, col=cyl)) + <BR>
+   geom_point(shape=1, size=4)<BR>
+<BR>
+<BR>
+# Add transparency - very nice<BR>
+ggplot(mtcars, aes(y=mpg, x=wt, col=cyl)) + <BR>
+   geom_point(size=4, alpha = 0.4)<BR>
+<BR>
+# so solid shapes in themselves are not really useful.<BR>
+<BR>
+## Overplotting 2 - alpha with large datasets<BR>
+<BR>
+<UL>
+<LI>Large datasets.</LI>
+<LI>Aligned data values on a single axis</LI>
+</UL>
+<BR>
+<BR>
+# Scatter plot: carat (x), price (y), clarity (col)<BR>
+ggplot(diamonds, aes(y = price, x= carat, col=clarity)) + geom_point()<BR>
+<BR>
+<BR>
+# Adjust for overplotting<BR>
+ggplot(diamonds, aes(y = price, x= carat, col=clarity)) + geom_point(alpha=0.5)<BR>
+<BR>
+<BR>
+# Scatter plot: clarity (x), carat (y), price (col)<BR>
+ggplot(diamonds, aes(y = carat, x= clarity, col=price)) + geom_point(alpha=0.5)<BR>
+<BR>
+<BR>
+# Dot plot with jittering<BR>
+ggplot(diamonds, aes(y = carat, x= clarity, col=price)) + <BR>
+   geom_point(alpha=0.5, position=&quot;jitter&quot;)<BR>
+
+</DD>
+<DT><A name="ODQLAi5GCf1JfIMKTy9OXQ"></A>ggplot geoms</DT>
+<!--property:date_created=1457473816-->
+<!--property:date_modified=1457519858-->
+<!--property:hash=70054d4353c61aaa15814e96e1881f8dbe056e5c-->
+<!--property:hash_html=b24fbf7dc371954965e9196cd02aefdced4ee824-->
+<DD>
+# Plot the cyl on the x-axis and wt on the y-axis<BR>
+ggplot(mtcars, aes(y=wt, x=cyl)) + geom_point()<BR>
+<BR>
+<BR>
+# Use geom_jitter() instead of geom_point()<BR>
+ggplot(mtcars, aes(y=wt, x=cyl)) + geom_jitter()<BR>
+<BR>
+<BR>
+# Define the position object using position_jitter(): posn.j<BR>
+posn.j &lt;- position_jitter(width=0.1)<BR>
+  <BR>
+# Use posn.j in geom_point()<BR>
+ggplot(mtcars, aes(y=wt, x=cyl)) + geom_point(position=posn.j)<BR>
+<BR>
+Width in position_jitter is useful when we want to jitter horizontally<BR>
+<BR>
+# Examine the structure of Vocab<BR>
+str(Vocab)<BR>
+<BR>
+# Basic scatter plot of vocabulary (y) against education (x). Use geom_point()<BR>
+ggplot(Vocab, aes(y=vocabulary, x=education)) + geom_point()<BR>
+<BR>
+<BR>
+# Use geom_jitter() instead of geom_point()<BR>
+ggplot(Vocab, aes(y=vocabulary, x=education)) + geom_jitter()<BR>
+<BR>
+  <BR>
+# Using the above plotting command, set alpha to a very low 0.2<BR>
+ggplot(Vocab, aes(y=vocabulary, x=education)) + geom_jitter(alpha=0.2)<BR>
+<BR>
+  <BR>
+# Using the above plotting command, set the shape to 1<BR>
+ggplot(Vocab, aes(y=vocabulary, x=education)) + <BR>
+   geom_jitter(shape=1, alpha=0.2)<BR>
+<BR>
+GEOM BAR - HISTOGRAM<BR>
+# Make a univariate histogram<BR>
+ggplot(mtcars,aes(x=mpg)) +<BR>
+  geom_histogram()<BR>
+# Change the bin width to 1<BR>
+ggplot(mtcars,aes(x=mpg)) +<BR>
+  geom_histogram(binwidth=1)<BR>
+# Change the y aesthetic to density<BR>
+ggplot(mtcars,aes(x=mpg)) +<BR>
+  geom_histogram(aes(y=..density..),binwidth=1)<BR>
+<BR>
+# Custom color code<BR>
+myBlue &lt;- &quot;#377EB8&quot;<BR>
+# Change the fill color to myBlue<BR>
+ggplot(mtcars,aes(x=mpg)) +<BR>
+  geom_histogram(aes(y=..density..),binwidth=1, fill=myBlue)<BR>
+# col would change line colour only<BR>
+<BR>
+BARS AGAIN<BR>
+<UL>
+<LI>Draw a bar plot of mtcars with cyl mapped onto the x-axis and use am to fill up the bars. These variables are made a factor for you within the mtcars dataset. You should use <A href="http://www.rdocumentation.org/packages/ggplot2/functions/geom_bar">geom_bar()</A> here.# Draw a bar plot of cyl, filled according to am (automatic versus manual) ggplot(mtcars, aes(x=cyl, fill = am)) +   geom_bar()# Change the position argument to stackggplot(mtcars, aes(x=cyl, fill = am)) +   geom_bar(position = 'stack')# Change the position argument to fillggplot(mtcars, aes(x=cyl, fill = am)) +   geom_bar(position = 'fill')# Change the position argument to dodgeggplot(mtcars, aes(x=cyl, fill = am)) +   geom_bar(position = 'dodge')AND with OVERLAP# Draw a bar plot of cyl, filled according to amggplot(mtcars, aes(x=cyl, fill = am)) +   geom_bar()# Change the position argument to &quot;dodge&quot;ggplot(mtcars, aes(x=cyl, fill = am)) +   geom_bar(position=&quot;dodge&quot;)# Define posn_d with position_dodge()posn_d &lt;- position_dodge(width = 0.2)# Change the position argument to posn_dggplot(mtcars, aes(x=cyl, fill = am)) +   geom_bar(position = posn_d)# Use posn_d as position and adjust alpha to 0.6ggplot(mtcars, aes(x=cyl, fill = am)) +   geom_bar(position = posn_d, alpha = 0.6)FREQPOLY# A basic histogram, add coloring defined by cyl ggplot(mtcars, aes(x=mpg, fill = cyl)) +  geom_histogram(binwidth = 1)# Change position to identity ggplot(mtcars, aes(mpg, fill = cyl)) +  geom_histogram(binwidth = 1, position = 'identity')# Change geom to freqpoly (position is identity by default) ggplot(mtcars, aes(mpg, col = cyl)) +     geom_freqpoly(binwidth = 1, position = 'identity')</LI>
+</UL>
+<BR>
+# Example of how to use a brewed color palette<BR>
+ggplot(mtcars, aes(x = cyl, fill = am)) +<BR>
+  geom_bar() +<BR>
+  scale_fill_brewer(palette = &quot;Set1&quot;)<BR>
+<BR>
+# Use str() on Vocab to check out the structure<BR>
+str(Vocab) <BR>
+<BR>
+# Plot education on x and vocabulary on fill<BR>
+# Use the default brewed color palette<BR>
+ggplot(Vocab, aes(x=education, fill=vocabulary)) +<BR>
+    geom_bar(position=&quot;fill&quot;) +<BR>
+    scale_fill_brewer()<BR>
+# needs fixing for palette - there were not enough colours<BR>
+<BR>
+PALETTE - MANUAL - set number of colours you want<BR>
+# Final plot of last exercise<BR>
+ggplot(Vocab, aes(x = education, fill = vocabulary)) +<BR>
+  geom_bar(position = &quot;fill&quot;) +<BR>
+  scale_fill_brewer()<BR>
+  <BR>
+# Definition of a set of blue colors<BR>
+blues &lt;- brewer.pal(9, &quot;Blues&quot;)<BR>
+<BR>
+# Make a color range using colorRampPalette() and the set of blues<BR>
+blue_range &lt;- colorRampPalette(blues)<BR>
+# this returns a function - you use it like that blue_range(11) <BR>
+# where 11 is the number of colours you want<BR>
+<BR>
+# Use blue_range to adjust the color of the bars, use scale_fill_manual()<BR>
+ggplot(Vocab, aes(x = education, fill = vocabulary)) +<BR>
+  geom_bar(position = &quot;fill&quot;) +<BR>
+  scale_fill_manual(values=blue_range(11))<BR>
+# don't forget to use values in manual fill<BR>
+<BR>
+HISTOGRAMS AGAIN - overlap and alpha<BR>
+# Basic histogram plot command<BR>
+ggplot(mtcars, aes(mpg)) + <BR>
+  geom_histogram(binwidth = 1)<BR>
+<BR>
+# Expand the histogram to fill using am<BR>
+ggplot(mtcars, aes(mpg, fill=am)) + <BR>
+  geom_histogram(binwidth = 1)<BR>
+# so - automatics seem to have more in high mpg ranges<BR>
+# that of course is dependent on automatics being more prevalent in 4 cyl range<BR>
+<BR>
+# Change the position argument to &quot;dodge&quot;<BR>
+ggplot(mtcars, aes(mpg, fill=am)) + <BR>
+  geom_histogram(binwidth = 1, position=&quot;dodge&quot;)<BR>
+# this shows the same essentially, but position no longer is 'stack'<BR>
+<BR>
+# Change the position argument to &quot;fill&quot;<BR>
+ggplot(mtcars, aes(mpg, fill=am)) + <BR>
+  geom_histogram(binwidth = 1, position=&quot;fill&quot;)<BR>
+this one is quite good actually - shows the same rather well<BR>
+<BR>
+# Change the position argument to &quot;identity&quot; and set alpha to 0.4<BR>
+ggplot(mtcars, aes(mpg, fill=am)) + <BR>
+  geom_histogram(binwidth = 1, position=&quot;identity&quot;, alpha=0.4)<BR>
+<BR>
+<BR>
+# Change fill to cyl<BR>
+ggplot(mtcars, aes(mpg, fill=cyl)) + <BR>
+  geom_histogram(binwidth = 1, position=&quot;identity&quot;, alpha=0.4)<BR>
+# this finally shows nice dependence of mpg on cyl<BR>
+<BR>
+# note that relevant values have been converted to factors in mtcars<BR>
+<BR>
+
+</DD>
+<DT><A name="bIfnUYyQYY0g3m1dc7D8Bw"></A>ggplot LINE</DT>
+<!--property:date_created=1457519858-->
+<!--property:date_modified=1457520336-->
+<!--property:hash=7bd012c1bfd299c09eb78cb426f45ee7a58bad53-->
+<!--property:hash_html=6ef03c6032f8b7a1c1092e63e07dbe9a6c128ec3-->
+<DD>
+# Print out head of economics<BR>
+head(economics)<BR>
+<BR>
+# Plot unemploy as a function of date using a line plot<BR>
+ggplot(economics, aes(x = date, y = unemploy)) +<BR>
+  geom_line()<BR>
+  <BR>
+# Adjust plot to represent the fraction of total population that is unemployed<BR>
+ggplot(economics, aes(x = date, y = unemploy/pop)) +<BR>
+  geom_line()<BR>
+<BR>
+<span style="color:#393939"><span style="background-color:#fefefe">By themselves, time series often contain enough valuable information, but we want to always maximize the number of variables we can show in a plot. This allows us (and our viewers) to begin making comparisons between those variables that would otherwise be difficult or impossible.</span></span><BR>
+<span style="color:#393939"><span style="background-color:#fefefe">Here, we'll add shaded regions to the background to indicate recession periods. How do unemployment rate and recession period interact with each other?</span></span><BR>
+<BR>
+<span style="color:#393939"><span style="background-color:#fefefe">In addition to the </span></span><span style="background-color:#fefefe">economics </span>dataset from before, you'll also use the recess dataset for the periods of recession. The recess data frame contains 2 variables: the begin period of the recession and the end. It's already available in your workspace.<BR>
+<BR>
+# Expand the following command with geom_rect() to draw the recess periods<BR>
+ggplot(economics, aes(x = date, y = unemploy/pop)) +<BR>
+  geom_line() +<BR>
+  geom_rect(data = recess, inherit.aes = FALSE, aes(xmin = begin, xmax = end, ymin = -Inf, ymax= +Inf), fill = 'red', alpha = 0.2)<BR>
+<BR>
+<BR>
+
+</DD>
+</DL>
+</DD>
 </DL>
 </DD>
 <DT><A name="aizJaQL5JKxifmxC7UIw3g"></A>report Plots</DT>
@@ -868,195 +1386,195 @@ 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
-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
-/9k"><A href="http://i2.wp.com/datasciencepopularity.com/wp-content/uploads/2012/05/ggbarworkshop.png"><BR>
+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"><A href="http://i2.wp.com/datasciencepopularity.com/wp-content/uploads/2012/05/ggbarworkshop.png"><BR>
 </A><BR>
 <BR>
 <span style="color:#323232"><span style="background-color:#f9f4cd"><span style="font: Anonymous Pro 12"><BR>
@@ -1085,292 +1603,292 @@ NOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOE
 hYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk
 5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3+iiigAooooAKKKKACiiigAooooAKKKKA
 CiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAoo
-ooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKx/t9ydZFkbUpAYXcSMR
-ukZSo4GeB83fr/Nlre6gdQgtrtLfM8TS+XGDuhwRwxyQ3XGRjkUIDXkYpGzDqATVP7fL/dT8
-jTJNV04u9sL61M5Jj8rzl3bum3Gc5zxio/Jl/wCeb/8AfJoAn+3y/wB1PyNH2+X+6n5GoPJl
-/wCeb/8AfJo8mX/nm/8A3yaAJ/t8v91PyNKLxzGzbVyCB/P/AAqv5Mv/ADzf/vk08RSeSw8t
-87h2+tAEn2+X+6n5Gj7fL/dT8jUHky/883/75NHky/8APN/++TQBP9vl/up+Ro+3y/3U/I1B
-5Mv/ADzf/vk0eTL/AM83/wC+TQBYa9lDEbU4PoaT7fL/AHU/I1E8Uhdv3b9f7ppvky/883/7
-5NAE/wBvl/up+Ro+3y/3U/I1B5Mv/PN/++TR5Mv/ADzf/vk0AWFu3Kudq/KM/qKT7fL/AHU/
-I1GkUgWT92/K+nuKZ5Mv/PN/++TQBP8Ab5f7qfkaPt8v91PyNQeTL/zzf/vk0eTL/wA83/75
-NAE/2+X+6n5GlN7KAPlTkehqv5Mv/PN/++TTmikwvyP0/un1oAl+3y/3U/I0fb5f7qfkag8m
-X/nm/wD3yaPJl/55v/3yaAJ/t8v91PyNLHeSPIqlVwSBVfyZf+eb/wDfJp8UUgmQmNwAw7UA
-Sfb5f7qfkaPt8v8AdT8jUHky/wDPN/8Avk0eTL/zzf8A75NAE/2+X+6n5Gj7fL/dT8jUHky/
-883/AO+TR5Mv/PN/++TQBY+2y7SdqdfQ0n2+X+6n5GohFJtP7t+o/hPvTfJl/wCeb/8AfJoA
-n+3y/wB1PyNH2+X+6n5GoPJl/wCeb/8AfJo8mX/nm/8A3yaAJ/t8v91PyNK946sAFToD+Yqv
-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
-imEjXG5j5n5k0mNGhaXummK7u4ZsJuEk7OrKc7QAcMM4KgYxwe1XLW7hvI2lgYlQxUhlKspH
-UEEAg/WucnuYb1rm9tnElrElp5jpyPlkLsPqFIJHatbR5EuJdQuoWDwS3A8t1OVfCKpIPcZB
-GfaqJNmiiikMKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAo
-oooAKKK474hz3MHhR2sr6Wxna7tYxcxvtKBp0UnPpgnOePWgDsOKK821W9uvB2q31vptze3s
-Z0S4vvJvbqS5McsWArAuSwDbjkZx8vAHNO23ejXHhS4tdXv7ibVZvIvPtFw8yTb4Wk3qhO2P
-ayggIFGDjBHRb6g9Nz0bNZdvrWnXf2P7PeRSfbVd7bac+aq/eYewyOenI9a4bToLqyu9NsvE
-R8RWmpXbyW8l5FqjS2d7JtYkKA+YdwBZcJGVxgHjnD8JaTbQP4Duka9eVtMu59n2+cqWXyiA
-q78KpzyoGD3BxT01vsHWx7URSYryTQLnxNqWj6TrltYa5NqVxNHcTzS38Qs5IWb50EJnO1Qh
-O0iMNlRnvm/cLfaTqUtx4gbXYS+pBYdUsb/daiJ3xEj25fCDBCH903PzbsnILB5nf2d7b3yy
-tbTLKIpWhkKnhXU4ZfqDxVyuI+HtlFZWGsmF7hi2r3aHzrmSXhZWA++xwfU9T1Oa7nNLohLq
-haKKKYwooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAo
-oooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigArmfGugy+JvDj6XF5JMk8DuJyd
-jIkqswOAeoBFdNRQBh6Z4a0vS5J5LaCRpJ0EcklzPJcOyDom6RmIUZPy5xyeKhsPCGh6Xdpc
-W9k+6NXSFZZ5JUgVvvLEjsVjB6YQDjjpXRUUAc5ZeEtFsLyG4t7abNvk28cl3NLFBkY/dxux
-SPgkDaBgEgYFLa+DNDsvsP2a3nj+wSPJa7byb90XxuUfP9w4Hyfd9q6KigDml8F6Et4tz9kk
-+Sc3K25uZTbrKcneIS3lhsknO3rz15p3/CG6J9s+0fZZf9f9o+z/AGmX7P5uc7/I3eXnd82d
-vXnrzXR0ULTYHruZGn6JYabcXs1lFJE93MZ51852QyHksFJKqTnnaBnvWvRRQAUUUUAFFFFA
-BRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAH//Z"><BR>
+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"><BR>
 <A href="http://i2.wp.com/datasciencepopularity.com/wp-content/uploads/2012/05/gghist.png"><BR>
 </A><BR>
 
