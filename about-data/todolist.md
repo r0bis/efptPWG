@@ -3,13 +3,14 @@ output: pdf_document
 ---
 # To do list
 
-* merge all the data : analysis in the whole europe (TG) http://www.r-bloggers.com/string-concatenation-in-r/
-** number of trainee in each country (TG)
- principle - list directories read that list into a vector then for each element of the vectior (i.e. country name) and all the syntax files for that reason also start with the country name so if country name is a variable we simply subsititute that variable into the script when we loop over the list (i.e. the vector) containing names of durectories
-
 * write about the context of the study : Michal Raszka, Rita, Roberts, Alina (RK)
+* Get the French Psychotherapy study
+* add a column with name
+* merge all the data : analysis in the whole europe (TG) http://www.r-bloggers.com/string-concatenation-in-r/ Done
+** number of trainee in each country (TG)
+ principle - list directories read that list into a vector then for each element of the vector (i.e. country name) and all the syntax files for that reason also start with the country name so if country name is a variable we simply subsititute that variable into the script when we loop over the list (i.e. the vector) containing names of durectories
 
-* Europe map: R actually has good mapping capabilities. We should be able to produce plots of Europe with each country in colour depending on the particular variable in that country. A heatmap of sorts, where the word "map" is for real 
+* Europe map: R actually has good mapping capabilities. We should be able to produce plots of Europe with each country in colour depending on the particular variable in that country. A heatmap of sorts, where the word "map" is for real (TG) Done
 
 * Ask help for statistical inference ? MOOC : https://www.coursera.org/learn/statistical-inference/home/welcome
 
