@@ -44,11 +44,6 @@ Discussed and voted by EFPT delegates in Lisbon 1996, Tampere 1999, Napoli 2001,
 ## UEMS Psychotherapy Reports
 See all UEMS reports related to [psychiatry training](http://uemspsychiatry.org/board/training-reports/).
 
-## Questions :
-In which country psychotherapy training is the best?
-In which country there are more hours of supervision ?
-SD for data
-
 # Get the data
 You can download our data and our analysis script on [GitHub](https://github.com/r0bis/efptPWG).
 ```{r, include = FALSE}
@@ -103,7 +98,7 @@ Slovenia_data["q_0000"] <- as.factor("Slovenia")
 Slovenia_data["q_0012_other"] <- as.numeric(NA)
 Slovenia_data <- Slovenia_data[colnames(Bulgaria_data)]
 
-France_data$q_0000 <- ifelse((is.na(France_data$q_0000)==FALSE), c("France"), c(NA)) 
+#France_data$q_0000 <- ifelse((is.na(France_data$q_0000)==FALSE), c("France"), c(NA))
 ### List of countries studied
 list <- list.files("data", full.names=FALSE)
 print(list)
