@@ -5,30 +5,24 @@ output: pdf_document
 
 * write about the context of the study : Michal Raszka, Rita, Roberts, Alina (RK)
 
-* SD for data (TG : Calculate it & find an example)
+* SD for data (TG : Calculate it & find an example on GGplot)
 
 * group graphs by sections so that we have each major section of the survey on one page. (RK)
 
 * Improve esthetism of the graphs. Do all plots with *ggplot2* as I know it supports colour palettes / themes very nicely (RK)
 * Percentages in the mergins with likert figures (RK)
 
-## Improve tables (TG)
-* Replace not Selected by No
-* Do a mixed bar plot for pies
+* Replace not Selected by No (TG)
 ** [http://kbroman.org/knitr_knutshell/pages/figs_tables.html](http://kbroman.org/knitr_knutshell/pages/figs_tables.html)
 ** [https://www.qwant.com/?q=ggplot&t=images](https://www.qwant.com/?q=ggplot&t=images)
-
-
 
 ## On-going
 * Get the French Psychotherapy study (marion.azoulay13@gmail.com contacted, waiting the answer)
 * Sweden data get them (Michal Raszka)
 
-## Deadline
-
-* Write an abstract for [EABCT](http://eabct2016.org/abstract/)
-
-* Make a poster for [EABCT](http://eabct2016.org/abstract/) 
+## Deadline April 28 
+* Write an abstract for [EABCT](http://eabct2016.org/abstract/) April 28 – Poster abstracts due
+* Make a poster for [EABCT](http://eabct2016.org/abstract/) April 28 – Poster abstracts due
 
 ## Questions :
 * In which country psychotherapy training is the best? (TG)
