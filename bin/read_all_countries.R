@@ -18,7 +18,13 @@ readEFPTfiles <- function(f) {
     }
   else {print("")}
 }
-# function can be improved; no real need for else
+# what it does:
+# parentFrame - is a string for naming the data frame in the global environment
+# toGlEnvFrame - is the read data frame that has only columns detected byt the regexp
+# regexp "^id$|^q_.*"  - consists of id OR begins with q_ and ends whatever
+#       - we can use this regexp because we know names of our columns
+#       - because we know them - there will not be unexpected problems
+# function can be improved; no real need for else print
 # no error checking - it will work correctly only if in all directories
 # there are the correct syntax and data files
 # otherwise it will break leaving us in the directory where it stopped
