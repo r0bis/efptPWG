@@ -267,6 +267,7 @@ perhaps we should use likert package to plot likert type items
 ```{r}
 # make auxiliary table to hold our likert data
 sat1<-data[,43:45]
+str(data[,43:45])
 # put in correct row names
 sat1 <- rename(sat1,c("q_0019_SQ001"="I am satisfied with psychotherapy component in my training programme",
   "q_0019_SQ002"="I am satisfied with psychotherapy training options in my country",
