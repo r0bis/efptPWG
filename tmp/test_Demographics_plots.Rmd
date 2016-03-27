@@ -1,8 +1,8 @@
 ---
 title: "Demographics plots"
 author: "Roberts Klotins and Thomas Gargot"
-date: "6th March 2016"
-output: html_document
+date: "26th March 2016"
+output: pdf_document
 css: simple.css
 ---
 
@@ -11,18 +11,21 @@ This piece of markdown explores how to do markdown reports using `ggplot` graphs
 ```{r setup, echo=FALSE, message=FALSE}
 # set variables that in main analysis may be auto-generated
 # i.e. on every iteration replaced from list
-country <- "Czech Republic"
+country <- "Belgium"
 # prepare for plots - get libraries and paths right
 knitr::opts_chunk$set(echo = TRUE)
 library(ggplot2)
 library(knitr)
 library(RColorBrewer)
 library(gridExtra)
+library(ggthemes)
+library(likert)
+library(plyr)
 # paths - get data and change back
 curDir <- getwd()
-setwd("~/src/efptPWG/data/Belgium")
-source("./Belgium_R_syntax_file.R")
-setwd <- curDir
+setwd(paste("~/src/efptPWG/data/",country, sep=""))
+source(paste(country,"_R_syntax_file.R", sep=""))
+setwd(curDir)
 # print("This was chunk 1")
 ```
 
@@ -40,10 +43,15 @@ ggpie <- function (dat, by, totals, plotTitle) {
           axis.text.y=element_blank(),
           axis.text.x=element_text(colour='black'),
           axis.title=element_blank()) +
-    scale_y_continuous(breaks=cumsum(dat[[totals]]) - dat[[totals]] / 2, labels=dat[[by]])
+    #scale_y_continuous(breaks=cumsum(dat[[totals]]) - dat[[totals]] / 2, labels=dat[[by]])
+    scale_y_continuous(breaks=cumsum(dat[[totals]]) - dat[[totals]] / 2, labels=c("F","M"))
 }
-
-# print('This WAS chunk 2')
+# Specify theme elements to ba applied last to our piechart
+theme_pieChart <- theme(axis.ticks=element_blank(),
+          axis.text.y=element_blank(),
+          axis.text.x=element_text(colour='black'),
+          axis.title=element_blank())
+# print('This WAS chunk 2 - for functions')
 ```
 
 ### Demographics of our study population in `r country`
@@ -51,31 +59,77 @@ ggpie <- function (dat, by, totals, plotTitle) {
 We had `r nrow(data)` of responses from `r country`
 
 
-```{r demographics, results='markup', echo=FALSE ,warning= FALSE, message=FALSE}
+```{r demographics, results='markup', echo=FALSE ,warning= FALSE, message=FALSE, results='asis', eval=TRUE}
 
 # small intermediate data frame to pass to ggpie function
 
 df.sex <- as.data.frame(table(data$q_0001))
 colnames(df.sex) <- c("Sex","Number")
 ggp.sex <- ggpie(df.sex,'Sex','Number',"Population by Gender")
-#ggp.sex
-ggp.sex <- ggp.sex +  scale_fill_brewer(palette="YlGn")
+ggp.sex <- ggp.sex + theme_tufte() + 
+  theme(plot.title=element_text(family="Times", face="plain", size=14)) +
+  scale_fill_hc()  + 
+  theme_pieChart
 # first plot object has been set up
 # print('I am in chunk 3')
 
 kable(df.sex,'markdown')
 # table width 40% is set via css referred to in YAML header
 
-
 # plot histogram of age distribution with binwidth 1
-gb.age <- ggplot(data, aes(q_0002, fill=..count..)) +geom_histogram(color="white")
+gb.age <- ggplot(data, aes(q_0002, fill=..count.. )) + 
+  geom_histogram(color="white", binwidth = 5)
 gb.age <- gb.age +ggtitle("Age distribution")  +
-  scale_fill_continuous(trans = 'reverse', guide = guide_legend(title = "Nr.")) +
-  xlab("Age distribution") + ylab("Count of respondents")
+  xlab("Age distribution") + ylab("Age counts") +
+  theme_tufte() + 
+  scale_fill_gradient_tableau("Area Green") +
+  theme(axis.title=element_blank(), plot.margin=unit(c(0.1,0.1,0.1,1),"cm"), plot.title=element_text(family="Times", face="plain", size=13)) + 
+  coord_fixed(2.9)
 # gb.age histogram ready
 
 # print plots side by side
 grid.arrange(ggp.sex,gb.age,nrow=1)
+# cat("\n\n\\pagebreak\n")
 ```
 
-This is the first go at ggplot graphics and we can see it work in HTML and PDF. 
+This is the first go at ggplot graphics and we can see it work in HTML and PDF. We now can plot decent pie charts and barplots. The colouring onf the barplot probably needs to be improved. There is a quite good colour guider available at http://colorbrewer2.org - it is good that there are not too many options there. With the following plot there was quite a bit of fiddling till it was possible to get it right. I think that we could formulate general rules for plot themes:
+
+1) Use serif fonts - they are neater
+2) do not use borders around plots
+3) Make sure all labels are visible
+
+One could also note other cool bits we have done in this markdown:
+
+* pagebreak
+* using tabular data with certain width set via CSS
+* using variables and inline code to display information (country, respondent numbers)
+
+```{r pagebreak_01, results='asis', echo=FALSE}
+cat("\n\n\\pagebreak\n")
+```
+
+## Plot: Satisfaction group
+perhaps we should use likert package to plot likert type items. Well, liker package is working nicely. The default color theme - although nice, is not particularly good looking (was that a contradiction in terms?) and we should look into how to do colours better. For now I have gone to _colorbrewer2.org_ and just set the colour names. We can also set these colour combinations in strings and store them at the begninning of the script. 
+
+```{r plot_satisfaction, echo=FALSE, message=FALSE, results='asis'}
+# make auxiliary table to hold our likert data
+sat1<-data[,c("q_0019_SQ001", "q_0019_SQ002", "q_0019_SQ003")]
+# put in correct row names
+sat1 <- rename(sat1,c("q_0019_SQ001"="... my training programme",
+  "q_0019_SQ002"="... training options",
+  "q_0019_SQ003"="... level of funding"
+  ))
+p <- likert(sat1)
+plot(p, colors=c("#d7191c", "#fdae61", "#ffffbf","#abdda4","#2b83ba"),  wrap=25, text.size = 3.5, centered = FALSE, legend.position = "bottom") + ggtitle("In relation to Psychotherapy training in Psychiatry \n I am satisfied with...") +
+  theme(panel.background=element_blank(), plot.background=element_blank(), axis.text=element_text(family="Times", face="plain", size=12), legend.title=element_blank(), plot.title=element_text(family="Times", face="plain", size=14)) +
+  guides(fill=guide_legend(nrow=2,byrow=TRUE)) 
+# cat("\n")
+
+questions01 <- as.data.frame(c("I am satisfied with psychotherapy component in my training programme", "I am satisfied with psychotherapy training options in my country","I am satisfied with the level of funding for psychotherapy training within psychiatry in my country"))
+colnames(questions01) <- c("The actual questions asked:")
+kable(questions01, 'markdown')
+
+```
+
+
+
