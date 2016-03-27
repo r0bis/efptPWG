@@ -103,7 +103,7 @@ Slovenia_data["q_0000"] <- as.factor("Slovenia")
 Slovenia_data["q_0012_other"] <- as.numeric(NA)
 Slovenia_data <- Slovenia_data[colnames(Bulgaria_data)]
 
-France_data$q_0000 <- ifelse((is.na(France_data$q_0000)==FALSE), c("France"), c(NA)) 
+# France_data$q_0000 <- ifelse((is.na(France_data$q_0000)==FALSE), c("France"), c(NA)) 
 ### List of countries studied
 list <- list.files("data", full.names=FALSE)
 print(list)

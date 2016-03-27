@@ -1,9 +1,9 @@
 <!DOCTYPE NoteCase-File>
-<!--LastNote:17-->
+<!--LastNote:15-->
 <HTML>
 <HEAD>
 <meta content="text/html;charset=UTF-8" http-equiv="Content-Type">
-<meta name="generator" content="NoteCase Pro 4.1.6">
+<meta name="generator" content="NoteCase Pro 4.1.5">
 <meta name="format_version" content="4.1.5">
 </HEAD>
 <BODY>
@@ -1966,10 +1966,11 @@ ggplot(data=mamsleep, aes(x=time, y=name, col=sleep)) +<BR>
 </DD>
 <DT><A name="WBMNuQOjXjYtWluVv0YTfw"></A>ggplot THEMES</DT>
 <!--property:date_created=1458514442-->
-<!--property:date_modified=1458548583-->
-<!--property:hash=bd3c1c374d808a327ef84e4a1daa69f4c5ddabf7-->
-<!--property:hash_html=ee7c6c29663decb793cbe2f345a1083fcde52a54-->
+<!--property:date_modified=1458894675-->
+<!--property:hash=ba5c3394ce439050a803598e8265bba4d73fb0c7-->
+<!--property:hash_html=610d3bf2dbfbd6cb38d016866ac0d4eea12310a5-->
 <DD>
+<span style="font: Cantarell Bold 13">Adjusting plot graphical element parameters</span><BR>
 # Change the plot background color to myPink:<BR>
 z + theme(plot.background=element_rect(fill=myPink))<BR>
 <BR>
@@ -2883,7 +2884,7 @@ YPcFkg9K4T+fB4DpoD4B8h4QAYAHmAWaCGBLQfkKLHVAO7JFA+Qh0LwPZrwDihDqfj7A3A8a
 AkAApoIwCvgOflENZA509SQOk0GIBhajhhA24Z1CHSgi0OdBawV6DOQ/oaOr0VqBNgEVgNig
 i+YTSwCuBpQTp1VpEUJXmv8HmoCGuvd+9K8AAAAASUVORK5CYII"><BR>
 <BR>
-Update Themestheme update<BR>
+<b>Update Themes</b><BR>
 <BR>
 Building your themes every time from scratch can become a pain and unnecessarily bloat your scripts. In the following exercises, you will go through some challenges to practice with the different ways of managing, updating and saving themes.<BR>
 <BR>
@@ -11846,8 +11847,8 @@ rest was: <BR>
 <LI>As cyl increases, disp decreases.2</LI>
 <LI>As cyl increases, so to does the disp.3</LI>
 <LI>As cyl increases, the variance in disp decreases.4</LI>
-<LI>This information is not given.</span></span></span><span style="color:#32a9cb"><span style="background-color:#fefefe"><span style="font: Andale Mono 11"><BR>
-</span></span></span><span style="background-color:#fefefe"><span style="font: Andale Mono 11">In the video you saw reasons for not using heat maps. Nonetheless, you may encounter a case in which you really do want to use one. Luckily, they're fairly straightforward to produce in ggplot2.<BR>
+<LI>This information is not given.</span></span></span><BR>
+<span style="background-color:#fefefe"><span style="font: Andale Mono 11">In the video you saw reasons for not using heat maps. Nonetheless, you may encounter a case in which you really do want to use one. Luckily, they're fairly straightforward to produce in ggplot2.<BR>
 <BR>
 We begin by specifying two categorical variables for the x and y aesthetics. At the intersection of each category we'll draw a box, except here we call it a tile, using the geom_tile() layer. Then we will fill each tile with a continuous variable.<BR>
 <BR>
@@ -11859,8 +11860,8 @@ We'll produce the heat map we saw in the video with the built-in barley dataset.
  $ yield  : num  27 48.9 27.4 39.9 33 ...<BR>
  $ variety: Factor w/ 10 levels &quot;Svansota&quot;,&quot;No. 462&quot;,..: 3 3 3 3 3 3 7 7 7 7 ...<BR>
  $ year   : Factor w/ 2 levels &quot;1932&quot;,&quot;1931&quot;: 2 2 2 2 2 2 2 2 2 2 ...<BR>
- $ site   : Factor w/ 6 levels &quot;Grand Rapids&quot;,..: 3 6 4 5 1 2 3 6 4 5 ...</span><span style="color:#8d6526"><span style="font: Andale Mono 10"><BR>
-</span></span><span style="font: Andale Mono 10"><BR>
+ $ site   : Factor w/ 6 levels &quot;Grand Rapids&quot;,..: 3 6 4 5 1 2 3 6 4 5 ...</span><BR>
+<span style="font: Andale Mono 10"><BR>
 Instructions<BR>
 Reproduce the heat map shown in the viewer in different steps:<BR>
 <BR>
@@ -17352,9 +17353,9 @@ Instructions<A href="https://campus.datacamp.com/"><BR>
 <LI>xmax: the xmax value for each rectangle, calculated as cumsum(DF$groupSum)</LI>
 <LI>xmin: the xmin value for each rectangle, calculated by subtracting the groupSum column from the xmaxcolumn.</LI>
 <LI>After these calculations, remove the groupSum variable as it is no longer needed.</LI>
-<LI></UL>
-•The names of the x axis groups are stored in the row names, which is pretty bad style, so make a new variable, X, that stores the values of <A href="http://www.rdocumentation.org/packages/base/functions/row.names">row.names()</A> for DF.</LI>
-<LI>Now we are ready to melt the dataset. Load reshape2 and use reshape2::melt on DF. Specify the id variables as c(&quot;X&quot;, &quot;xmin&quot;, &quot;xmax&quot;) and the variable_nameargument as &quot;FILL&quot;. Store the result as DF_melted.</LI>
+<LI></LI>
+</UL>
+•The names of the x axis groups are stored in the row names, which is pretty bad style, so make a new variable, X, that stores the values of <A href="http://www.rdocumentation.org/packages/base/functions/row.names">row.names()</A> for DF.<LI>Now we are ready to melt the dataset. Load reshape2 and use reshape2::melt on DF. Specify the id variables as c(&quot;X&quot;, &quot;xmin&quot;, &quot;xmax&quot;) and the variable_nameargument as &quot;FILL&quot;. Store the result as DF_melted.</LI>
 <LI>Have a look at the dplyr call that calculates the ymax and ymin columns of DF_melted. It first groups by X and then calculates cumulative proportions. The result is stored as DF_melted again.</LI>
 <LI>If all goes well you should see the plot in the viewer when you execute the plotting function at the bottom of the script.</LI>
 <BR>
