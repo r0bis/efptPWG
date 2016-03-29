@@ -111,65 +111,73 @@ $(document).ready(function () {
 </div>
 
 
-<div id="to-do-list" class="section level1">
-<h1>To do list</h1>
-<ul>
-<li><p>write about the context of the study : Michal Raszka, Rita, Roberts, Alina (RK)</p></li>
-<li><p>SD for data (TG : Calculate it &amp; find an example on GGplot)</p></li>
-<li><p>group graphs by sections so that we have each major section of the survey on one page. (RK)</p></li>
-<li>Improve esthetism of the graphs. Do all plots with <em>ggplot2</em> as I know it supports colour palettes / themes very nicely (RK)</li>
-<li><p>Percentages in the mergins with likert figures (RK)</p></li>
-<li><p>Replace not Selected by No (TG) ** <a href="http://kbroman.org/knitr_knutshell/pages/figs_tables.html" class="uri">http://kbroman.org/knitr_knutshell/pages/figs_tables.html</a> ** <a href="https://www.qwant.com/?q=ggplot&amp;t=images" class="uri">https://www.qwant.com/?q=ggplot&amp;t=images</a></p></li>
-</ul>
-<div id="on-going" class="section level2">
-<h2>On-going</h2>
-<ul>
-<li>Get the French Psychotherapy study (<a href="mailto:marion.azoulay13@gmail.com">marion.azoulay13@gmail.com</a> contacted, waiting the answer)</li>
-<li>Sweden data get them (Michal Raszka)</li>
-</ul>
+<div id="there-are-decisions-to-be-made-about-data" class="section level1">
+<h1>There are decisions to be made about data</h1>
+<p><code>29/03/2016</code>: Some important decsions best made before producing a report which we show to too many people.</p>
+<div id="countries-to-include." class="section level2">
+<h2>Countries to include.</h2>
+<p>The big dataset is a little problematic. Some people have chosen countries wehre survey was not done. This really is due to the data entry validation problems in the small datasets. What could their reasons have been - choosing an erroneous country from the list?But possibly because they were coming from that country and were now in the other country where the survey was done.</p>
+<p>The number of such cases is small and can be investigated:</p>
+<p>Find those where suspiciously low answer counts: <code>sort(table(droplevels(data_Europe$q_0000)),T)</code> or <code>as.data.frame(sort(table(droplevels(data_Europe$q_0000)),T))</code></p>
+<p>Then give list of actual survey countries: <code>list.dirs(path=&quot;../data/&quot;, recursive=T,full.names=F)</code></p>
+<div id="so-suspects-to-investigate-are" class="section level3">
+<h3>So suspects to investigate are:</h3>
+<table>
+<colgroup>
+<col width="88%"></col>
+<col width="11%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Ctry</th>
+<th align="center">Count</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Switzerland</td>
+<td align="center">2</td>
+</tr>
+<tr class="even">
+<td align="left">Belarus</td>
+<td align="center">1</td>
+</tr>
+<tr class="odd">
+<td align="left">Croatia</td>
+<td align="center">1</td>
+</tr>
+<tr class="even">
+<td align="left">Serbia</td>
+<td align="center">1</td>
+</tr>
+<tr class="odd">
+<td align="left">United Kingdom</td>
+<td align="center">1</td>
+</tr>
+</tbody>
+</table>
+<p>Probably these values can be traced back in the original survey data frames and can be set to correct values either during reading, or used as they are. Well, I am not too sure about that 2nd option.</p>
 </div>
-<div id="deadline-april-28" class="section level2">
-<h2>Deadline April 28</h2>
-<ul>
-<li>Write an abstract for <a href="http://eabct2016.org/abstract/">EABCT</a> April 28 – Poster abstracts due</li>
-<li>Make a poster for <a href="http://eabct2016.org/abstract/">EABCT</a> April 28 – Poster abstracts due</li>
-</ul>
 </div>
-<div id="questions" class="section level2">
-<h2>Questions :</h2>
+<div id="another-decision-is-what-to-do-with-na-values." class="section level2">
+<h2>Another decision is what to do with NA values.</h2>
+<p>We probably want to discard data where NA values are present in most cells. At least on the first page of the survey. <em>Rationale</em> is - if they have not done mandatory questions on the first page - they could not possibly have done the second page. 1st page questions:</p>
+<p><code>c(&quot;q_0001&quot;, &quot;q_0002&quot;, &quot;q_0003&quot;, &quot;q_0004&quot;)</code></p>
+<p>Theoretically there could be those who abandoned survey on 2nd or 3rd page - but we need to check how many such cases exist. So we would need to check:</p>
 <ul>
-<li><p>In which country psychotherapy training is the best? (TG)</p></li>
-<li><p>In which country there are more hours of supervision ? (TG)</p></li>
+<li>if there aree people who have not entered demographics, but have written something in <code>q_006</code></li>
+<li>if there are people who have done the first page but then abandoned the survey - i.e. who have NAs in 2nd, 3rd or 4th page mandatory questions</li>
+<li>hypothesis is that such number will be very small</li>
 </ul>
+<p>There are some columns found in the dataset where there will never be a NA value:</p>
+<p><code>sort(apply(data_Europe, 2, function(x) length(which(is.na(x)))))</code></p>
+<p>namely question <code>q_0005_S*</code> and <code>q_0009_S*</code> options will always be set. So we could choose to discard those in our criteria for completed pages.</p>
+<div id="check-if-thos-who-have-answered-in-question-q_0006" class="section level3">
+<h3>check if thos who have answered in question <code>q_0006</code></h3>
+<p><code>nrow(completeFun(data_Europe[!rowSums(is.na(data_Europe[12])),],naS1stpg)) - nrow(data_Europe[!rowSums(is.na(data_Europe[12])),])</code></p>
+<p>well that was a bit silly - I forgot that those who answered this question must have entered something on previous question. however it is still staisfying to obtain answer 0 - which means there is nobody in the data set who has any NAs in first 4 questions who has typed anything in <code>q_0006</code>. We can use this methiod for further checks in other pages.</p>
 </div>
 </div>
-<div id="done" class="section level1">
-<h1>Done</h1>
-<ul>
-<li>add a column with name</li>
-<li>merge all the data : analysis in the whole europe (TG) <a href="http://www.r-bloggers.com/string-concatenation-in-r/" class="uri">http://www.r-bloggers.com/string-concatenation-in-r/</a></li>
-<li><p>number of trainee in each country (TG) principle - list directories read that list into a vector then for each element of the vector (i.e. country name) and all the syntax files for that reason also start with the country name so if country name is a variable we simply subsititute that variable into the script when we loop over the list (i.e. the vector) containing names of durectories</p></li>
-<li><p>Europe map: R actually has good mapping capabilities. We should be able to produce plots of Europe with each country in colour depending on the particular variable in that country. A heatmap of sorts, where the word “map” is for real (TG) Done</p></li>
-<li><p>Ask help for statistical inference ? MOOC : <a href="https://www.coursera.org/learn/statistical-inference/home/welcome" class="uri">https://www.coursera.org/learn/statistical-inference/home/welcome</a></p></li>
-<li><p>NB : change labels in the analysis file not in syntax file</p></li>
-<li>UEMS recommandation abline <a href="http://stat.ethz.ch/R-manual/R-devel/library/graphics/html/abline.html" class="uri">http://stat.ethz.ch/R-manual/R-devel/library/graphics/html/abline.html</a> Done - * <em>?</em> just a thought: what data we are trying to show by it? Perhaps we best show percentage differences between awareness and implementation awareness?</li>
-<li><p>Mean European abline</p></li>
-</ul>
-<p>q9df &lt;- data[,16:21]</p>
-\newpage
-</div>
-<div id="to-use-git-after-installation" class="section level1">
-<h1>To use git (after installation)</h1>
-<ul>
-<li><p>cd to the appropriate repo !!!</p></li>
-<li>git status</li>
-<li><p>git pull origin master</p></li>
-<li><p>modify stuff</p></li>
-<li>git status</li>
-<li>git add .</li>
-<li>git commit -m “my message”</li>
-<li><p>git push origin master</p></li>
-</ul>
 </div>
 
 

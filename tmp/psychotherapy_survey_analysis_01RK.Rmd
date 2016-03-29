@@ -2,12 +2,12 @@
 title: "Psychotherapy Study"
 author: "Roberts Klotins and Thomas Gargot"
 date: "March, 21th 2016"
-output: 
-  pdf_document: 
-    toc: yes
+output: pdf_document
+toc: yes
+css: style.css
 ---
 
-![](../tmp/cropped-banner_efpt.jpg)
+![](./cropped-banner_efpt.jpg)
 
 # EFPT
 The European Federation of psychiatric trainees (EFPT) is an independent federation of psychiatric trainees associations. It represents the consensus of psychiatric trainees organizations across European countries and advocates for what training should look like, regardless of the country. 
@@ -47,11 +47,19 @@ See all UEMS reports related to [psychiatry training](http://uemspsychiatry.org/
 # Get the data
 You can download our data and our analysis script on [GitHub](https://github.com/r0bis/efptPWG).
 
-```{r, include = FALSE}
-#install.packages(c("lattice", "ggplot2", "likert", "rmarkdown", "maps", "mapdata"))
-library (lattice)
+
+```{r setup, echo=FALSE, message=FALSE}
+# set variables that in main analysis may be auto-generated
+# i.e. on every iteration replaced from list
+# country <- "Belgium"
+###
+# prepare for plots - get libraries and paths right
+# LOAD libraries
 library(ggplot2)
 library(knitr)
+library(RColorBrewer)
+library(gridExtra)
+library(ggthemes)
 library(likert)
 library(plyr)
 library(rmarkdown)
@@ -59,65 +67,96 @@ library(stringr)
 library(Hmisc)
 library(choroplethr)
 library(choroplethrMaps)
-search()
+# SET library options
+###
+knitr::opts_chunk$set(echo = TRUE)
+# PATHS - get data and change back
+###
+curDir <- getwd()
+setwd("~/src/efptPWG/")
+# setwd(paste("~/src/efptPWG/data/",country, sep=""))
+# source(paste(country,"_R_syntax_file.R", sep=""))
+# setwd(curDir)
+# print("This was chunk 1 setup")
 ```
 
-```{r, echo=FALSE, include=FALSE}
-#Set working directory
-setwd("~/src/efptPWG/bin")
-getwd()
 
-## Import the data and change the variables names
-readEFPTfiles <- function(f) {
-  if (as.character(f)!="") {
-    oldwd <- getwd()
-    z <- file.path("..","data",f)
-    setwd(z)
-    source(paste(f,"_R_syntax_file.R",sep = ""),local = T)
-    toGlEnvFrame <- data[str_detect(colnames(data),"^id$|^q_.*")]
-    parentFrame <- paste(f,"_data",sep = "")
-    assign(parentFrame,toGlEnvFrame,envir=.GlobalEnv)
-    setwd(oldwd)
-    }
-  else {print("")}
+```{r rFunctions, echo = FALSE}
+### FUNCTIONS
+# PIE charts in ggplot
+ggpie <- function (dat, by, totals, plotTitle) {
+  ggplot(dat, aes_string(x=factor(1), y=totals, fill=by)) +
+    geom_bar(stat='identity', color='black', width=1) +
+    guides(fill=guide_legend(override.aes=list(colour=NA))) + 
+    coord_polar(theta='y') +
+    ggtitle(plotTitle) +
+    # theme(axis.ticks=element_blank(),
+    #       axis.text.y=element_blank(),
+    #       axis.text.x=element_text(colour='black'),
+    #       axis.title=element_blank()) +
+    #scale_y_continuous(breaks=cumsum(dat[[totals]]) - dat[[totals]] / 2, labels=dat[[by]])
+    scale_y_continuous(breaks=cumsum(dat[[totals]]) - dat[[totals]] / 2, labels=c("F","M"))
 }
 
-dat.files  <- list.files(path="..", recursive=F, pattern=".*syntax_file.R$",full.names=F)
-dat.dirs  <- list.dirs(path="../data/", recursive=T,full.names=F)
+# This function will return only those rows that do not have NAs in specified columns
+completeFun <- function(data, desiredCols) {
+  completeVec <- complete.cases(data[ ,desiredCols])
+  return(data[completeVec, ])
+}
 
-sapply(dat.dirs, readEFPTfiles)
+### THEMES
+# PIE: theme elements to be applied last to our piechart
+theme_pieChart <- theme(axis.ticks=element_blank(),
+          axis.text.y=element_blank(),
+          axis.text.x=element_text(colour='black'),
+          axis.title=element_blank())
+# BLANK: theme to make plot background and panel background blank
+theme_blank <- theme(panel.background=element_blank(), plot.background=element_blank())
 
-correctColumns <- colnames(Bulgaria_data)
-incorrectColumns <- colnames(Czech_Republic_data)
-setdiff(correctColumns,incorrectColumns)
+### COLOURS
+# 5, 3  and 2 diverging colours for our (likert) plots
+colours5 <- c("#d7191c", "#fdae61", "#ffffbf","#abdda4","#2b83ba")
+colours3 <- c("#fc8d59", "#ffffbf", "#99d594")
+colours2 <- c("#f1a340", "#998ec3")
+gradHigh <- "#005a32"
+gradLow <- "#a1d99b"
+# print('This WAS chunk 2 - for functions')
+```
 
-Czech_Republic_data["q_0000"] <- as.factor("Czech Republic")
-Czech_Republic_data["q_0012_other"] <- as.numeric(NA)
-Czech_Republic_data <- Czech_Republic_data[colnames(Bulgaria_data)]
 
-Slovenia_data["q_0000"] <- as.factor("Slovenia")
-Slovenia_data["q_0012_other"] <- as.numeric(NA)
-Slovenia_data <- Slovenia_data[colnames(Bulgaria_data)]
+```{r get_Data, echo=FALSE, include=FALSE}
+# this will read in all data 
+source("~/src/efptPWG/tmp/read_all_countries.R")
 
-<<<<<<< HEAD
-# France_data$q_0000 <- ifelse((is.na(France_data$q_0000)==FALSE), c("France"), c(NA)) 
-=======
-#France_data$q_0000 <- ifelse((is.na(France_data$q_0000)==FALSE), c("France"), c(NA))
->>>>>>> 35ec8882c34039020e9d5a7d99d90a0ad9ce933a
-### List of countries studied
-list <- list.files("data", full.names=FALSE)
-print(list)
+## Import the data and change the variables names
+# then bind the datasets together
 
 ### Binding datasets
-listof.df <- lapply(ls(), function(x) if (class(get(x)) == "data.frame") get(x))
+# below line works only if we do not have any other dataframes in the environmnt
+# listof.df0 <- lapply(ls(), function(x) if (class(get(x)) == "data.frame") get(x))
+# I do not understand this call completely, but restrict it to only dfs ending in "_data" 
+listof.df <- lapply(ls(pattern = "*_data"), function(x) if (class(get(x)) == "data.frame") get(x))
+# the next would create vector of DF names matching the pattern
+# vector_of_DFnames <- ls(pattern = "*_data")[sapply(mget(ls(pattern = "*_data"), .GlobalEnv), is.data.frame)]
+
 data_Europe <- do.call("rbind", listof.df)
+# set up columns  that we will filter for NA data
+# in the first instance demographics in the 1st page:
+naS1stpg <- c("q_0001", "q_0002", "q_0003", "q_0004")
+
+nrow(completeFun(data_Europe,naS1stpg)) - nrow(data_Europe)
+nrow(completeFun(data_Europe,"q_0006"))
+nrow(completeFun(data_Europe[,data_Europe$q_0006 != is.na(data_Europe$q_0006)], naS1stpg))
+
 ```
 
 # European results
-```{r,include = FALSE}
+```{r euro_props, eval=FALS , include = FALSE}
 dim(data_Europe)
 str(data_Europe)
 summary(data_Europe)
+# this will show how many NAs we have per column
+apply(data_Europe, 2, function(x) length(which(is.na(x))))
 ```
 
 ## Number of participants

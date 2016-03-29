@@ -2,9 +2,9 @@
 title: "Psychotherapy Study"
 author: "Roberts Klotins and Thomas Gargot"
 date: "March, 11th 2016"
-output: 
-  pdf_document: 
-    toc: yes
+output: pdf_document: 
+toc: yes
+css: simple.css
 ---
 
 # EFPT

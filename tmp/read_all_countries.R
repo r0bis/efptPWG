@@ -9,7 +9,7 @@ dat.dirs  <- list.dirs(path="../data/", recursive=T,full.names=F)
 readEFPTfiles <- function(f) {
   if (as.character(f)!="") {
     oldwd <- getwd()
-    print(oldwd)
+    # print(oldwd)
     #setwd(file.path("..","data",f))
     setwd(paste("~/src/efptPWG/data/",f,sep=""))
     source(paste(f,"_R_syntax_file.R",sep = ""),local = T)
@@ -21,6 +21,7 @@ readEFPTfiles <- function(f) {
   else {print("")}
 }
 # what it does:
+# first line checks for the blank line "" (and only does something if directory name is not "")
 # parentFrame - is a string for naming the data frame in the global environment
 # toGlEnvFrame - is the read data frame that has only columns detected byt the regexp
 # regexp "^id$|^q_.*"  - consists of id OR begins with q_ and ends whatever
