@@ -23,11 +23,11 @@ Then give list of actual survey countries:
 
 |Ctry								| Count	|
 |---------------------------------------------------------------|:-----:|
-|Switzerland                                                    |   2	|
-|Belarus                                                        |   1	|
-|Croatia                                                        |   1	|
-|Serbia                                                         |   1	|
-|United Kingdom                                                 |   1	|
+|Switzerland                                                    |   2   |
+|Belarus                                                        |   1   |
+|Croatia                                                        |   1   |
+|Serbia                                                         |   1   |
+|United Kingdom                                                 |   1   |
 
 Probably these values can be traced back in the original survey data frames and can be set to correct values either during reading, or used as they are. Well, I am not too sure about that 2nd option. 
 
@@ -52,6 +52,8 @@ namely question `q_0005_S*` and `q_0009_S*` options will always be set. So we co
 
 ### check if those who have answered in question `q_0006`are not excluded
 
-`nrow(completeFun(data_Europe[!rowSums(is.na(data_Europe[12])),],naS1stpg)) - nrow(data_Europe[!rowSums(is.na(data_Europe[12])),])`
+```r
+  nrow(completeFun(data_Europe[!rowSums(is.na(data_Europe[12])),],naS1stpg)) - nrow(data_Europe[!rowSums(is.na(data_Europe[12])),])
+```
   
 well that was a bit silly - I forgot that those who answered this question must have entered something on previous question. however it is still satisfying to obtain answer 0 - which means there is nobody in the data set who has any NAs in first 4 questions who has typed anything in `q_0006`. We can use this method for further checks in other pages.

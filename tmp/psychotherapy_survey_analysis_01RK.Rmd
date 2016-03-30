@@ -119,7 +119,7 @@ colours5 <- c("#d7191c", "#fdae61", "#ffffbf","#abdda4","#2b83ba")
 colours3 <- c("#fc8d59", "#ffffbf", "#99d594")
 colours2 <- c("#f1a340", "#998ec3")
 gradHigh <- "#005a32"
-gradLow <- "#a1d99b"
+gradLow <- "#78c679"
 # print('This WAS chunk 2 - for functions')
 ```
 
@@ -143,24 +143,50 @@ data_Europe <- do.call("rbind", listof.df)
 # set up columns  that we will filter for NA data
 # in the first instance demographics in the 1st page:
 naS1stpg <- c("q_0001", "q_0002", "q_0003", "q_0004")
+# obtain set without NAs in the above columns
+data_Europe_clean <- completeFun(data_Europe,naS1stpg)
 
-nrow(completeFun(data_Europe,naS1stpg)) - nrow(data_Europe)
-nrow(completeFun(data_Europe,"q_0006"))
-nrow(completeFun(data_Europe[,data_Europe$q_0006 != is.na(data_Europe$q_0006)], naS1stpg))
-
+# nrow(completeFun(data_Europe,naS1stpg)) - nrow(data_Europe)
+# nrow(completeFun(data_Europe,"q_0006"))
+# nrow(completeFun(data_Europe[,data_Europe$q_0006 != is.na(data_Europe$q_0006)], naS1stpg))
+# this will show how many NAs we have per column
+# apply(data_Europe, 2, function(x) length(which(is.na(x))))
 ```
 
 # European results
-```{r euro_props, eval=FALS , include = FALSE}
-dim(data_Europe)
-str(data_Europe)
-summary(data_Europe)
-# this will show how many NAs we have per column
-apply(data_Europe, 2, function(x) length(which(is.na(x))))
+```{r euro_props, eval = FALSE , include = FALSE}
+# we don't need this for now so not evaluating this chunk
+# dim(data_Europe)
+# str(data_Europe)
+# summary(data_Europe)
+
 ```
 
 ## Number of participants
-```{r, echo = FALSE}
+```{r country_response, echo=FALSE}
+countryanswers <- as.data.frame(sort(table(na.omit(data_Europe_clean$q_0000)), decreasing = TRUE))
+colnames(countryanswers) <- c("count")
+countryanswers["country"] <- rownames(countryanswers)
+ca <- countryanswers[countryanswers$count > 2,]
+meanResp <- round(mean(ca$count))
+# plot the data
+partPlot <- ggplot(ca, aes(reorder(x = country, count), y = count, fill=count )) + 
+  geom_bar(stat = "identity") +
+  scale_fill_gradient(low = gradLow, high = gradHigh) +
+  theme_tufte() +
+  theme(axis.title=element_blank(), plot.margin=unit(c(0.1,0.1,0.1,1),"cm"))
+# construct string for label
+labPNumber <- paste("Number of answers: ", sum(ca$count), "\n", "from ", nrow(ca) , " countries \n", 
+                    "Mean number of answers", meanResp, "\n", 
+                    "Top five: Romania, France, Slovenia, \n Czech Republic, Italy")
+partPlot + coord_flip() +   annotate("text",label = labPNumber, x =4.55, y = 85.7, hjust = 'right') +
+  geom_hline(yintercept = round(mean(ca$count))) + 
+  geom_text(aes(0,meanResp,label = paste("Mean : ", meanResp), vjust = -2, hjust = -0.5))
+
+
+```
+
+```{r,  eval = FALSE, echo = FALSE}
 # table(data_Europe[which(complete.cases(data_Europe$q_0000)==TRUE),]$q_0000)
 countryanswers <- sort(table(data_Europe$q_0000), decreasing = FALSE)
 answering_countries <- countryanswers[which (countryanswers > 0)]
