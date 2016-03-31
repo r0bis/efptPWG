@@ -66,3 +66,36 @@ gb1 <- gb1 +ggtitle("Age distribution")
  # put them in one 
 grid.arrange(gp,gb1,nrow=1)
 
+
+
+```{r page_01, echo=FALSE, warning=FALSE, message=FALSE, eval=FALSE}
+blank<-rectGrob(gp=gpar(col="white"))
+grid.arrange(gg.sex,gg.YoT,blank,blank,gg.InTh,gg.age, heights=c(0.45,0.05,0.45),nrow=3, ncol=2, widths=c(0.45,0.55))
+```
+
+```{r pageBreak_01, echo=FALSE, results='asis', eval=FALSE}
+cat("\n\n\\pagebreak\n")
+```
+
+```{r response_Map, echo=FALSE, warning=FALSE, eval=FALSE}
+names <- names(countryanswers)
+namesLower <- upFirst(names, alllower=TRUE)
+
+#Replace the upper cases by lower cases
+DF <- data.frame(namesLower, countryanswers, stringsAsFactors=FALSE)
+names(DF) <- c("region", "value")
+
+# change serbia by republic of serbia
+DF[which(DF$region=="serbia"),1] <- "republic of serbia"
+
+# deleting malta which is not in your regions
+DF <-DF[-which(DF$region=="malta" | DF$region=="andorra" | DF$region=="liechtenstein" | DF$region=="monaco" | DF$region=="san marino"),]
+
+## Problem with France data
+DF <- DF[-26,]
+## Discussion here
+
+country_choropleth(DF,
+                   legend = "Number",
+                   zoom = c("albania", "armenia", "austria", "azerbaijan", "belgium", "bosnia and herzegovina", "belarus", "bulgaria", "croatia",   "cyprus"  , "czech republic", "denmark", "greece", "estonia", "finland", "france",  "georgia", "germany", "hungary", "iceland", "kazakhstan", "luxembourg", "netherlands", "norway", "ireland", "israel", "italy", "ireland", "latvia", "lithuania", "macedonia", "moldova", "montenegro", "poland", "portugal", "romania", "russia", "slovakia", "slovenia", "spain", "sweden", "switzerland", "united kingdom", "republic of serbia", "turkey", "ukraine")) + xlim(-20,30) + ylim(30,75) + ggtitle("Participants of the study") + theme(plot.title = element_text(lineheight=15, face="bold"))
+```
