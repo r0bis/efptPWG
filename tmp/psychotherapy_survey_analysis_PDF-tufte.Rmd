@@ -3,8 +3,6 @@ title: "Psychotherapy Study"
 author: "Roberts Klotins and Thomas Gargot"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: rmarkdown::tufte_handout
-css: style.css
-toc: true
 ---
 
 ![width='100%'](./cropped-banner_efpt.jpg)
@@ -87,7 +85,7 @@ setwd("~/src/efptPWG/")
 # PIE charts in ggplot
 ggpie <- function (dat, by, totals, plotTitle) {
   ggplot(dat, aes_string(x=factor(1), y=totals, fill=by)) +
-    geom_bar(stat='identity', color='black', width=1) +
+    geom_bar(stat='identity', width = 1) +
     guides(fill=guide_legend(override.aes=list(colour=NA))) + 
     coord_polar(theta='y') + 
     # ggtitle(plotTitle) +
@@ -108,8 +106,7 @@ completeFun <- function(data, desiredCols) {
 ### THEMES
 # PIE: theme elements to be applied last to our piechart
 theme_pieChart <- theme(axis.ticks=element_blank(),
-          axis.text.y=element_blank(),
-          axis.text.x=element_text(colour='black'),
+          axis.text=element_blank(),
           axis.title=element_blank())
 # BLANK: theme to make plot background and panel background blank - for likerts
 theme_blank <- theme(panel.background=element_blank(), plot.background=element_blank())
@@ -126,6 +123,7 @@ colours4 <- c("#d7191c", "#fdae61", "#abdda4", "#2b83ba")
 colours4qual <- c("#66c2a5", "#fc8d62", "#8da0cb", "#e78ac3")
 colours4train <- c("#238b45", "#74c476", "#fc9272", "#bae4b3")
 colours3 <- c("#fc8d59", "#ffffbf", "#99d594")
+colours3qual <- c("#8dd3c7", "#ffffb3", "#bebada")
 colours2 <- c("#f1a340", "#998ec3")
 colours2div <- c("#fdae61", "#abdda4")
 gradHigh <- "#005a32"
@@ -168,7 +166,7 @@ data_Europe_clean <- completeFun(data_Europe,naS1stpg)
 # we don't need this for now so not evaluating this chunk
 # dim(data_Europe)
 # str(data_Europe)
-# summary(data_Europe)
+# summary(data_Europe_clean)
 ```
 \justify
 \newthought{Aggregate European dataset is quite large.} Data are collected in different tables, but because thay are of the same format we can easily bind them together and perform summarisation and analysis as needed. Further thoughts would be to see how countries differ along the main parameters. For that we have to look carefully at the data from Europe to formulate further questions of interest that can be answered by this data set. 
@@ -309,19 +307,8 @@ gg.InTr
 
 ```
 
-```{r test_table, results='asis', echo=FALSE, eval=FALSE}
-options(xtable.comment = FALSE)
-options(xtable.booktabs = TRUE)
-# df.Q5other <- as.data.frame(data_Europe_clean$q_0005_other[!is.na(data_Europe_clean$q_0005_other)])
-# colnames(df.Q5other) <- c("Other answers")
-# xt.Q5other <- xtable(df.Q5other, caption = "Other responses to the question whether trainees have trained in psychotherapy")
-# align(xt.Q5other) <- c('l', 'p{4in}')
-# print(xt.Q5other)
-setwd(oldwd)
-print(xtable(df.sex, caption="Sex table"))
-```
 
-```{r table2, echo=FALSE, results='asis'}
+```{r table1_OtherTr, echo=FALSE, results='asis'}
 cat("\n\n\\newpage\n")
 options(xtable.comment = FALSE)
 options(xtable.booktabs = TRUE)
@@ -331,18 +318,53 @@ xt.Q5other <- xtable(df.Q5other, caption = "Other responses to the question whet
 align(xt.Q5other) <- c('l', 'p{4in}')
 print(xt.Q5other)
 setwd(oldwd)
-cat("\n\n\\clearpage\n")
+# cat("\n\n\\clearpage\n")
 
 ```
 
 This was an overview of the `r length(data_Europe_clean$q_0005_other[!is.na(data_Europe_clean$q_0005_other)])` answers provided in the other option.
+
+# What psychotherapy modality have you trained in? 
+
+This was an optional question presented to only those `r length((data_Europe_clean$q_0005_other)) - length(na.omit(data_Europe_clean$q_0005_other))` respondents who had answered positively to the previous question i.e. those who had trained in any modality of psychotherapy. We wanted to get a qualitative overview as to what therapies they had trained in. Since this number is quite large we can only present you with a sample summary of these `r length(na.omit(data_Europe_clean$q_0006))` answers, but to give a feel for what they were like we have included the first 12 rows of these answers.
+
+```{r what_Modality, echo=FALSE, results='asis'}
+
+df.Modality <- as.data.frame(head(na.omit(data_Europe_clean$q_0006),4))
+colnames(df.Modality) <- c("Experience in modality")
+xt.Modality <- xtable(df.Modality, caption = "What modality have trainees had experience with")
+align(xt.Modality) <- c('l', 'p{3.5in}')
+print(xt.Modality)
+
+```
+## Summary of psychotherapeutic methods that trainees had experience in
+
+We summarised data along the following categories after reading them manually. `r stri_rand_lipsum(2)`
+
+# Your preferences - the second group of questions
+
+\newthought{Is psychotherapy training important for your professional identity as 
+a psychiatrist?} was the key question in the mind of several creators of this survey. We expected quite clear preference one way or the other, but we wanted to also give an opportunity to not have to choose. We expected that there might be quite a large group of people who would answer I don't know. However we were somewhat surprised by the results:
+
+```{r prof_Identity, echo=FALSE, fig.cap="Importance of psychotherapy for professional identity"}
+df.Identity <- data_Europe_clean$q_0007
+df.Identity <- as.data.frame(table(data_Europe_clean$q_0007))
+colnames(df.Identity) <- c("Answer", "Frequency")
+gg.Identity <- ggpie(df.Identity,'Answer','Frequency',"tada") + 
+  theme_tufte() + 
+  scale_fill_manual(values = colours3qual) +
+  theme_pieChart
+gg.Identity
+
+
+```
 
 
 # Concluding notes
 
 ```{r conclusions, echo=FALSE, warning=FALSE, results='asis'}
 cat("\n\n\\justify\n")
-stri_rand_lipsum(2)
+stri_rand_lipsum(1)
 cat("\n\n\\newpage\n")
 ```
 
