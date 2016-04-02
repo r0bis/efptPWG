@@ -4,8 +4,10 @@ author: "Roberts Klotins and Thomas Gargot"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: rmarkdown::tufte_handout
 ---
+\begin{figure*}
+\includegraphics{././cropped-banner_efpt.jpg}
+\end{figure*}
 
-![width='100%'](./cropped-banner_efpt.jpg)
 \tableofcontents
 
 # EFPT
@@ -66,6 +68,7 @@ library(Hmisc)
 library(choroplethr)
 library(choroplethrMaps)
 library(stringi)
+library(pander)
 # SET library options
 ###
 knitr::opts_chunk$set(echo = TRUE)
@@ -282,7 +285,7 @@ gg.InTh
 
 \newthought{Was the trainee in psychotherapy training?} This question was somewhat multifacted. We recognise that some trainees might have partial ir full training in psychotherapy training within their training programme in psychiatry. However by experience we also knew that many trainees undertook training outside their training programme - most often paying for that out of their own pocket. We therefore asked to tell who were in psychotherapy training, whether their training had been completed previously. To account for unusual situations we also provided an opportuinty to choose _Other_ in response and to provide a textual summary of that.  
   
-\newthought{And as we can see} this can be quite interesting. `r stri_rand_lipsum(2)`
+\newthought{And as we can see} this can be quite interesting. `r stri_rand_lipsum(1)`
 
 
 ```{r in_Training, echo=FALSE, warning=FALSE, fig.cap="Whether respondents were in training", results='asis'}
@@ -316,7 +319,8 @@ df.Q5other <- head(as.data.frame(data_Europe_clean$q_0005_other[!is.na(data_Euro
 colnames(df.Q5other) <- c("Other answers")
 xt.Q5other <- xtable(df.Q5other, caption = "Other responses to the question whether trainees have trained in psychotherapy")
 align(xt.Q5other) <- c('l', 'p{4in}')
-print(xt.Q5other)
+print(xt.Q5other, table.placement ="!h")
+# pandoc.table(df.Q5other, caption="Table about Other", justify = 'left', split.cells = 75)
 setwd(oldwd)
 # cat("\n\n\\clearpage\n")
 
@@ -326,7 +330,7 @@ This was an overview of the `r length(data_Europe_clean$q_0005_other[!is.na(data
 
 # What psychotherapy modality have you trained in? 
 
-This was an optional question presented to only those `r length((data_Europe_clean$q_0005_other)) - length(na.omit(data_Europe_clean$q_0005_other))` respondents who had answered positively to the previous question i.e. those who had trained in any modality of psychotherapy. We wanted to get a qualitative overview as to what therapies they had trained in. Since this number is quite large we can only present you with a sample summary of these `r length(na.omit(data_Europe_clean$q_0006))` answers, but to give a feel for what they were like we have included the first 12 rows of these answers.
+This was an optional question presented to only those `r length((data_Europe_clean$q_0005_other)) - length(na.omit(data_Europe_clean$q_0005_other))` respondents who had answered positively to the previous question i.e. those who had trained in any modality of psychotherapy. We wanted to get a qualitative overview as to what therapies they had trained in. Since this number is quite large we can only present you with a sample summary of these `r length(na.omit(data_Europe_clean$q_0006))` answers, but to give a feel for what they were like we have included the first 4 rows of these answers.
 
 ```{r what_Modality, echo=FALSE, results='asis'}
 
@@ -334,7 +338,7 @@ df.Modality <- as.data.frame(head(na.omit(data_Europe_clean$q_0006),4))
 colnames(df.Modality) <- c("Experience in modality")
 xt.Modality <- xtable(df.Modality, caption = "What modality have trainees had experience with")
 align(xt.Modality) <- c('l', 'p{3.5in}')
-print(xt.Modality)
+print(xt.Modality, table.placement="!h")
 
 ```
 ## Summary of psychotherapeutic methods that trainees had experience in

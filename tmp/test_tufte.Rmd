@@ -2,10 +2,14 @@
 title: "Tufte Handout"
 author: "John Smith"
 date: "August 13th, 2014"
-output: rmarkdown::tufte_handout
+output:  rmarkdown::tufte_handout
 ---
 \centering
-![width='100%'](./cropped-banner_efpt_1200.jpg)
+
+\begin{figure*}
+\includegraphics{././cropped-banner_efpt.jpg}
+\end{figure*}
+
 \raggedright
 \tableofcontents
 \clearpage
@@ -24,11 +28,28 @@ An error is emitted if you try to use `###` and smaller headings.
 
 You can use the **xtable** package to format \LaTeX\ tables that integrate well with the rest of the Tufte handout style. Note that it's important to set the `xtable.comment` and `xtable.booktabs` options as shown below to ensure the table is formatted correctly for inclusion in the document.
 
-```{r, results='asis'}
+```{r tables, echo=FALSE, results='asis'}
 library(xtable)
 options(xtable.comment = FALSE)
 options(xtable.booktabs = TRUE)
-xtable(head(mtcars[,1:6]), caption = "First rows of mtcars")
+df.test <- as.data.frame(head(mtcars[,1:4],14))
+xt.test <- xtable(df.test, caption = "First  rows of mtcars")
+print(xt.test, table.placement="!h")
+```
+## Using pander
+
+```{r lipsum_load, echo=FALSE}
+
+library(stringi)
+
+```
+
+Another option is of course the **pander** package to format \LaTeX\ tables. `r stri_rand_lipsum(1)`
+
+```{r panderdemo, echo=FALSE}
+library(pander)
+pander(head(mtcars[,1:6]), caption = "First rows of mtcars")
+
 ```
 
 # Figures
@@ -75,7 +96,7 @@ qplot(factor(cyl), mpg, data = mtcars, geom = "boxplot")
 
 # Sidenotes
 
-One of the most prominent and distinctive features of this style is the extensive use of sidenotes. There is a wide margin to provide ample room for sidenotes and small figures. Any use of a footnote will automatically be converted to a sidenote. ^[This is a sidenote that was entered using a footnote.] 
+One of the most prominent and distinctive features of thalign(xt.Modality) <- c('l', 'p{3.5in}')is style is the extensive use of sidenotes. There is a wide margin to provide ample room for sidenotes and small figures. Any use of a footnote will automatically be converted to a sidenote. ^[This is a sidenote that was entered using a footnote.] 
 
 If you'd like to place ancillary information in the margin without the sidenote mark (the superscript number), you can use the `\marginnote` command. \marginnote{This is a margin note.  Notice that there isn't a number preceding the note.}
 
