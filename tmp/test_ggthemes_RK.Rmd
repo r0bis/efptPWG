@@ -1,0 +1,94 @@
+# USEFUL stuff for plot themes
+
+
+library (lattice)
+library(ggplot2)
+library(knitr)
+library(likert)
+library(plyr)
+library(rmarkdown)
+library(stringr)
+library(Hmisc)
+library(choroplethr)
+library(choroplethrMaps)
+library(ggthemes)
+
+
+
+## Plot: Satisfaction group
+perhaps we should use likert package to plot likert type items
+
+```{r}
+# make auxiliary table to hold our likert Czech_Republic_data
+sat1<-Czech_Republic_data[,43:45]))
+# put in correct row names
+sat1 <- rename(sat1,c("q_0019_SQ001"="I am satisfied with psychotherapy component in my training programme",
+                      "q_0019_SQ002"="I am satisfied with psychotherapy training options in my country",
+                      "q_0019_SQ003"="I am satisfied with the level of funding for psychotherapy training within psychiatry in my country"
+))
+sat12<-likert(sat1)
+plot(sat12)
+# comment out barplots for now
+# barplot(table(Czech_Republic_data$q_0019_SQ001), main ="I am satisfied with Psychotherapy component in my training programme")
+
+# well, let's deal with UEMS bits as with likert scales
+uems1 <- Czech_Republic_data[,46:54]
+uems1[,1] <- factor(uems1[,1],c("No","Uncertain","Yes"))
+uems1[,2] <- factor(uems1[,2],c("No","Uncertain","Yes"))
+uems1[,3] <- factor(uems1[,3],c("No","Uncertain","Yes"))
+uems1[,4] <- factor(uems1[,4],c("No","Uncertain","Yes"))
+uems1[,5] <- factor(uems1[,5],c("No","Uncertain","Yes"))
+uems1[,6] <- factor(uems1[,6],c("No","Uncertain","Yes"))
+uems1[,7] <- factor(uems1[,7],c("No","Uncertain","Yes"))
+uems1[,8] <- factor(uems1[,8],c("No","Uncertain","Yes"))
+uems1[,9] <- factor(uems1[,9],c("No","Uncertain","Yes"))
+# Put nice column names for the plot
+uems1 <- rename(uems1,c(
+  q_0021_SQ001="Psychotherapy is a mandatory part of the curriculum",
+  q_0021_SQ002="Defined number of cases should be seen",
+  q_0021_SQ003="at least 120 hours of theory",
+  q_0021_SQ004="Work experience with individuals, family, groups",
+  q_0021_SQ005="Psychodynamic, CBT, systemic - and maybe integrative",
+  q_0021_SQ006="Personal therapy is recommended",
+  q_0021_SQ007="Supervisors should be qualified",
+  q_0021_SQ008="Regular supervision at least for 100 hours",
+  q_0021_SQ009="Training should be publicly funded"
+))
+## Plot: UEMS recs awareness
+uems12 <- likert(uems1)
+plot(uems12) +
+  ggtitle("Awareness of UEMS recommendations") +
+  theme(plot.title = element_text(lineheight=.8, face="bold"))
+```
+
+## Plot: UEMS recommendations awareness
+```{r UEMS_rec}
+# and same with the
+uems2 <- Czech_Republic_data[,55:63]
+uems2[,1] <- factor(uems2[,1],c("No","Uncertain","Yes"))
+uems2[,2] <- factor(uems2[,2],c("No","Uncertain","Yes"))
+uems2[,3] <- factor(uems2[,3],c("No","Uncertain","Yes"))
+uems2[,4] <- factor(uems2[,4],c("No","Uncertain","Yes"))
+uems2[,5] <- factor(uems2[,5],c("No","Uncertain","Yes"))
+uems2[,6] <- factor(uems2[,6],c("No","Uncertain","Yes"))
+uems2[,7] <- factor(uems2[,7],c("No","Uncertain","Yes"))
+uems2[,8] <- factor(uems2[,8],c("No","Uncertain","Yes"))
+uems2[,9] <- factor(uems2[,9],c("No","Uncertain","Yes"))
+
+# Put nice column names for the plot
+uems2 <- rename(uems2,c(
+  q_0022_SQ001="Psychotherapy is a mandatory part of the curriculum",
+  q_0022_SQ002="Defined number of cases should be seen",
+  q_0022_SQ003="at least 120 hours of theory",
+  q_0022_SQ004="Work experience with individuals, family, groups",
+  q_0022_SQ005="Psychodynamic, CBT, systemic - and maybe integrative",
+  q_0022_SQ006="Personal therapy is recommended",
+  q_0022_SQ007="Supervisors should be qualified",
+  q_0022_SQ008="Regular supervision at least for 100 hours",
+  q_0022_SQ009="Training should be publicly funded"
+))
+uems22 <- likert(uems2)
+plot(uems22) +
+  ggtitle("Actual implementation in the country") +
+  theme(plot.title = element_text(lineheight=.8, face="bold"))
+```

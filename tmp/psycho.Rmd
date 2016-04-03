@@ -46,6 +46,7 @@ See all UEMS reports related to [psychiatry training](http://uemspsychiatry.org/
 
 # Get the data
 You can download our data and our analysis script on [GitHub](https://github.com/r0bis/efptPWG).
+
 ```{r, include = FALSE}
 #install.packages(c("lattice", "ggplot2", "knitr", "plyr", likert", "rmarkdown", "maps", "mapdata","stringr"))
 library (lattice)
@@ -98,7 +99,11 @@ Slovenia_data["q_0000"] <- as.factor("Slovenia")
 Slovenia_data["q_0012_other"] <- as.numeric(NA)
 Slovenia_data <- Slovenia_data[colnames(Bulgaria_data)]
 
+<<<<<<< HEAD
+# France_data$q_0000 <- ifelse((is.na(France_data$q_0000)==FALSE), c("France"), c(NA)) 
+=======
 #France_data$q_0000 <- ifelse((is.na(France_data$q_0000)==FALSE), c("France"), c(NA))
+>>>>>>> 35ec8882c34039020e9d5a7d99d90a0ad9ce933a
 ### List of countries studied
 list <- list.files("data", full.names=FALSE)
 print(list)

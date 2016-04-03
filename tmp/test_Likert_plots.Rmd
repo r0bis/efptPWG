@@ -1,0 +1,63 @@
+---
+title: "Demographics plots"
+author: "Robert"
+date: "26th March 2016"
+output: pdf_document
+---
+
+This piece of markdown explores how to do markdown reports using `ggplot` graphs, displaying textual data in tables using `kable`, and naming rmarkdown chunks so that they can be referred to from other chunks.
+
+```{r setup, echo=FALSE, message=FALSE}
+# set variables that in main analysis may be auto-generated
+# i.e. on every iteration replaced from list
+country <- "Belgium"
+# prepare for plots - get libraries and paths right
+library(ggplot2)
+library(knitr)
+library(RColorBrewer)
+library(gridExtra)
+library(ggthemes)
+library(likert)
+library(plyr)
+# set loaded library options
+# knitr::opts_chunk$set(echo = TRUE)
+# paths - get data and change back
+curDir <- getwd()
+setwd(paste("~/src/efptPWG/data/",country, sep=""))
+source(paste(country,"_R_syntax_file.R", sep=""))
+setwd(curDir)
+# theme_set(theme_few())
+# print("This was chunk 1")
+```
+
+
+## Plot: Satisfaction group
+Using likert package
+
+```{r plot_satisfaction, echo=FALSE, message=FALSE}
+# make auxiliary table to hold our likert data
+sat1<-data[,c("q_0019_SQ001", "q_0019_SQ002", "q_0019_SQ003")]
+# put in correct row names
+sat1 <- rename(sat1,c("q_0019_SQ001"="... component in my training programme",
+  "q_0019_SQ002"="... training options",
+  "q_0019_SQ003"="... level of funding"
+  ))
+
+
+p <- likert(sat1)
+plot(p, colors=c("#d7191c", "#fdae61", "#ffffbf","#abdda4","#2b83ba"),  wrap=25, text.size = 3.7, centered = FALSE, legend.position = "bottom") + ggtitle("I am satisfied with...") +
+  theme(panel.background=element_blank(), plot.background=element_blank(), axis.text=element_text(size=12), legend.title=element_blank()) #+
+  #guides(fill=guide_legend(nrow=2,byrow=TRUE))
+
+# sat12<-likert(sat1) 
+#plot(sat12, low.color="Red" , high.color="Green", neutral.color="grey80") 
+# z <- likert.bar.plot(sat12, colors=c("#d7191c", "#fdae61", "#ffffbf","#abdda4","#2b83ba"),  wrap=25, text.size = 3.7, centered = FALSE, legend.position = "bottom") + 
+#   ggtitle("I am satisfied with...") #+
+  # theme(panel.background=element_blank(), plot.background=element_blank(), panel.margin.y=(unit(5,"lines"))) #+
+  # guides(guide_legend(nrow = 2)) +
+  # coord_fixed(1/120) + 
+  # coord_flip()
+# z
+
+# scale_fill_brewer(type="div", palette="Spectral")
+```
