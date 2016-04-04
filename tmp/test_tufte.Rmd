@@ -10,6 +10,10 @@ output:  rmarkdown::tufte_handout
 \includegraphics{././cropped-banner_efpt.jpg}
 \end{figure*}
 
+```{r headerGraphic, eval=TRUE, echo=FALSE,  fig.fullwidth=TRUE}
+knitr::include_graphics('./cropped-banner_efpt.jpg')
+```
+
 \raggedright
 \tableofcontents
 \clearpage
