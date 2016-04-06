@@ -121,11 +121,13 @@ theme_LegendMin <- theme(legend.title=element_blank())
 
 ### COLOURS
 # 5, 3  and 2 diverging colours for our (likert) plots
+colours6int <- c("#74c476", "#74c476", "#74c476", "#74c476", "#fc9272", "#bae4b3")
 colours5 <- c("#d7191c", "#fdae61", "#ffffbf","#abdda4","#2b83ba")
 colours4 <- c("#d7191c", "#fdae61", "#abdda4", "#2b83ba")
 colours4qual <- c("#66c2a5", "#fc8d62", "#8da0cb", "#e78ac3")
 colours4train <- c("#238b45", "#74c476", "#fc9272", "#bae4b3")
 colours3 <- c("#fc8d59", "#ffffbf", "#99d594")
+colours3int <- c("#74c476", "#fc9272", "#bae4b3")
 colours3qual <- c("#8dd3c7", "#ffffb3", "#bebada")
 colours2 <- c("#f1a340", "#998ec3")
 colours2div <- c("#fdae61", "#abdda4")
@@ -288,19 +290,19 @@ gg.InTh
 \newthought{And as we can see} this can be quite interesting. `r stri_rand_lipsum(1)`
 
 
-```{r in_Training, echo=FALSE, warning=FALSE, fig.cap="Whether respondents were in training", results='asis'}
+```{r in_Training, echo=FALSE, warning=FALSE, fig.cap="Whether respondents were in training"}
 
 qInTraining <- c("q_0005_S05A01","q_0005_S05A02","q_0005_S05A03","q_0005_S05A04","q_0005_other")
 df.InTr <- data_Europe_clean[,grep("^q_0005", names(data_Europe_clean))]
 colnames(df.InTr) <- c("YesIn","YesOut","No","Completed","Other")
 df.InTrNum <- df.InTr[,1:4]
 colnames(df.InTrNum) <- c("YesIn","YesOut","No","Completed")
-df.InTrA <- setNames(as.data.frame(apply(df.InTrNum, 2, function(c)length(which((c=="Yes"))))),c("countYes"))
+df.InTrA <- setNames(as.data.frame(apply(df.InTrNum, 2, function(c)length(which(c=="Yes")))),c("countYes"))
 df.InTrA$inTraining <- rownames(df.InTrA)
 df.InTrA <- df.InTrA[,c(2,1)]
 
 gg.InTr <- ggplot(df.InTrA, aes(x=factor(inTraining,levels=c("YesIn","YesOut","No","Completed")),y=countYes)) +
-  geom_bar(stat = "identity", fill=colours4train) +
+  geom_bar(stat = "identity", fill=colours4train, width = 0.72) +
   scale_x_discrete(name="Training in Psychotherapy status", 
                    labels=c("YesIn" = "Yes - within my\ntraining \nprogramme","YesOut" = "Yes - outside \nof my \nprogramme","No" = "No","Completed" = "Training \ncompleted \npreviously")) +
   ylab("Number of trainees") + 
@@ -351,16 +353,88 @@ We summarised data along the following categories after reading them manually. `
 a psychiatrist?} was the key question in the mind of several creators of this survey. We expected quite clear preference one way or the other, but we wanted to also give an opportunity to not have to choose. We expected that there might be quite a large group of people who would answer I don't know. However we were somewhat surprised by the results:
 
 ```{r prof_Identity, echo=FALSE, fig.cap="Importance of psychotherapy for professional identity"}
-df.Identity <- data_Europe_clean$q_0007
 df.Identity <- as.data.frame(table(data_Europe_clean$q_0007))
 colnames(df.Identity) <- c("Answer", "Frequency")
 gg.Identity <- ggpie(df.Identity,'Answer','Frequency',"tada") + 
   theme_tufte() + 
   scale_fill_manual(values = colours3qual) +
-  theme_pieChart
+  theme_pieChart +
+  theme_LegendMin
 gg.Identity
 
 
+```
+
+
+\newthought{Do you want to practise Psychotherapy?} This was a very interesting question to us - we wanted to find out if trainees would want to practise any form of psychotlogical therapy after they qualify as psychiatrists. The actual question appeared in survey as a Yes/No questions: **Do you want to practice psychotherapy after you finish your training in psychiatry?** We thought that there should be a significant mirrroring of answers in the previous question.
+```{r want_Practice, echo=FALSE, fig.margin=TRUE, fig.cap="Trainees who want to practise psychotherapy after they qualify as psychiatrists" }
+#table(data_Europe$q_0008)
+df.WPractice <- as.data.frame(table(data_Europe_clean$q_0008))
+colnames(df.WPractice) <- c("Answer", "Frequency")
+gg.WPractice <- ggpie(df.WPractice,'Answer','Frequency',"dummy title") + 
+  theme_tufte() + 
+  scale_fill_manual(values = colours2div) +
+  theme_pieChart +
+  theme_LegendMin
+gg.WPractice
+```
+
+It appears that a very significant proportion - `r round(length(which(data_Europe_clean$q_0008 == "Yes")) / length(na.omit(data_Europe_clean$q_0008)) * 100,2)`% of psychiatry trainees would want to practice psychological therapies after they become psychiatrists. 
+
+\newthought{What kinds of therapies} they were interested in most was our next question. `r stri_rand_lipsum(1)`
+
+
+```{r what_Interest, echo=FALSE, fig.cap="Therapies that trainees show interest in", results='asis'}
+df.Interest <- data_Europe_clean[,grep("^q_0009", names(data_Europe_clean))]
+colnames(df.Interest) <- c("Psychodynamic","CBT","Systemic","Group","None", "Other")
+df.InterestA <- setNames(as.data.frame(apply(df.Interest, 2, function(c)length(which(c=="Yes")))),c("countYes"))
+df.InterestA$countYes[df.InterestA$countYes == 0] <- length(which(!is.na(df.Interest$Other)))
+
+df.InterestA$inTerest <- rownames(df.InterestA)
+df.InterestA <- df.InterestA[,c(2,1)]
+df.InterestA$type <- c("therapy","therapy","therapy","therapy","none","other")
+gg.Interest <- ggplot(df.InterestA, aes(x=factor(inTerest,levels=c("Psychodynamic","CBT","Systemic","Group","None", "Other")),y=countYes, fill=factor(type,levels = c("therapy","none","other")))) +
+  geom_bar(stat = "identity",  width = 0.72) +
+  ylab("Number of trainees") + 
+  theme_tufte() +
+  theme(axis.text.x = element_text(angle = 0, hjust = 0.5), axis.title=element_blank())  + 
+  theme(legend.position = 'none') +
+  scale_fill_manual(values = colours3int) +
+  theme(plot.margin=unit(c(1,0.5,0.5,0.5),"cm"))
+
+gg.Interest
+
+df.Q9otherInt <- head(as.data.frame(na.omit(data_Europe_clean$q_0009_other)),24)
+colnames(df.Q9otherInt) <- c("Other_therapies")
+xt.Q9otherInt <- xtable(df.Q9otherInt, caption = "Other therapies trainees are interested in")
+align(xt.Q9otherInt) <- c('l', 'p{4in}')
+print(xt.Q9otherInt, table.placement ="!h")
+```
+
+\newthought{This shows that psychiatrists seem to be most interested in CBT}. `r stri_rand_lipsum(1)`. 
+
+## Plot: Satisfaction group
+perhaps we should use likert package to plot likert type items
+
+```{r plot_satisfaction, echo=FALSE, message=FALSE}
+# make auxiliary table to hold our likert data
+sat1<-data_Europe_clean[,c("q_0019_SQ001", "q_0019_SQ002", "q_0019_SQ003")]
+# put in correct row names
+sat1 <- rename(sat1,c("q_0019_SQ001"="psychotherapy component in my training programme",
+  "q_0019_SQ002"="psychotherapy training options in my country",
+  "q_0019_SQ003"="level of funding for psychotherapy training within psychiatry in my country"
+  ))
+sat12<-likert(sat1) 
+#plot(sat12, low.color="Red" , high.color="Green", neutral.color="grey80") 
+z <- likert.bar.plot(sat12, colors=c("#d7191c", "#fdae61", "#ffffbf","#abdda4","#2b83ba"),  wrap=25, centered = FALSE, legend.position = "bottom") + 
+  ggtitle("I am satisfied with...") +
+  theme(panel.background=element_blank()) #+
+  # guides(guide_legend(nrow = 2)) +
+  # coord_fixed(1/120) + 
+  # coord_flip()
+z
+
+# scale_fill_brewer(type="div", palette="Spectral")
 ```
 
 
