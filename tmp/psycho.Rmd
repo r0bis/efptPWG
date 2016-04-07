@@ -1,7 +1,7 @@
 ---
 title: "Psychotherapy Study"
 author: "Roberts Klotins and Thomas Gargot"
-date: "March, 21th 2016"
+date: "April, 3rd 2016"
 output: 
   pdf_document: 
     toc: yes
@@ -48,7 +48,7 @@ See all UEMS reports related to [psychiatry training](http://uemspsychiatry.org/
 You can download our data and our analysis script on [GitHub](https://github.com/r0bis/efptPWG).
 
 ```{r, include = FALSE}
-#install.packages(c("lattice", "ggplot2", "likert", "rmarkdown", "maps", "mapdata"))
+#install.packages(c("lattice", "ggplot2", "knitr", "plyr", likert", "rmarkdown", "maps", "mapdata","stringr"))
 library (lattice)
 library(ggplot2)
 library(knitr)
@@ -120,7 +120,7 @@ str(data_Europe)
 summary(data_Europe)
 ```
 
-## Number of participants
+## Number of participants by country (barplot)
 ```{r, echo = FALSE}
 # table(data_Europe[which(complete.cases(data_Europe$q_0000)==TRUE),]$q_0000)
 countryanswers <- sort(table(data_Europe$q_0000), decreasing = FALSE)
@@ -141,7 +141,8 @@ abline(v=mean(answering_countries), lty=2)
 text(19, 0.7,"Mean", font=2)
 ```
 
-```{r, echo=FALSE, warning=FALSE}
+## Number of participants by country (map)
+```{r, echo=FALSE, warning=FALSE, eval=FALSE}
 names <- names(countryanswers)
 namesLower <- upFirst(names, alllower=TRUE)
 
@@ -160,8 +161,8 @@ DF <- DF[-26,]
 ## Discussion here
 
 country_choropleth(DF,
-                 legend = "Number",
-                 zoom = c("albania", "armenia", "austria", "azerbaijan", "belgium", "bosnia and herzegovina", "belarus", "bulgaria", "croatia",   "cyprus"  , "czech republic", "denmark", "greece", "estonia", "finland", "france",  "georgia", "germany", "hungary", "iceland", "kazakhstan", "luxembourg", "netherlands", "norway", "ireland", "israel", "italy", "ireland", "latvia", "lithuania", "macedonia", "moldova", "montenegro", "poland", "portugal", "romania", "russia", "slovakia", "slovenia", "spain", "sweden", "switzerland", "united kingdom", "republic of serbia", "turkey", "ukraine")) + xlim(-20,30) + ylim(30,75) + ggtitle("Participants of the study") + theme(plot.title = element_text(lineheight=15, face="bold"))
+                legend = "Number",
+               zoom = c("albania", "armenia", "austria", "azerbaijan", "belgium", "bosnia and herzegovina", "belarus", "bulgaria", "croatia",   "cyprus"  , "czech republic", "denmark", "greece", "estonia", "finland", "france",  "georgia", "germany", "hungary", "iceland", "kazakhstan", "luxembourg", "netherlands", "norway", "ireland", "israel", "italy", "ireland", "latvia", "lithuania", "macedonia", "moldova", "montenegro", "poland", "portugal", "romania", "russia", "slovakia", "slovenia", "spain", "sweden", "switzerland", "united kingdom", "republic of serbia", "turkey", "ukraine")) + xlim(-20,30) + ylim(30,75) + ggtitle("Participants of the study") + theme(plot.title = element_text(lineheight=15, face="bold"))
 ```
 
 ## Gender

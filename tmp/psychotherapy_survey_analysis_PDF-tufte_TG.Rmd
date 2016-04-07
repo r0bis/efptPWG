@@ -1,0 +1,376 @@
+---
+title: "Psychotherapy Study"
+author: "Roberts Klotins and Thomas Gargot"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: rmarkdown::tufte_handout
+---
+\begin{figure*}
+\includegraphics{././cropped-banner_efpt.jpg}
+\end{figure*}
+
+\tableofcontents
+
+# EFPT
+The European Federation of psychiatric trainees (EFPT) is an independent federation of psychiatric trainees associations. It represents the consensus of psychiatric trainees organizations across European countries and advocates for what training should look like, regardless of the country.
+
+[EFPT website](http://efpt.eu/) [^efpt_website]
+
+# Presentation
+The psychotherapy study run from 2013 to 2015 to understand the actual opportunities and wishes for training in psychotherapy in Europe among psychiatrist trainees in 19 countries.
+
+## Presentations of the survey : Past
+* "The EFPT Psychotherapy working Group and its Survey on Psychotherapy Training 2013-2015" was presented at the [Royal College of Psychiatrists](http://www.rcpsych.ac.uk/pdf/CALC_MedPsych2015confbooklet.pdf) - faculty of Psychotherapy Annual Meeting 22-24 April 2015 by Alina Petricean (UK, Romania)
+* "The EFPT Psychotherapy working group" was presented at the "Portuguese Psychiatric National Congress in 2013 by Rita Silva (Portugal)
+* "Should all psychiatrists be skilled to practice psychotherapy ? Thomas GARGOT (France) and Ekin Sonmez (Turkey), [European Psychiatric Association Congress](http://efpt.eu/events/european-psychiatric-association-congress/), March 12th - March 15th 2016, [slides](http://efpt.eu/wp-content/uploads/2014/07/ES_TG_EPA_Psychotherapy.pdf)
+
+## Projects
+* Submission Project : "How psychiatrist trainees are trained in Psychotherapies in Europe ? A European trainee survey", Thomas GARGOT (France), [European Association of Behavioural and Cognitive Therapies conference (EABCT)](http://eabct2016.org/), August 31st - September 3rd 2016, deadline 31st march
+* Submission Project : How psychiatrist trainees are trained in Psychotherapies in Europe ? A European trainee survey" in Italian, Diego Quattrone (Italy)  [Italian Federation of Psychotherapy Associations (FIAP)](http://www.fiap.info/convegno2016/)
+
+## About data
+You can download our data and our analysis script on [GitHub](https://github.com/r0bis/efptPWG).[^study_github]
+You can find [ToDo list here](https://github.com/r0bis/efptPWG/blob/master/about-data/todolist.md).
+
+# Actual recommandations
+## EFPT Psychotherapy Working Group statement
+"A working knowledge of psychotherapy is an integral part of being a psychiatrist and this must be reflected in training in psychiatry. All trainees must gain the knowledge, skills and attitudes to be competent in psychotherapy. Competence should be gained in at least one recognised form of psychotherapy (of the trainees choice) and basic knowledge should be gained in the other forms of psychotherapy to allow the trainee to evaluate suitability for referral to specialist psychotherapist.
+Training in psychotherapy must include supervision by qualified therapists. A personal psychotherapeutic experience is seen as a valuable component of training. It is crucial that trainees have access to relevant psychotherapy experience to cater to the needs of the appropriate patient group that the trainee is dealing with or is expected to deal with in the future.
+
+Relevant training authorities should ensure that time, resources and funding are available to all trainees to meet the above mentioned psychotherapy training needs."
+
+
+Discussed and voted by EFPT delegates in Lisbon 1996, Tampere 1999, Napoli 2001, Sinaia 2002, Paris 2003, Istanbul 2005, Gothenburg 2008, Cambridge 2009 and Zurich 2013. See all [EFPT statements](http://efpt.eu/statements/)[^efpt_statements].
+
+## UEMS Psychiatry Board and Section Reports on Training
+Since its establishment the Board has worked on a number of important aspects of psychiatric training in Europe. The work was normally carried out through working groups which published their recommendations in the form of reports. See all UEMS reports related to [psychiatry training](http://uemspsychiatry.org/board/training-reports/)[^uems_statements].
+
+```{r setup, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='hide'}
+# set variables that in main analysis may be auto-generated
+# i.e. on every iteration replaced from list
+# country <- "Belgium"
+###
+# prepare for plots - get libraries and paths right
+# LOAD libraries
+library(ggplot2)
+library(xtable)
+library(knitr)
+library(RColorBrewer)
+library(gridExtra)
+library(grid)
+library(ggthemes)
+library(likert)
+library(plyr)
+library(rmarkdown)
+library(stringr)
+library(Hmisc)
+library(choroplethr)
+library(choroplethrMaps)
+library(stringi)
+library(pander)
+# SET library options
+###
+knitr::opts_chunk$set(echo = TRUE)
+# PATHS - get data and change back
+###
+curDir <- getwd()
+setwd("~/src/efptPWG/")
+# setwd(paste("~/src/efptPWG/data/",country, sep=""))
+# source(paste(country,"_R_syntax_file.R", sep=""))
+# setwd(curDir)
+# print("This was chunk 1 setup")
+```
+
+```{r rFunctions, echo=FALSE, message=FALSE, warning=FALSE, error=FALSE, results='hide'}
+### FUNCTIONS
+# PIE charts in ggplot
+ggpie <- function (dat, by, totals, plotTitle) {
+  ggplot(dat, aes_string(x=factor(1), y=totals, fill=by)) +
+    geom_bar(stat='identity', width = 1) +
+    guides(fill=guide_legend(override.aes=list(colour=NA))) + 
+    coord_polar(theta='y') + 
+    # ggtitle(plotTitle) +
+    # theme(axis.ticks=element_blank(),
+    #       axis.text.y=element_blank(),
+    #       axis.text.x=element_text(colour='black'),
+    #       axis.title=element_blank()) +
+    scale_y_continuous(breaks=cumsum(dat[[totals]]) - dat[[totals]] / 2, labels=dat[[by]])
+    # scale_y_continuous(breaks=cumsum(dat[[totals]]) - dat[[totals]] / 2, labels=c("F","M"))
+}
+
+# This function will return only those rows that do not have NAs in specified columns
+completeFun <- function(data, desiredCols) {
+  completeVec <- complete.cases(data[ ,desiredCols])
+  return(data[completeVec, ])
+}
+
+### THEMES
+# PIE: theme elements to be applied last to our piechart
+theme_pieChart <- theme(axis.ticks=element_blank(),
+          axis.text=element_blank(),
+          axis.title=element_blank())
+# BLANK: theme to make plot background and panel background blank - for likerts
+theme_blank <- theme(panel.background=element_blank(), plot.background=element_blank())
+# let's not do anything with font sizes, OK? Tufte seems to do it better
+# theme_fontAxis <- theme(text=element_text(family="Times"), axis.text=(element_text(size = 11)), axis.title=element_blank())
+# theme_fontA <- theme(axis.text.y = element_text(family="Times", face="plain", size=20))
+theme_AxisBlank <- theme(axis.title=element_blank())
+theme_LegendMin <- theme(legend.title=element_blank())
+
+### COLOURS
+# 5, 3  and 2 diverging colours for our (likert) plots
+colours5 <- c("#d7191c", "#fdae61", "#ffffbf","#abdda4","#2b83ba")
+colours4 <- c("#d7191c", "#fdae61", "#abdda4", "#2b83ba")
+colours4qual <- c("#66c2a5", "#fc8d62", "#8da0cb", "#e78ac3")
+colours4train <- c("#238b45", "#74c476", "#fc9272", "#bae4b3")
+colours3 <- c("#fc8d59", "#ffffbf", "#99d594")
+colours3qual <- c("#8dd3c7", "#ffffb3", "#bebada")
+colours2 <- c("#f1a340", "#998ec3")
+colours2div <- c("#fdae61", "#abdda4")
+gradHigh <- "#005a32"
+gradLow <- "#78c679"
+# print('This WAS chunk 2 - for functions')
+```
+
+```{r get_Data, echo=FALSE, message=FALSE, warning=TRUE, error=FALSE, results='hide'}
+# this will read in all data 
+source("~/src/efptPWG/tmp/read_all_countries.R")
+
+## Import the data and change the variables names
+# then bind the datasets together
+
+### Binding datasets
+# below line works only if we do not have any other dataframes in the environmnt
+# listof.df0 <- lapply(ls(), function(x) if (class(get(x)) == "data.frame") get(x))
+# I do not understand this call completely, but restrict it to only dfs ending in "_data" 
+listof.df <- lapply(ls(pattern = "*_data"), function(x) if (class(get(x)) == "data.frame") get(x))
+# the next would create vector of DF names matching the pattern
+# vector_of_DFnames <- ls(pattern = "*_data")[sapply(mget(ls(pattern = "*_data"), .GlobalEnv), is.data.frame)]
+
+data_Europe <- do.call("rbind", listof.df)
+# set up columns  that we will filter for NA data
+# in the first instance demographics in the 1st page:
+naS1stpg <- c("q_0001", "q_0002", "q_0003", "q_0004")
+# obtain set without NAs in the above columns
+data_Europe_clean <- completeFun(data_Europe,naS1stpg)
+
+# nrow(completeFun(data_Europe,naS1stpg)) - nrow(data_Europe)
+# nrow(completeFun(data_Europe,"q_0006"))
+# nrow(completeFun(data_Europe[,data_Europe$q_0006 != is.na(data_Europe$q_0006)], naS1stpg))
+# this will show how many NAs we have per column
+# apply(data_Europe, 2, function(x) length(which(is.na(x))))
+```
+
+# European results
+\justify
+\newthought{Aggregate European dataset is quite large.} Data are collected in different tables, but because thay are of the same format we can easily bind them together and perform summarisation and analysis as needed. Further thoughts would be to see how countries differ along the main parameters. For that we have to look carefully at the data from Europe to formulate further questions of interest that can be answered by this data set. 
+
+For example it would be very interesting to know if the `r length(which(data_Europe_clean$q_0007 == "No"))` trainees ^[Whole sample consisted of `r length(data_Europe_clean$q_0007)` trainees.] who have said that they do not see Psychotherapy as an important part their professional identity would still show interest in psychotherapy and would wish to undertake training in psychoterapy if it were provided for free.
+
+### Number of responses by country
+\raggedright
+Respondents came from 17 different countries. We still have not collected data from some countries where response would be very interesting. That is from the UK and Austria. in the _UK_ the training system is well centralised and if we could distribute the survey through the central address database we could ensure a large dataset. _Austria_ to our knowledge is the only country where all psychiatrists must train in psychohterapy too. 
+
+```{r country_Response, echo=FALSE, warning=FALSE, fig.cap = "Response in countries where survey was conducted."}
+qCountry <- data_Europe_clean$q_0000
+countryanswers <- as.data.frame(sort(table(na.omit(data_Europe_clean$q_0000)), decreasing = TRUE))
+colnames(countryanswers) <- c("count")
+countryanswers["country"] <- rownames(countryanswers)
+ca <- countryanswers[countryanswers$count > 2,]
+meanResp <- round(mean(ca$count))
+# construct string for label
+labPNumber <- paste("Number of answers: ", sum(ca$count), "\n", "from ", nrow(ca) , " countries \n", 
+                    "Mean number of answers", meanResp, "\n", 
+                    "Top five: Romania, France, Slovenia, \n Czech Republic, Italy")
+# plot the data
+gg.CountryCount <- ggplot(ca, aes(reorder(x = country, count), y = count, fill=count )) + 
+  geom_bar(stat = "identity") +
+  scale_fill_gradient(low = gradLow, high = gradHigh) +
+  theme_tufte() +
+  # theme(axis.title=element_blank(), plot.margin=unit(c(0.1,0.1,0.1,1),"cm")) +
+  coord_flip() +   
+  geom_hline(yintercept = round(mean(ca$count))) +
+  theme_AxisBlank +
+  theme_LegendMin
+  # geom_text(aes(0,meanResp,label = paste("Mean : ", meanResp), vjust = -2, hjust = -0.5)) 
+  # annotate("text",label = labPNumber, x =4.55, y = 85.7, hjust = 'right') +
+  
+gg.CountryCount
+#theme_fontA
+# + theme(axis.text.y = element_text(family="Times", face="plain", size=20))
+```
+\marginnote[- 35mm]{`r paste("Number of answers: ", sum(ca$count),  
+            "from ", nrow(ca) , " countries ", 
+            "Mean number of answers per country:", meanResp,  
+            "Top five response counts from: Romania, France, Slovenia, Czech Republic and Italy")`}
+
+## Demographics
+### Sex
+```{r Gender, echo=FALSE, fig.margin = FALSE, fig.cap="Population by gender"}
+qSex <- data_Europe_clean$q_0001
+df.sex <- as.data.frame(table(data_Europe_clean$q_0001))
+colnames(df.sex) <- c("Sex","Number")
+gg.sex <- ggpie(df.sex,'Sex','Number',"tada") + 
+  theme_tufte() + 
+  scale_fill_manual(values = colours2div)  + 
+  theme_pieChart
+gg.sex
+```
+
+\newthought{Overall demographics seem to be as expected.} There are more female trainees who took part in the survey and this correlates with the overall training
+trend.
+
+### Age
+```{r age_Distribution, echo=FALSE,  warning=FALSE, error=FALSE, message=FALSE, fig.cap="Age distribution"}
+# data_Europe_clean$q_0002[data_Europe_clean$q_0002== 1969] <- 2015 - 1969
+qAge <- data_Europe_clean$q_0002
+medAge <- paste("Median age:", median(data_Europe_clean$q_0002))
+
+gg.age <- ggplot(data_Europe_clean, aes(q_0002, fill=..count.. )) + 
+  geom_histogram(color="white", binwidth = 1) +
+  # ggtitle("Age distribution")  +
+  # labs(x = "Age distribution", y = "Age counts") +
+  theme_tufte() + 
+  scale_fill_gradient(low = gradLow, high = gradHigh) + scale_x_continuous(limits = c(20,60), breaks = seq(20,60,5)) +
+  theme_AxisBlank +
+  theme_LegendMin
+  #stat_density(colour="blue", geom="line", position="identity") +
+  # annotate("text",label = medAge, x =55, y = 40, hjust = 1) 
+gg.age
+```
+
+\newthought {By age the respondents} showed maximal response rate between ages 26 and 32. However this was expected as it reflects on general population of psychiatry trainees.  Median age however was 31 and this shows the significant number of older trainees - a few well into their fifties who voiced their opinion regarding the psychotherapy issue. It would be interesting to establish correlations among odler and younger trainee populations and perhaps do it on country by country basis too. We could try to find a cutoff point at which core opinions diverge. Or establish that there is no age difference.
+
+\newthought{Year in training} generally reflected the age distrubution as well. We also collected data from among trainees who had spent more than eight years in training and from those who had recently finished their training.^[RF in the diagram means _Recently Finished_.] Recent in this case was defined as within the last 5 years. 
+
+```{r YOT, echo=FALSE, fig.cap="Population by Year in training"}
+qYearInTraining <- data_Europe_clean$q_0004
+gg.YoT <- ggplot(data_Europe_clean, aes(x=q_0003, fill = ..count..)) +
+  geom_bar() + 
+  theme_tufte() +
+  scale_x_discrete(labels=c("Y1", "Y2", "Y3", "Y4", "Y5", "Y6", "Y7", "Y8", ">8", "RF")) +
+  scale_fill_gradient(low = gradLow, high = gradHigh) +
+  # ggtitle("Year in training") +
+  #labs(x="Year", y="Count in year group")
+  theme_AxisBlank +
+  theme_LegendMin
+gg.YoT
+
+```
+
+# Add a table with the age here
+\marginnote[- 35mm]{`r medAge`}
+
+\newthought{Was the trainee in therapy?} A further interesting characteristic in our sample was to identify whether the trainees were receiving personal therapy or not. As expected most of the respondents (`r round(length(which(data_Europe_clean$q_0004 == "No")) / nrow(data_Europe_clean) * 100,2)`%) had no experience of being in personal therapy. Whether the 40 % who had had some experience in therapy were an unusually large proportion for the population of psychiatric trainees is not known yet. 
+
+```{r inTherapy, echo=FALSE, fig.margin=TRUE, fig.cap="Proportion of trainees in therapy" }
+qReceivingTherapy <- "q_0004"
+df.InTh <- data_Europe_clean$q_0004
+df.InTh <- as.data.frame(table(data_Europe_clean$q_0004))
+colnames(df.InTh) <- c("Answer","Number")
+gg.InTh <- ggpie(df.InTh,'Answer','Number',"###") + 
+  theme_tufte() + 
+  scale_fill_manual(values = colours2)  + 
+  theme_pieChart
+gg.InTh
+
+```
+
+
+\newthought{Was the trainee in psychotherapy training?} This question was somewhat multifacted. We recognise that some trainees might have partial ir full training in psychotherapy training within their training programme in psychiatry. However by experience we also knew that many trainees undertook training outside their training programme - most often paying for that out of their own pocket. We therefore asked to tell who were in psychotherapy training, whether their training had been completed previously. To account for unusual situations we also provided an opportuinty to choose _Other_ in response and to provide a textual summary of that.  
+  
+\newthought{And as we can see} this can be quite interesting. `r stri_rand_lipsum(1)`
+
+
+```{r in_Training, echo=FALSE, warning=FALSE, fig.cap="Whether respondents were in training", results='asis'}
+
+qInTraining <- c("q_0005_S05A01","q_0005_S05A02","q_0005_S05A03","q_0005_S05A04","q_0005_other")
+df.InTr <- data_Europe_clean[,grep("^q_0005", names(data_Europe_clean))]
+colnames(df.InTr) <- c("YesIn","YesOut","No","Completed","Other")
+df.InTrNum <- df.InTr[,1:4]
+colnames(df.InTrNum) <- c("YesIn","YesOut","No","Completed")
+df.InTrA <- setNames(as.data.frame(apply(df.InTrNum, 2, function(c)length(which((c=="Yes"))))),c("countYes"))
+df.InTrA$inTraining <- rownames(df.InTrA)
+df.InTrA <- df.InTrA[,c(2,1)]
+
+gg.InTr <- ggplot(df.InTrA, aes(x=factor(inTraining,levels=c("YesIn","YesOut","No","Completed")),y=countYes)) +
+  geom_bar(stat = "identity", fill=colours4train) +
+  scale_x_discrete(name="Training in Psychotherapy status", 
+                   labels=c("YesIn" = "Yes - within my\ntraining \nprogramme","YesOut" = "Yes - outside \nof my \nprogramme","No" = "No","Completed" = "Training \ncompleted \npreviously")) +
+  ylab("Number of trainees") + 
+  theme_tufte() +
+  theme(axis.text.x = element_text(angle = 0, hjust = 0.5), axis.title=element_blank())
+gg.InTr
+
+```
+
+
+```{r table1_OtherTr, echo=FALSE, results='asis'}
+cat("\n\n\\newpage\n")
+options(xtable.comment = FALSE)
+options(xtable.booktabs = TRUE)
+df.Q5other <- head(as.data.frame(data_Europe_clean$q_0005_other[!is.na(data_Europe_clean$q_0005_other)]),24)
+colnames(df.Q5other) <- c("Other answers")
+xt.Q5other <- xtable(df.Q5other, caption = "Other responses to the question whether trainees have trained in psychotherapy")
+align(xt.Q5other) <- c('l', 'p{4in}')
+print(xt.Q5other, table.placement ="!h")
+# pandoc.table(df.Q5other, caption="Table about Other", justify = 'left', split.cells = 75)
+setwd(oldwd)
+# cat("\n\n\\clearpage\n")
+
+```
+
+This was an overview of the `r length(data_Europe_clean$q_0005_other[!is.na(data_Europe_clean$q_0005_other)])` answers provided in the other option.
+
+# What psychotherapy modality have you trained in? 
+
+This was an optional question presented to only those `r length((data_Europe_clean$q_0005_other)) - length(na.omit(data_Europe_clean$q_0005_other))` respondents who had answered positively to the previous question i.e. those who had trained in any modality of psychotherapy. We wanted to get a qualitative overview as to what therapies they had trained in. Since this number is quite large we can only present you with a sample summary of these `r length(na.omit(data_Europe_clean$q_0006))` answers, but to give a feel for what they were like we have included the first 4 rows of these answers.
+
+```{r what_Modality, echo=FALSE, results='asis'}
+
+df.Modality <- as.data.frame(head(na.omit(data_Europe_clean$q_0006),4))
+colnames(df.Modality) <- c("Experience in modality")
+xt.Modality <- xtable(df.Modality, caption = "What modality have trainees had experience with")
+align(xt.Modality) <- c('l', 'p{3.5in}')
+print(xt.Modality, table.placement="!h")
+
+```
+## Summary of psychotherapeutic methods that trainees had experience in
+
+We summarised data along the following categories after reading them manually. `r stri_rand_lipsum(2)`
+
+# Your preferences - the second group of questions
+
+\newthought{Is psychotherapy training important for your professional identity as 
+a psychiatrist?} was the key question in the mind of several creators of this survey. We expected quite clear preference one way or the other, but we wanted to also give an opportunity to not have to choose. We expected that there might be quite a large group of people who would answer I don't know. However we were somewhat surprised by the results:
+
+```{r prof_Identity, echo=FALSE, fig.cap="Importance of psychotherapy for professional identity"}
+df.Identity <- data_Europe_clean$q_0007
+df.Identity <- as.data.frame(table(data_Europe_clean$q_0007))
+colnames(df.Identity) <- c("Answer", "Frequency")
+gg.Identity <- ggpie(df.Identity,'Answer','Frequency',"tada") + 
+  theme_tufte() + 
+  scale_fill_manual(values = colours3qual) +
+  theme_pieChart
+gg.Identity
+```
+
+# Concluding notes
+
+```{r conclusions, echo=FALSE, warning=FALSE, results='asis'}
+cat("\n\n\\justify\n")
+stri_rand_lipsum(1)
+cat("\n\n\\newpage\n")
+```
+
+## Research
+UEMS recommendations states that research methodology should be included in psychotherapy training.
+
+## Bibliography
+* You are welcome to join our [zotero group](https://www.zotero.org/groups/480046)[^zotero_group]
+
+[^efpt_statements]: http://efpt.eu/statements/
+[^uems_statements]: http://uemspsychiatry.org/board/training-reports/
+[^zotero_group]:https://www.zotero.org/groups/480046
+[^study_github]:https://github.com/r0bis/efptPWG
+[^study_todo]:https://github.com/r0bis/efptPWG/blob/master/about-data/todolist.md
+[^efpt_website]:http://efpt.eu

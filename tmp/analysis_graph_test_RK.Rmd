@@ -33,7 +33,7 @@ search()
 ```{r} 
 #getwd()
 # R will execute all commands in the syntax file
-source("../Czech_Republic/Czech_Republic_R_syntax_file.R")
+source("../data/Czech_Republic/Czech_Republic_R_syntax_file.R")
 ```
 
 ## Display them
