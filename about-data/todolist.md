@@ -15,6 +15,8 @@ output: html_document
 * Replace not Selected by No (TG)
 ** [http://kbroman.org/knitr_knutshell/pages/figs_tables.html](http://kbroman.org/knitr_knutshell/pages/figs_tables.html)
 ** [https://www.qwant.com/?q=ggplot&t=images](https://www.qwant.com/?q=ggplot&t=images)
+    * just to mention - in ggplot version I have put all the questions in one - producing a comparable barchart; perhaps it is not necessary to account for "Not selected" - this way the output is more compact. This can be seen in **Fig. 6** and **Fig. 9** (RK)
+
 
 ## On-going
 * Get the French Psychotherapy study (marion.azoulay13@gmail.com contacted, waiting the answer)
@@ -23,6 +25,7 @@ output: html_document
 ## Deadline April 28 
 * Write an abstract for [EABCT](http://eabct2016.org/abstract/) April 28 – Poster abstracts due
 * Make a poster for [EABCT](http://eabct2016.org/abstract/) April 28 – Poster abstracts due
+    * Is it the whole poster that is needed by then, or just the abstract with selected graphs? (RK)
 
 ## Questions :
 * In which country psychotherapy training is the best? (TG)

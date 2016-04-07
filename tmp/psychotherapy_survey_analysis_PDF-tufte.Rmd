@@ -437,6 +437,33 @@ z
 # scale_fill_brewer(type="div", palette="Spectral")
 ```
 
+# What experience is mandatory?
+
+
+
+``` {r mandatoryXP, echo=FALSE, eval=FALSE}
+# (simple) data wrangling task - convert 4 columns representing option answers to 1 question 
+# into table of frequency of answers to the said question and represent it in stacked bar graphs
+# http://stackoverflow.com/questions/11918080/how-to-create-a-stacked-bar-chart-from-summarized-data-in-ggplot2
+
+# qManXP <- c("q_0011_SQ001","q_0011_SQ002","q_0011_SQ003","q_0011_SQ004")
+df.ManXP <- data_Europe_clean[,grep("^q_0011", names(data_Europe_clean))]
+colnames(df.ManXP) <- c("Lectures","TherapyNoSV","TherapyWSV","PersonalTh")
+# df.ManXPNum <- df.ManXP[,1:4]
+# colnames(df.ManXPNum) <- c("Lectures","TherapyNoSV","TherapyWSV","PersonalTh")
+# df.ManXPA <- setNames(as.data.frame(apply(df.ManXPNum, 2, function(c)length(which(c=="Yes")))),c("countYes"))
+# df.ManXPA$inTraining <- rownames(df.ManXPA)
+# df.ManXPA <- df.ManXPA[,c(2,1)]
+
+# gg.InTr <- ggplot(df.ManXP, aes(x=,y=countYes)) +
+#   geom_bar(stat = "identity", fill=colours4train, width = 0.72) +
+#   scale_x_discrete(name="Training in Psychotherapy status", 
+#                    labels=c("YesIn" = "Yes - within my\ntraining \nprogramme","YesOut" = "Yes - outside \nof my \nprogramme","No" = "No","Completed" = "Training \ncompleted \npreviously")) +
+#   ylab("Number of trainees") + 
+#   theme_tufte() +
+#   theme(axis.text.x = element_text(angle = 0, hjust = 0.5), axis.title=element_blank())
+# gg.InTr
+```
 
 # Concluding notes
 
