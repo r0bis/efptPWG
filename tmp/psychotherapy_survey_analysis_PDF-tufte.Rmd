@@ -68,7 +68,7 @@ library(Hmisc)
 library(choroplethr)
 library(choroplethrMaps)
 library(stringi)
-library(pander)
+# library(pander)
 # SET library options
 ###
 knitr::opts_chunk$set(echo = TRUE)
@@ -416,7 +416,7 @@ print(xt.Q9otherInt, table.placement ="!h")
 ## Plot: Satisfaction group
 perhaps we should use likert package to plot likert type items
 
-```{r plot_satisfaction, echo=FALSE, message=FALSE}
+```{r plot_satisfaction, fig.width=5, fig.height=2, echo=FALSE, message=FALSE, fig.fullwidth=TRUE}
 # make auxiliary table to hold our likert data
 sat1<-data_Europe_clean[,c("q_0019_SQ001", "q_0019_SQ002", "q_0019_SQ003")]
 # put in correct row names
@@ -426,10 +426,10 @@ sat1 <- rename(sat1,c("q_0019_SQ001"="psychotherapy component in my training pro
   ))
 sat12<-likert(sat1) 
 #plot(sat12, low.color="Red" , high.color="Green", neutral.color="grey80") 
-z <- likert.bar.plot(sat12, colors=c("#d7191c", "#fdae61", "#ffffbf","#abdda4","#2b83ba"),  wrap=25, centered = FALSE, legend.position = "bottom") + 
+z <- likert.bar.plot(sat12, colors=c("#d7191c", "#fdae61", "#ffffbf","#abdda4","#2b83ba"),  wrap=25, centered = FALSE) + 
   ggtitle("I am satisfied with...") +
-  theme(panel.background=element_blank()) #+
-  # guides(guide_legend(nrow = 2)) +
+  theme(panel.background=element_blank()) +
+  theme_tufte()
   # coord_fixed(1/120) + 
   # coord_flip()
 z
