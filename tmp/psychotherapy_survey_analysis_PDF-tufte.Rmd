@@ -123,12 +123,14 @@ theme_LegendMin <- theme(legend.title=element_blank())
 # 5, 3  and 2 diverging colours for our (likert) plots
 colours6int <- c("#74c476", "#74c476", "#74c476", "#74c476", "#fc9272", "#bae4b3")
 colours5 <- c("#d7191c", "#fdae61", "#ffffbf","#abdda4","#2b83ba")
+colours5likert <- c("#d7191c", "#fdae61", "#ffffbf","#abdda4","#2b83ba")
 colours4 <- c("#d7191c", "#fdae61", "#abdda4", "#2b83ba")
 colours4qual <- c("#66c2a5", "#fc8d62", "#8da0cb", "#e78ac3")
 colours4train <- c("#238b45", "#74c476", "#fc9272", "#bae4b3")
 colours3 <- c("#fc8d59", "#ffffbf", "#99d594")
 colours3int <- c("#74c476", "#fc9272", "#bae4b3")
 colours3qual <- c("#8dd3c7", "#ffffb3", "#bebada")
+colours3likert <- c("#fc8d59","#ffffbf","#91bfdb")
 colours2 <- c("#f1a340", "#998ec3")
 colours2div <- c("#fdae61", "#abdda4")
 gradHigh <- "#005a32"
@@ -164,6 +166,7 @@ data_Europe_clean <- completeFun(data_Europe,naS1stpg)
 # nrow(completeFun(data_Europe[,data_Europe$q_0006 != is.na(data_Europe$q_0006)], naS1stpg))
 # this will show how many NAs we have per column
 # apply(data_Europe, 2, function(x) length(which(is.na(x))))
+# print("This was chunk 3 - for reading in DATA")
 ```
 
 # European results
@@ -367,6 +370,7 @@ gg.Identity
 
 
 \newthought{Do you want to practise Psychotherapy?} This was a very interesting question to us - we wanted to find out if trainees would want to practise any form of psychotlogical therapy after they qualify as psychiatrists. The actual question appeared in survey as a Yes/No questions: **Do you want to practice psychotherapy after you finish your training in psychiatry?** We thought that there should be a significant mirrroring of answers in the previous question.
+
 ```{r want_Practice, echo=FALSE, fig.margin=TRUE, fig.cap="Trainees who want to practise psychotherapy after they qualify as psychiatrists" }
 #table(data_Europe$q_0008)
 df.WPractice <- as.data.frame(table(data_Europe_clean$q_0008))
@@ -384,7 +388,7 @@ It appears that a very significant proportion - `r round(length(which(data_Europ
 \newthought{What kinds of therapies} they were interested in most was our next question. `r stri_rand_lipsum(1)`
 
 
-```{r what_Interest, echo=FALSE, fig.cap="Therapies that trainees show interest in", results='asis'}
+```{r what_Interest, echo=FALSE, fig.cap="Therapies that trainees show greatest interest in", results='asis'}
 df.Interest <- data_Europe_clean[,grep("^q_0009", names(data_Europe_clean))]
 colnames(df.Interest) <- c("Psychodynamic","CBT","Systemic","Group","None", "Other")
 df.InterestA <- setNames(as.data.frame(apply(df.Interest, 2, function(c)length(which(c=="Yes")))),c("countYes"))
@@ -404,41 +408,45 @@ gg.Interest <- ggplot(df.InterestA, aes(x=factor(inTerest,levels=c("Psychodynami
 
 gg.Interest
 
-df.Q9otherInt <- head(as.data.frame(na.omit(data_Europe_clean$q_0009_other)),24)
+df.Q9otherInt <- head(as.data.frame(na.omit(data_Europe_clean$q_0009_other)),22)
 colnames(df.Q9otherInt) <- c("Other_therapies")
 xt.Q9otherInt <- xtable(df.Q9otherInt, caption = "Other therapies trainees are interested in")
 align(xt.Q9otherInt) <- c('l', 'p{4in}')
 print(xt.Q9otherInt, table.placement ="!h")
 ```
 
-\newthought{This shows that psychiatrists seem to be most interested in CBT}. `r stri_rand_lipsum(1)`. 
+\newthought{This shows that psychiatrists seem to be most interested in CBT}. `r stri_rand_lipsum(1)`.
+\newpage
 
-## Plot: Satisfaction group
-perhaps we should use likert package to plot likert type items
-
-```{r plot_satisfaction, fig.width=5, fig.height=2, echo=FALSE, message=FALSE, fig.fullwidth=TRUE}
+## Satisfaction with psychotherapy training provided
+perhaps we should use likert package to plot likert type items. And insert a new page after this - or indeed before this
+```{r plot_satisfaction, fig.height=1.7, fig.width=9,  echo=FALSE, message=FALSE, fig.fullwidth=TRUE, fig.cap="Trainee satisfaction with their psychotherapy training in psychiatry"}
 # make auxiliary table to hold our likert data
-sat1<-data_Europe_clean[,c("q_0019_SQ001", "q_0019_SQ002", "q_0019_SQ003")]
-# put in correct row names
-sat1 <- rename(sat1,c("q_0019_SQ001"="psychotherapy component in my training programme",
-  "q_0019_SQ002"="psychotherapy training options in my country",
-  "q_0019_SQ003"="level of funding for psychotherapy training within psychiatry in my country"
+df.satisfaction<-data_Europe_clean[,c("q_0019_SQ001", "q_0019_SQ002", "q_0019_SQ003")]
+# put in suitable column names
+df.satisfaction <- rename(df.satisfaction,c("q_0019_SQ001"="Psychotherapy Training",
+  "q_0019_SQ002"="Training options",
+  "q_0019_SQ003"="Funding"
   ))
-sat12<-likert(sat1) 
+likert.satisfaction <- likert(df.satisfaction) 
 #plot(sat12, low.color="Red" , high.color="Green", neutral.color="grey80") 
-z <- likert.bar.plot(sat12, colors=c("#d7191c", "#fdae61", "#ffffbf","#abdda4","#2b83ba"),  wrap=25, centered = FALSE) + 
+gg.satisfaction <- likert.bar.plot(likert.satisfaction, colors=colours5likert,  
+                                   wrap=25, centered = FALSE,
+                                   legend.position = "bottom") + 
   ggtitle("I am satisfied with...") +
   theme(panel.background=element_blank()) +
-  theme_tufte()
-  # coord_fixed(1/120) + 
+  theme_tufte() 
+  # theme(aspect.ratio=1/4)
+  # coord_fixed(1/130) + 
   # coord_flip()
-z
+print(gg.satisfaction)
 
 # scale_fill_brewer(type="div", palette="Spectral")
 ```
 
 # What experience is mandatory?
-
+There will be a description of various experiences that are a mandatory part of training in psychiatry. That is those mandatory experiences that are relevant to psychotherapy component of the training. 
+\newpage
 
 
 ``` {r mandatoryXP, echo=FALSE, eval=FALSE}
@@ -449,6 +457,8 @@ z
 # qManXP <- c("q_0011_SQ001","q_0011_SQ002","q_0011_SQ003","q_0011_SQ004")
 df.ManXP <- data_Europe_clean[,grep("^q_0011", names(data_Europe_clean))]
 colnames(df.ManXP) <- c("Lectures","TherapyNoSV","TherapyWSV","PersonalTh")
+
+
 # df.ManXPNum <- df.ManXP[,1:4]
 # colnames(df.ManXPNum) <- c("Lectures","TherapyNoSV","TherapyWSV","PersonalTh")
 # df.ManXPA <- setNames(as.data.frame(apply(df.ManXPNum, 2, function(c)length(which(c=="Yes")))),c("countYes"))
@@ -464,6 +474,59 @@ colnames(df.ManXP) <- c("Lectures","TherapyNoSV","TherapyWSV","PersonalTh")
 #   theme(axis.text.x = element_text(angle = 0, hjust = 0.5), axis.title=element_blank())
 # gg.InTr
 ```
+
+# UEMS Recommendations
+
+There is something interesting about UEMS recommendations. People may say they do not know about UEMS, but when asked about the recommendations - they often do.
+```{r plot_UEMS_recs, echo=F,  message=F, fig.height=7.1, fig.width=9, fig.fullwidth=T, fig.cap="UEMS Recs"}
+df.UEMSaware <- data_Europe_clean[,grep("^q_0021", names(data_Europe_clean))]
+# put levels in the order you want
+df.UEMSaware[] <- lapply(df.UEMSaware,factor,levels=c("No","Uncertain","Yes"),ordered=T)
+# prepare column names so they are understandable in the plot
+df.UEMSaware <- rename(df.UEMSaware,c(
+  q_0021_SQ001="Psychotherapy is a mandatory part of the curriculum",
+  q_0021_SQ002="Defined number of cases should be seen",
+  q_0021_SQ003="at least 120 hours of theory",
+  q_0021_SQ004="Work experience with individuals, family, groups",
+  q_0021_SQ005="Psychodynamic, CBT, systemic - and maybe integrative",
+  q_0021_SQ006="Personal therapy is recommended",
+  q_0021_SQ007="Supervisors should be qualified",
+  q_0021_SQ008="Regular supervision at least for 100 hours",
+  q_0021_SQ009="Training should be publicly funded"
+))
+
+likert.UEMSaware <- likert(df.UEMSaware)
+gg.UEMSaware <- likert.bar.plot(likert.UEMSaware, colors=colours3likert,  wrap=30, centered = FALSE) + 
+  ggtitle("Trainee awareness of UEMS recommendations on psychotherapy training") +
+  theme(panel.background=element_blank()) +
+  theme_tufte() 
+
+
+df.UEMSimplement <- data_Europe_clean[,grep("^q_0022", names(data_Europe_clean))]
+# order the levels
+df.UEMSimplement[] <- lapply(df.UEMSimplement,factor,levels=c("No","Uncertain","Yes"),ordered=T)
+# prepare column names so they are understandable in the plot
+df.UEMSimplement <- rename(df.UEMSimplement,c(
+  q_0022_SQ001="Psychotherapy is a mandatory part of the curriculum",
+  q_0022_SQ002="Defined number of cases should be seen",
+  q_0022_SQ003="at least 120 hours of theory",
+  q_0022_SQ004="Work experience with individuals, family, groups",
+  q_0022_SQ005="Psychodynamic, CBT, systemic - and maybe integrative",
+  q_0022_SQ006="Personal therapy is recommended",
+  q_0022_SQ007="Supervisors should be qualified",
+  q_0022_SQ008="Regular supervision at least for 100 hours",
+  q_0022_SQ009="Training should be publicly funded"
+))
+
+likert.UEMSimplement <- likert(df.UEMSimplement)
+gg.UEMSimplement <- likert.bar.plot(likert.UEMSimplement, colors=colours3likert,  wrap=30, centered = FALSE) + 
+  ggtitle("Trainee obseervations of UEMS recommendation implementation in their countries") +
+  theme(panel.background=element_blank()) +
+  theme_tufte() 
+
+grid.arrange(gg.UEMSaware, gg.UEMSimplement, nrow=2)
+```
+\newthought{Our questions} were as follows - and answers we got wer the same. As we can see the trainee observation of how UEMS recommendations were implemented in their training schemes in their countries were different. Indeed it usually is the case that implementation is not quite on par with awareness.
 
 # Concluding notes
 
