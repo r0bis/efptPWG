@@ -68,6 +68,8 @@ library(Hmisc)
 library(choroplethr)
 library(choroplethrMaps)
 library(stringi)
+library(reshape2)
+
 # library(pander)
 # SET library options
 ###
@@ -386,8 +388,6 @@ gg.WPractice
 It appears that a very significant proportion - `r round(length(which(data_Europe_clean$q_0008 == "Yes")) / length(na.omit(data_Europe_clean$q_0008)) * 100,2)`% of psychiatry trainees would want to practice psychological therapies after they become psychiatrists. 
 
 \newthought{What kinds of therapies} they were interested in most was our next question. `r stri_rand_lipsum(1)`
-
-
 ```{r what_Interest, echo=FALSE, fig.cap="Therapies that trainees show greatest interest in", results='asis'}
 df.Interest <- data_Europe_clean[,grep("^q_0009", names(data_Europe_clean))]
 colnames(df.Interest) <- c("Psychodynamic","CBT","Systemic","Group","None", "Other")
@@ -408,15 +408,45 @@ gg.Interest <- ggplot(df.InterestA, aes(x=factor(inTerest,levels=c("Psychodynami
 
 gg.Interest
 
-df.Q9otherInt <- head(as.data.frame(na.omit(data_Europe_clean$q_0009_other)),22)
+df.Q9otherInt <- head(as.data.frame(na.omit(data_Europe_clean$q_0009_other)),6)
 colnames(df.Q9otherInt) <- c("Other_therapies")
 xt.Q9otherInt <- xtable(df.Q9otherInt, caption = "Other therapies trainees are interested in")
 align(xt.Q9otherInt) <- c('l', 'p{4in}')
 print(xt.Q9otherInt, table.placement ="!h")
 ```
-
 \newthought{This shows that psychiatrists seem to be most interested in CBT}. `r stri_rand_lipsum(1)`.
-\newpage
+
+# What experience is mandatory?
+There will be a description of various experiences that are a mandatory part of training in psychiatry. That is those mandatory experiences that are relevant to psychotherapy component of the training. 
+``` {r mandatoryXP, echo=FALSE, eval=TRUE, fig.cap="Mandatory experience in psychotoherapy training for psychiatrists"}
+# (simple) data wrangling task - convert 4 columns representing option answers to 1 question 
+# into table of frequency of answers to the said question and represent it in stacked bar graphs
+# http://stackoverflow.com/questions/11918080/how-to-create-a-stacked-bar-chart-from-summarized-data-in-ggplot2
+
+# qManXP <- c("q_0011_SQ001","q_0011_SQ002","q_0011_SQ003","q_0011_SQ004")
+df.MandXP <- data_Europe_clean[,grep("^q_0011", names(data_Europe_clean))]
+colnames(df.MandXP) <- c("Lectures","TherapyNoSV","TherapyWSV","PersonalTh")
+df.MandXP.summary <- as.data.frame(apply(df.MandXP,2,table))
+# now we melt this dataframe to long format as 'ggplot always needs long format'
+df.MandXP.summary[,'Answer'] <- rownames(df.MandXP.summary)
+df.molten.MandXP <- melt(df.MandXP.summary, id.vars = 'Answer',value.name = 'Count', variable.name = 'XP')
+gg.MandXP <- ggplot(df.molten.MandXP, aes(x=XP, y=Count, fill=Answer)) +
+  geom_bar(position = 'stack', stat='identity', alpha = 1)
+gg.MandXP + theme_tufte() + 
+  scale_fill_manual(values = colours3qual) + 
+  theme_LegendMin +
+  ggtitle("Mandatory experiences in training") +
+  scale_x_discrete(name="Psychotherapy experiences", 
+                   labels=c("Lectures" = "Lectures","TherapyNoSV" = "Therapy \nwithout \nsupervision","TherapyWSV" = "Therapy \nwith \nsupervision","PersonalTh" = "Personal \n psychotherapy")) +
+  theme(axis.text.x = element_text(angle = 0, hjust = 0.5), axis.title=element_blank())
+
+```
+\newthought{Experiences that were mandatory} part of training programme in psychiatry were as seen in the graph above. Explanation of data labels on the graph: 
+
+1. Lectures in psychotherapy
+2. Conducting therapy with patients without supervision
+3. Conducting therapy with patients with supervision
+4. Personal psychotherapy of the trainee
 
 ## Satisfaction with psychotherapy training provided
 perhaps we should use likert package to plot likert type items. And insert a new page after this - or indeed before this
@@ -444,39 +474,7 @@ print(gg.satisfaction)
 # scale_fill_brewer(type="div", palette="Spectral")
 ```
 
-# What experience is mandatory?
-There will be a description of various experiences that are a mandatory part of training in psychiatry. That is those mandatory experiences that are relevant to psychotherapy component of the training. 
-\newpage
-
-
-``` {r mandatoryXP, echo=FALSE, eval=FALSE}
-# (simple) data wrangling task - convert 4 columns representing option answers to 1 question 
-# into table of frequency of answers to the said question and represent it in stacked bar graphs
-# http://stackoverflow.com/questions/11918080/how-to-create-a-stacked-bar-chart-from-summarized-data-in-ggplot2
-
-# qManXP <- c("q_0011_SQ001","q_0011_SQ002","q_0011_SQ003","q_0011_SQ004")
-df.ManXP <- data_Europe_clean[,grep("^q_0011", names(data_Europe_clean))]
-colnames(df.ManXP) <- c("Lectures","TherapyNoSV","TherapyWSV","PersonalTh")
-
-
-# df.ManXPNum <- df.ManXP[,1:4]
-# colnames(df.ManXPNum) <- c("Lectures","TherapyNoSV","TherapyWSV","PersonalTh")
-# df.ManXPA <- setNames(as.data.frame(apply(df.ManXPNum, 2, function(c)length(which(c=="Yes")))),c("countYes"))
-# df.ManXPA$inTraining <- rownames(df.ManXPA)
-# df.ManXPA <- df.ManXPA[,c(2,1)]
-
-# gg.InTr <- ggplot(df.ManXP, aes(x=,y=countYes)) +
-#   geom_bar(stat = "identity", fill=colours4train, width = 0.72) +
-#   scale_x_discrete(name="Training in Psychotherapy status", 
-#                    labels=c("YesIn" = "Yes - within my\ntraining \nprogramme","YesOut" = "Yes - outside \nof my \nprogramme","No" = "No","Completed" = "Training \ncompleted \npreviously")) +
-#   ylab("Number of trainees") + 
-#   theme_tufte() +
-#   theme(axis.text.x = element_text(angle = 0, hjust = 0.5), axis.title=element_blank())
-# gg.InTr
-```
-
 # UEMS Recommendations
-
 There is something interesting about UEMS recommendations. People may say they do not know about UEMS, but when asked about the recommendations - they often do.
 ```{r plot_UEMS_recs, echo=F,  message=F, fig.height=7.1, fig.width=9, fig.fullwidth=T, fig.cap="UEMS Recs"}
 df.UEMSaware <- data_Europe_clean[,grep("^q_0021", names(data_Europe_clean))]
@@ -529,7 +527,6 @@ grid.arrange(gg.UEMSaware, gg.UEMSimplement, nrow=2)
 \newthought{Our questions} were as follows - and answers we got wer the same. As we can see the trainee observation of how UEMS recommendations were implemented in their training schemes in their countries were different. Indeed it usually is the case that implementation is not quite on par with awareness.
 
 # Concluding notes
-
 ```{r conclusions, echo=FALSE, warning=FALSE, results='asis'}
 cat("\n\n\\justify\n")
 stri_rand_lipsum(1)
