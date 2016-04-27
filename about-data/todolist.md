@@ -32,6 +32,24 @@ output: html_document
 
 * In which country there are more hours of supervision ? (TG)
 
+# Free text responses to be analysed:
+There is a number of freeform text questions that provide interesting material. Freeform text questions were generally not manadatory - people gave answers if they felt like doing so. In providing summaries, I am sure we could quote some of the most interesting or prevalent answers/thoughts. We have freeform answers to analyse for:
+
+* **q_0005_other** - Other kind of psychotherapy person is training in. We also should reflect it in the existing graph (Fig. 6) - by adding one more column with count how many non-NA responses are there _(will be done by RK)_. However we should at least provide some kind of grouping of other therapies that have been mentioned and an overview of what kind of responses people have provided under `other`. 24 responses here.
+* **q_0006** - this is list of therapies people are training in. Only people who said they were training in psychotherapy were presented with this question. Hence we need to classify the responses in some sensible manner and provide count of responses in each class (e.g. CBT, Psychodynamic, etc). 329 responses.
+* **q_0009_other** - this is very similar to q_0005_other - but it gives an 85 items long list of other therapies that people are _interested in_. This also needs classification and counting within classes. 
+* **q_0010** - this is a very importan and more difficult question. It asked people for their comments regarding their preferences in psychotehrapy and we have 165 textual answers which we need to classify and make an overview of. I think this is a challenging, but particularly interesting task.
+* **q_0012_other** - provides `other` answers for question - Are you qualified to practice psychotherapy after your psychiatry training? This is very short - it only gives 7 answers. 
+* **q_0013** - another interesting classification/summary - what therapies people have seen available for patients at the place they are receiving their training. That is rather straightforward, but people have given 510 responses, so will require some effort. It is very interesting though.
+* **q_0015_other** - describes `other` kinds of supervision that people receive. 21 responses.
+* **q_0023** is the final text question - it asks for general feedback after the survey and it contains 55 responses. Contains some of the most interesting thoughts. 
+
+**How to extract text responses from the data**
+
+Generally it is quite simple. We can print non-NA responses using the command to omit NA `na.omit(data_Europe_clean$q_0023)` - which gives us numbered rows of answers, but requires a bit of scrolling in R. If we want to make it into a dataframe for easy export to Excel etc. we can do `df.0023 <- na.omit(data_Europe_clean$q_0023)`.
+
+
+
 # Done
 * add a column with name
 * merge all the data : analysis in the whole europe (TG)  http://www.r-bloggers.com/string-concatenation-in-r/ 

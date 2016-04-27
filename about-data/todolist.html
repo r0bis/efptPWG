@@ -119,7 +119,10 @@ $(document).ready(function () {
 <li><p>group graphs by sections so that we have each major section of the survey on one page. (RK)</p></li>
 <li>Improve esthetism of the graphs. Do all plots with <em>ggplot2</em> as I know it supports colour palettes / themes very nicely (RK)</li>
 <li><p>Percentages in the mergins with likert figures (RK)</p></li>
-<li><p>Replace not Selected by No (TG) ** <a href="http://kbroman.org/knitr_knutshell/pages/figs_tables.html" class="uri">http://kbroman.org/knitr_knutshell/pages/figs_tables.html</a> ** <a href="https://www.qwant.com/?q=ggplot&amp;t=images" class="uri">https://www.qwant.com/?q=ggplot&amp;t=images</a></p></li>
+<li>Replace not Selected by No (TG) ** <a href="http://kbroman.org/knitr_knutshell/pages/figs_tables.html" class="uri">http://kbroman.org/knitr_knutshell/pages/figs_tables.html</a> ** <a href="https://www.qwant.com/?q=ggplot&amp;t=images" class="uri">https://www.qwant.com/?q=ggplot&amp;t=images</a>
+<ul>
+<li>just to mention - in ggplot version I have put all the questions in one - producing a comparable barchart; perhaps it is not necessary to account for “Not selected” - this way the output is more compact. This can be seen in <strong>Fig. 6</strong> and <strong>Fig. 9</strong> (RK)</li>
+</ul></li>
 </ul>
 <div id="on-going" class="section level2">
 <h2>On-going</h2>
@@ -132,7 +135,10 @@ $(document).ready(function () {
 <h2>Deadline April 28</h2>
 <ul>
 <li>Write an abstract for <a href="http://eabct2016.org/abstract/">EABCT</a> April 28 – Poster abstracts due</li>
-<li>Make a poster for <a href="http://eabct2016.org/abstract/">EABCT</a> April 28 – Poster abstracts due</li>
+<li>Make a poster for <a href="http://eabct2016.org/abstract/">EABCT</a> April 28 – Poster abstracts due
+<ul>
+<li>Is it the whole poster that is needed by then, or just the abstract with selected graphs? (RK)</li>
+</ul></li>
 </ul>
 </div>
 <div id="questions" class="section level2">
@@ -142,6 +148,22 @@ $(document).ready(function () {
 <li><p>In which country there are more hours of supervision ? (TG)</p></li>
 </ul>
 </div>
+</div>
+<div id="free-text-responses-to-be-analysed" class="section level1">
+<h1>Free text responses to be analysed:</h1>
+<p>There is a number of freeform text questions that provide interesting material. Freeform text questions were generally not manadatory - people gave answers if they felt like doing so. In providing summaries, I am sure we could quote some of the most interesting or prevalent answers/thoughts. We have freeform answers to analyse for:</p>
+<ul>
+<li><strong>q_0005_other</strong> - Other kind of psychotherapy person is training in. We also should reflect it in the existing graph (Fig. 6) - by adding one more column with count how many non-NA responses are there <em>(will be done by RK)</em>. However we should at least provide some kind of grouping of other therapies that have been mentioned and an overview of what kind of responses people have provided under <code>other</code>. 24 responses here.</li>
+<li><strong>q_0006</strong> - this is list of therapies people are training in. Only people who said they were training in psychotherapy were presented with this question. Hence we need to classify the responses in some sensible manner and provide count of responses in each class (e.g. CBT, Psychodynamic, etc). 329 responses.</li>
+<li><strong>q_0009_other</strong> - this is very similar to q_0005_other - but it gives an 85 items long list of other therapies that people are <em>interested in</em>. This also needs classification and counting within classes.</li>
+<li><strong>q_0010</strong> - this is a very importan and more difficult question. It asked people for their comments regarding their preferences in psychotehrapy and we have 165 textual answers which we need to classify and make an overview of. I think this is a challenging, but particularly interesting task.</li>
+<li><strong>q_0012_other</strong> - provides <code>other</code> answers for question - Are you qualified to practice psychotherapy after your psychiatry training? This is very short - it only gives 7 answers.</li>
+<li><strong>q_0013</strong> - another interesting classification/summary - what therapies people have seen available for patients at the place they are receiving their training. That is rather straightforward, but people have given 510 responses, so will require some effort. It is very interesting though.</li>
+<li><strong>q_0015_other</strong> - describes <code>other</code> kinds of supervision that people receive. 21 responses.</li>
+<li><strong>q_0023</strong> is the final text question - it asks for general feedback after the survey and it contains 55 responses. Contains some of the most interesting thoughts.</li>
+</ul>
+<p><strong>How to extract text responses from the data</strong></p>
+<p>Generally it is quite simple. We can print non-NA responses using the command to omit NA <code>na.omit(data_Europe_clean$q_0023)</code> - which gives us numbered rows of answers, but requires a bit of scrolling in R. If we want to make it into a dataframe for easy export to Excel etc. we can do <code>df.0023 &lt;- na.omit(data_Europe_clean$q_0023)</code>.</p>
 </div>
 <div id="done" class="section level1">
 <h1>Done</h1>
