@@ -1,3 +1,4 @@
+\DeclareUnicodeCharacter{00A0}{ }
 ---
 title: "Psychotherapy Study"
 author: "Roberts Klotins and Thomas Gargot"
@@ -99,11 +100,8 @@ Slovenia_data["q_0000"] <- as.factor("Slovenia")
 Slovenia_data["q_0012_other"] <- as.numeric(NA)
 Slovenia_data <- Slovenia_data[colnames(Bulgaria_data)]
 
-<<<<<<< HEAD
 # France_data$q_0000 <- ifelse((is.na(France_data$q_0000)==FALSE), c("France"), c(NA)) 
-=======
 #France_data$q_0000 <- ifelse((is.na(France_data$q_0000)==FALSE), c("France"), c(NA))
->>>>>>> 35ec8882c34039020e9d5a7d99d90a0ad9ce933a
 ### List of countries studied
 list <- list.files("data", full.names=FALSE)
 print(list)
@@ -114,10 +112,103 @@ data_Europe <- do.call("rbind", listof.df)
 ```
 
 # European results
-```{r,include = FALSE}
+```{r,include = FALSE, eval=TRUE}
 dim(data_Europe)
 str(data_Europe)
 summary(data_Europe)
+
+data_mini_Europe <- subset(data_Europe, select=c(q_0000, q_0005_S05A1, q_0005_S05A2, q_0008, q_0019_SQ002, q_0019_SQ003)) 
+
+#Country variable
+#str(data_mini_Europe)
+#unique(data_mini_Europe$q_0000)
+
+#I am undertaking training in Psychotherapy within my training programme in Psychiatry : in.training
+#unique(data_mini_Europe$q_0005_S05A1)
+#length(unique(data_mini_Europe$q_0005_S05A1))
+data_mini_Europe$q_0005_S05A1 <- as.character(data_mini_Europe$q_0005_S05A1)
+data_mini_Europe$q_0005_S05A1[data_mini_Europe$q_0005_S05A1=="Yes"]<-"1"
+data_mini_Europe$q_0005_S05A1[data_mini_Europe$q_0005_S05A1=="Not selected"]<-"0"
+data_mini_Europe$q_0005_S05A1 <- as.numeric(data_mini_Europe$q_0005_S05A1)
+#str(data_mini_Europe$q_0005_S05A1)
+
+#I am undertaking training in Psychotherapy on my own initiative (outside my training programme in Psychiatry): own.initiative
+#unique(data_mini_Europe$q_0005_S05A2)
+#length(unique(data_mini_Europe$q_0005_S05A2))
+data_mini_Europe$q_0005_S05A2 <- as.character(data_mini_Europe$q_0005_S05A2)
+data_mini_Europe$q_0005_S05A2[data_mini_Europe$q_0005_S05A2=="Yes"]<-"1"
+data_mini_Europe$q_0005_S05A2[data_mini_Europe$q_0005_S05A2=="Not selected"]<-"0"
+data_mini_Europe$q_0005_S05A2 <- as.numeric(data_mini_Europe$q_0005_S05A2)
+#str(data_mini_Europe$q_0005_S05A2)
+
+#Do you want to practise Psychotherapy after your training in Psychiatry? : future.practice
+unique(data_mini_Europe$q_0008)
+data_mini_Europe$q_0008 <- as.character(data_mini_Europe$q_0008)
+data_mini_Europe$q_0008[data_mini_Europe$q_0008=="Yes"]<-"1"
+data_mini_Europe$q_0008[data_mini_Europe$q_0008=="No"]<-"0"
+data_mini_Europe$q_0008 <- as.numeric(data_mini_Europe$q_0008)
+#str(data_mini_Europe$q_0008)
+
+#I am satisfied with Psychotherapy training options in my country : satisfied
+#unique(data_mini_Europe$q_0019_SQ002)
+data_mini_Europe$q_0019_SQ002 <- as.character(data_mini_Europe$q_0019_SQ002)
+data_mini_Europe$q_0019_SQ002[data_mini_Europe$q_0019_SQ002=="Strongly Disagree"] <- "-2"
+data_mini_Europe$q_0019_SQ002[data_mini_Europe$q_0019_SQ002=="Disagree"] <- "-1"
+data_mini_Europe$q_0019_SQ002[data_mini_Europe$q_0019_SQ002=="Neutral"] <- "0"
+data_mini_Europe$q_0019_SQ002[data_mini_Europe$q_0019_SQ002=="Agree"] <- "1"
+data_mini_Europe$q_0019_SQ002[data_mini_Europe$q_0019_SQ002=="Strongly Agree"] <- "2"
+data_mini_Europe$q_0019_SQ002 <- as.numeric(data_mini_Europe$q_0019_SQ002)
+#str(data_mini_Europe$q_0019_SQ002)
+
+# I am satisfied with the level of funding for Psychotherapy training within Psychiatry in my country : satisfied.funding
+#unique(data_mini_Europe$q_0019_SQ003)
+data_mini_Europe$q_0019_SQ003 <- as.character(data_mini_Europe$q_0019_SQ003)
+data_mini_Europe$q_0019_SQ003[data_mini_Europe$q_0019_SQ003=="Strongly Disagree"] <- "-2"
+data_mini_Europe$q_0019_SQ003[data_mini_Europe$q_0019_SQ003=="Disagree"] <- "-1"
+data_mini_Europe$q_0019_SQ003[data_mini_Europe$q_0019_SQ003=="Neutral"] <- "0"
+data_mini_Europe$q_0019_SQ003[data_mini_Europe$q_0019_SQ003=="Agree"] <- "1"
+data_mini_Europe$q_0019_SQ003[data_mini_Europe$q_0019_SQ003=="Strongly Agree"] <- "2"
+
+#View(data_mini_Europe)
+data_mini_Europe$q_0019_SQ003 <- as.numeric(data_mini_Europe$q_0019_SQ003)
+data_mini_Europe$q_0000 <- as.character(data_mini_Europe$q_0000)
+unique(data_mini_Europe$q_0000)
+data_mini_Europe <-data_mini_Europe[!is.na(data_mini_Europe$q_0000),]
+data_mini_Europe$q_0000 <- as.factor(data_mini_Europe$q_0000)
+#str(data_mini_Europe)
+```
+
+```{r, eval=TRUE}
+names(data_mini_Europe) <- c("country", "in.training", "own.initiative", "future.practice", "satisfied", "satisfied.funding")
+#str(data_mini_Europe)
+country <- data_mini_Europe$country
+mini <- aggregate(data_mini_Europe[-1], by=list(country), FUN = mean, na.rm=TRUE, simplify = TRUE)
+colnames(mini)[colnames(mini)=="Group.1"] <- "country"
+#Exclusion of Belarus, Serbia, Croatia : not full
+mini <- mini[complete.cases(mini),]
+
+in.training.sort <- mini[with(mini, order(-in.training)), ]
+par(mar=c(11,3,3,3))
+barplot(in.training.sort$in.training, names=in.training.sort$country, las=2, main="Proportion of trainees in psychotherapy training 
+        in each country", col="cornflowerblue")
+
+oi.sort <- mini[with(mini, order(-own.initiative)), ]
+barplot(oi.sort$own.initiative, names=oi.sort$country, las=2, main="Proportion of trainees in psychotherapy training 
+        in each country on their own initiative", col="cornflowerblue")
+
+future.sort <- mini[with(mini, order(-future.practice)), ]
+barplot(future.sort$future.practice, names=future.sort$country, las=2, main="Proportion of trainees who would 
+        like to practice psychotherapy in the future", col="cornflowerblue")
+
+par(mar=c(11,3,3,2))
+satisfied.sort <- mini[with(mini, order(-satisfied)), ]
+barplot(satisfied.sort$satisfied, names=satisfied.sort$country, las=2, main="Mean satisfaction of trainees regarding 
+        their psychotherapy training", col="cornflowerblue", ylim=c(-2,2))
+
+par(mar=c(11,3,3,2))
+satisfied.funding <- mini[with(mini, order(-satisfied.funding)), ]
+barplot(satisfied.funding$satisfied.funding, names=satisfied.funding$country, las=2, main="Mean satisfaction of trainees regarding the  
+    funding of their psychotherapy training", col="cornflowerblue", ylim=c(-2,2))
 ```
 
 ## Number of participants by country (barplot)
@@ -139,6 +230,8 @@ text(45,6, paste(length(answering_countries), "countries
                       Slovenia, Czech Republic"), cex=1.2)
 abline(v=mean(answering_countries), lty=2)
 text(19, 0.7,"Mean", font=2)
+
+answering_countries
 ```
 
 ## Number of participants by country (map)
@@ -171,6 +264,7 @@ par(mfrow=c(1,1), mar=c(3,3,2,2))
 gender <-table(data_Europe$q_0001)
 #prop.table(gender)
 pie(gender, main="Gender of participants in Europe reponses")
+prop.table(gender)
 ```
 
 ##Age
@@ -183,6 +277,8 @@ hist(age_Europe, col="cornflowerblue",
 text(47, 40, paste("Mean age:", round(mean(age_Europe),0), "years"))
 text(47, 30, paste("Median age:", round(median(age_Europe),0), "years"))
 abline(v=mean(age_Europe), lty=2)
+median(age_Europe)
+sd(age_Europe)
 ```
 
 ## Year in Training
@@ -192,10 +288,11 @@ names(YoT)<- c(1:8, "> 8", "TF")
 par(mfrow=c(1,1), mar=c(3,3,2,2))
 barplot(YoT, main="Year of training", xlab="Year", las=1, col="cornflowerblue", border=NA, ylab="Number", cex.names=1)
 
+
 #Proportion of trainees 
-#length(YoT)
-#sum(YoT[1:9])
-#YoT[10]
+length(YoT)
+sum(YoT[1:9])
+YoT[10]
 
 ```
 >TF : for training finished
@@ -230,7 +327,8 @@ pie(table(data_Europe$q_0005_S05A2), main="Training in psychotherapy outside my 
 
 ## I am not undertaking any training in Psychotherapy
 ```{r, echo=FALSE}
-#table(data_Europe$q_0005_S05A3)
+table(data_Europe$q_0005_S05A3)
+prop.table(table(data_Europe$q_0005_S05A3))
 pie(table(data_Europe$q_0005_S05A3),  main="I am not undertaking any training in Psychotherapy")
 ```
 > Psychotherapy training taking place within working hours is recommended by UEMS as a mandatory component of curriculum.
@@ -269,6 +367,8 @@ q9df <- data_Europe[,16:21]
 barplot(c(sum(q9df[,1]=="Yes"), sum(q9df[,2]=="Yes"), sum(q9df[,3]=="Yes"), sum(q9df[,4]=="Yes"),
          sum(q9df[,5]=="Yes"), sum(!is.na(q9df[,6]))),
         names.arg=c("Dynamic","CBT","Systemic","Group","Not Any","Other"),main="Interested in this therapy", las=1, col=rainbow(6),)
+
+c(sum(q9df[,1]=="Yes"), sum(q9df[,2]=="Yes"), sum(q9df[,3]=="Yes"), sum(q9df[,4]=="Yes"), sum(q9df[,5]=="Yes"), sum(!is.na(q9df[,6])))/574
 ```
 
 ##"The following experience in Psychotherapy is a mandatory part of my training in Psychiatry:"
@@ -287,13 +387,14 @@ PWS <- table(data_Europe$q_0011_SQ003)
 PP <- table(data_Europe$q_0011_SQ004)
 
 mandatory <- cbind(prop.table(TL),prop.table(PNS), prop.table(PWS), prop.table(PP))
-par(mar=c(3,3,5,9), xpd=TRUE)
+par(mar=c(3,3,5,7), xpd=TRUE)
 barplot(mandatory, col=terrain.colors(3), names=c("Theorical lectures", "Psychotherapy 
 without supervision", "Psychotherapy 
 with supervision", "Personnal 
-psychotherapy"), cex.name=1, main="The following experience in psychotherapy 
+psychotherapy"), cex.name=0.5, main="The following experience in psychotherapy 
 is a mandatory part of my training in Psychiatry", cex.main=1.5)
-legend("topright", inset=c(-0.27,0), legend = c("Yes", "No", "Uncertain"), fill=(terrain.colors(3)), cex=0.9, bty="n")
+legend("topright", inset=c(-0.27,0), legend = c("Yes", "No", "Uncertain"), fill=(terrain.colors(3)), cex=0.5, bty="n")
+mandatory
 ```
 
 ```{r, echo=FALSE}
@@ -301,11 +402,12 @@ qualified <- prop.table(table(data_Europe$q_0012))
 par(mar=c(4,5,5,3))
 barplot(qualified, col=terrain.colors(3) , main="Are you qualified 
         to practice psychotherapy after your training ?", las=1, ylab="Frequency", cex.names=1.4, cex.lab=1.4, cex.main=1.4)
+qualified
 ```
 
 ## What types of psychotherapy modalities are available for treatment of patients at your institution?
 ```{r, echo=FALSE}
-#table(data_Europe$q_0013)
+table(data_Europe$q_0013)
 ```
 
 ## How many hours of supervision
