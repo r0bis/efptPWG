@@ -117,7 +117,10 @@ dim(data_Europe)
 str(data_Europe)
 summary(data_Europe)
 
-data_mini_Europe <- subset(data_Europe, select=c(q_0000, q_0005_S05A1, q_0005_S05A2, q_0008, q_0019_SQ002, q_0019_SQ003)) 
+data_mini_Europe <- subset(data_Europe, select=c(q_0000, q_0005_S05A1, q_0005_S05A2, q_0008, q_0019_SQ002, q_0019_SQ003))
+supervision <- (data_Europe$q_0014_SQ001+ data_Europe$q_0014_SQ002 + data_Europe$q_0014_SQ003 + data_Europe$q_0014_SQ004 + data_Europe$q_0014_SQ005)
+
+data_mini_Europe <- cbind(data_mini_Europe,supervision)
 
 #Country variable
 #str(data_mini_Europe)
@@ -179,7 +182,7 @@ data_mini_Europe$q_0000 <- as.factor(data_mini_Europe$q_0000)
 ```
 
 ```{r, eval=TRUE}
-names(data_mini_Europe) <- c("country", "in.training", "own.initiative", "future.practice", "satisfied", "satisfied.funding")
+names(data_mini_Europe) <- c("country", "in.training", "own.initiative", "future.practice", "satisfied", "satisfied.funding", "hours.supervision")
 #str(data_mini_Europe)
 country <- data_mini_Europe$country
 mini <- aggregate(data_mini_Europe[-1], by=list(country), FUN = mean, na.rm=TRUE, simplify = TRUE)
@@ -189,26 +192,37 @@ mini <- mini[complete.cases(mini),]
 
 in.training.sort <- mini[with(mini, order(-in.training)), ]
 par(mar=c(11,3,3,3))
-barplot(in.training.sort$in.training, names=in.training.sort$country, las=2, main="Proportion of trainees in psychotherapy training 
+barplot(in.training.sort$in.training, names=in.training.sort$country, las=2, main="Proportion of respondents in psychotherapy training 
         in each country", col="cornflowerblue")
-
+abline(h=0.52, lty=2)
+text(23, 0.6, "Mean")
 oi.sort <- mini[with(mini, order(-own.initiative)), ]
-barplot(oi.sort$own.initiative, names=oi.sort$country, las=2, main="Proportion of trainees in psychotherapy training 
+barplot(oi.sort$own.initiative, names=oi.sort$country, las=2, main="Proportion of respondents in psychotherapy training 
         in each country on their own initiative", col="cornflowerblue")
+abline(h=0.33, lty=2)
+text(22, 0.40, "Mean")
 
 future.sort <- mini[with(mini, order(-future.practice)), ]
-barplot(future.sort$future.practice, names=future.sort$country, las=2, main="Proportion of trainees who would 
+barplot(future.sort$future.practice, names=future.sort$country, las=2, main="Proportion of respondents who would 
         like to practice psychotherapy in the future", col="cornflowerblue")
+abline(h=0.89, lty=2)
+text(23, 0.95, "Mean")
+abline(h=0.75, lty=2)
 
 par(mar=c(11,3,3,2))
 satisfied.sort <- mini[with(mini, order(-satisfied)), ]
-barplot(satisfied.sort$satisfied, names=satisfied.sort$country, las=2, main="Mean satisfaction of trainees regarding 
-        their psychotherapy training", col="cornflowerblue", ylim=c(-2,2))
+barplot(satisfied.sort$satisfied, names=satisfied.sort$country, las=2, main="Mean satisfaction of respondents regarding 
+        the quality of their psychotherapy training", col="cornflowerblue", ylim=c(-2,2))
+abline(h=-0.20, lty=2)
+text(15, -1, "Mean")
 
 par(mar=c(11,3,3,2))
 satisfied.funding <- mini[with(mini, order(-satisfied.funding)), ]
-barplot(satisfied.funding$satisfied.funding, names=satisfied.funding$country, las=2, main="Mean satisfaction of trainees regarding the  
+barplot(satisfied.funding$satisfied.funding, names=satisfied.funding$country, las=2, main="Mean satisfaction of respondents regarding the  
     funding of their psychotherapy training", col="cornflowerblue", ylim=c(-2,2))
+abline(h=-1.03, lty=2)
+text(13, -1.5, "Mean")
+#write.csv(mini,"aggregate.file.csv")
 ```
 
 ## Number of participants by country (barplot)
@@ -229,9 +243,8 @@ text(45,6, paste(length(answering_countries), "countries
                       Top 4: Romania, France, 
                       Slovenia, Czech Republic"), cex=1.2)
 abline(v=mean(answering_countries), lty=2)
-text(19, 0.7,"Mean", font=2)
-
 answering_countries
+answering_countries[sort(names(answering_countries))]
 ```
 
 ## Number of participants by country (map)
@@ -264,7 +277,10 @@ par(mfrow=c(1,1), mar=c(3,3,2,2))
 gender <-table(data_Europe$q_0001)
 #prop.table(gender)
 pie(gender, main="Gender of participants in Europe reponses")
+gender
 prop.table(gender)
+prop.table(gender)
+prop.test(gender)
 ```
 
 ##Age
@@ -293,7 +309,7 @@ barplot(YoT, main="Year of training", xlab="Year", las=1, col="cornflowerblue", 
 length(YoT)
 sum(YoT[1:9])
 YoT[10]
-
+YoT[10]/sum(YoT[1:9])
 ```
 >TF : for training finished
 
@@ -307,6 +323,7 @@ names(data_Europe)[7] <- "q_0004"
 #table(data_Europe$q_0004)
 par(mar=c(3,3,2,2))
 prop.table(table(data_Europe$q_0004))
+prop.test(table(data_Europe$q_0004))
 pie(table(data_Europe$q_0004), main = "Receiving personal psychotherapy (present or past)")
 ```
 
@@ -322,6 +339,7 @@ pie(table(data_Europe$q_0004), main = "Receiving personal psychotherapy (present
 ```{r, echo=FALSE}
 table(data_Europe$q_0005_S05A2)
 prop.table(table(data_Europe$q_0005_S05A2))
+prop.test(table(data_Europe$q_0005_S05A2))
 pie(table(data_Europe$q_0005_S05A2), main="Training in psychotherapy outside my training programme")
 ```
 
@@ -329,6 +347,7 @@ pie(table(data_Europe$q_0005_S05A2), main="Training in psychotherapy outside my 
 ```{r, echo=FALSE}
 table(data_Europe$q_0005_S05A3)
 prop.table(table(data_Europe$q_0005_S05A3))
+prop.test(table(data_Europe$q_0005_S05A3))
 pie(table(data_Europe$q_0005_S05A3),  main="I am not undertaking any training in Psychotherapy")
 ```
 > Psychotherapy training taking place within working hours is recommended by UEMS as a mandatory component of curriculum.
@@ -337,20 +356,28 @@ pie(table(data_Europe$q_0005_S05A3),  main="I am not undertaking any training in
 ```{r, echo=FALSE}
 #table(data_Europe$q_0005_S05A4)
 prop.table(table(data_Europe$q_0005_S05A4))
+prop.test(table(data_Europe$q_0005_S05A4))
 pie(table(data_Europe$q_0005_S05A4), main="Completed a full training in a Psychotherapy (past)")
 ```
 
-## I am training in some modality
+## I am training in some modality of psychotherapy
 ```{r, echo=FALSE}
+#If NA : I am not training in any modality of psychotherapy
 table(is.na(data_Europe$q_0006))
 prop.table(table(is.na(data_Europe$q_0006)))
-pie(table(is.na(data_Europe$q_0006)),main="I am training in some modality of psychotherapy")
+prop.test((table(is.na(data_Europe$q_0006))))
 ```
 
 ## Is psychotherapy important for your identity as a psychiatrist ?
 ```{r, echo=FALSE}
 table(data_Europe$q_0007)
 prop.table(table(data_Europe$q_0007))
+tab <- table(data_Europe$q_0007)
+k = sum(na.omit(data_Europe$q_0007 == "Yes"))
+n= length(na.omit(data_Europe$q_0007))
+prop.test(k,n)
+k  
+n
 pie(table(data_Europe$q_0007), main="Psychotherapy important for the professional identity", col=terrain.colors(3))
 ```
 
@@ -358,6 +385,12 @@ pie(table(data_Europe$q_0007), main="Psychotherapy important for the professiona
 ```{r, echo=FALSE}
 #table(data_Europe$q_0008)
 prop.table(table(data_Europe$q_0008))
+prop.test(table(data_Europe$q_0008))
+k = sum(na.omit(data_Europe$q_0007 == "Yes"))
+n= length(na.omit(data_Europe$q_0007))
+prop.test(k,n)
+k  
+n
 pie(table(data_Europe$q_0008), main="Plan to practise Psychotherapy after training")
 ```
 
@@ -386,6 +419,18 @@ PNS <- table(data_Europe$q_0011_SQ002)
 PWS <- table(data_Europe$q_0011_SQ003)
 PP <- table(data_Europe$q_0011_SQ004)
 
+k = sum(na.omit(data_Europe$q_0011_SQ001 == "Yes"))
+n= length(na.omit(data_Europe$q_0011_SQ001))
+prop.test(k,n)
+
+k = sum(na.omit(data_Europe$q_0011_SQ003 == "Yes"))
+n= length(na.omit(data_Europe$q_0011_SQ003))
+prop.test(k,n)
+
+k = sum(na.omit(data_Europe$q_0011_SQ004 == "Yes"))
+n= length(na.omit(data_Europe$q_0011_SQ004))
+prop.test(k,n)
+
 mandatory <- cbind(prop.table(TL),prop.table(PNS), prop.table(PWS), prop.table(PP))
 par(mar=c(3,3,5,7), xpd=TRUE)
 barplot(mandatory, col=terrain.colors(3), names=c("Theorical lectures", "Psychotherapy 
@@ -399,6 +444,13 @@ mandatory
 
 ```{r, echo=FALSE}
 qualified <- prop.table(table(data_Europe$q_0012))
+prop.test(table(data_Europe$q_0012))
+prop.table(table(data_Europe$q_0012))
+
+k = sum(na.omit(data_Europe$q_0012 == "Yes"))
+n= length(na.omit(data_Europe$q_0012))
+prop.test(k,n)
+
 par(mar=c(4,5,5,3))
 barplot(qualified, col=terrain.colors(3) , main="Are you qualified 
         to practice psychotherapy after your training ?", las=1, ylab="Frequency", cex.names=1.4, cex.lab=1.4, cex.main=1.4)
@@ -424,6 +476,13 @@ text(3.5,0.40, "UEMS > 1.7h", font=2, cex=1.5)
 #lines(density(data_Europe$q_0014_SQ004[which(is.na(data_Europe$q_0014_SQ004)==FALSE)]), col=rainbow(5)[4])
 #lines(density(data_Europe$q_0014_SQ005[which(is.na(data_Europe$q_0014_SQ005)==FALSE)]), col=rainbow(5)[5])
 #legend("topright", legend=c("Hours of Psychotherapy supervision per month", "Small group supervision (3 - 5 people)", "Large group supervision (more than 5 people)", "Generic Balint group", "Other form of supervision"), fill = rainbow(4), cex=0.7)
+mean = mean(data_Europe$q_0014_SQ001[which(is.na(data_Europe$q_0014_SQ001)==FALSE)])
+median(data_Europe$q_0014_SQ001[which(is.na(data_Europe$q_0014_SQ001)==FALSE)])
+s <- sd(data_Europe$q_0014_SQ001[which(is.na(data_Europe$q_0014_SQ001)==FALSE)])
+n <- length((data_Europe$q_0014_SQ001[which(is.na(data_Europe$q_0014_SQ001)==FALSE)]))
+error <- qnorm(0.975)*s/sqrt(n)
+IC = c(mean - error, mean+error)
+IC
 ```
 
 > UEMS Charter on Psychiatry states that minimum duration of psychotherapy supervision should be 100 hours during the whole training of 5 recommended years. It makes 1.7 hours approximatively a month.
@@ -466,7 +525,10 @@ hist(data_Europe$q_0014_SQ005, col="navy",
      main ="Other form of supervision")
 ```
 
+```{r}
 table(data_Europe$q_0015)
+```
+
 
 ##Who pays?
 
@@ -489,11 +551,29 @@ groups ", "Sessions
 with patient(s)", "Self
 experience"), cex.name=0.8, las=2)
 legend("topright", inset=c(-0.38,0), legend = c("I pay", "The state pays", "I don't have", "Free"), fill=(terrain.colors(4)), cex=0.9, bty="n")
+
+payTL <- table(data_Europe$q_0016_SQ001)
+prop.table(payTL)
+k = sum(na.omit(data_Europe$q_0016_SQ001 == "State / 3rd party pays"))
+n= length(na.omit(data_Europe$q_0016_SQ001))
+prop.test(k,n)
+
+prop.table(payTL)
+k = sum(na.omit(data_Europe$q_0016_SQ001 == "I pay"))
+n= length(na.omit(data_Europe$q_0016_SQ001))
+prop.test(k,n)
+
+paySG <- table(data_Europe$q_0016_SQ003)
+prop.table(paySG)
+k = sum(na.omit(data_Europe$q_0016_SQ003 == "State / 3rd party pays"))
+n= length(na.omit(data_Europe$q_0016_SQ003))
+prop.test(k,n)
 ```
 
 ## Would you train for free?
 ```{r, echo=FALSE}
 prop.table(table(data_Europe$q_0017))
+prop.test(table(data_Europe$q_0017))
 par(mar=c(3,2,2,2))
 pie(table(data_Europe$q_0017),
     main="Motivated to train in Psychotherapy for free?")
